@@ -1,123 +1,100 @@
 # Template: `AGENTS.md`
 
-**Quando usar:** no dia zero, por último entre os quatro documentos obrigatórios — índice só se escreve bem sobre o que já existe.
+**Quando usar:** no dia zero, depois de `ARCHITECTURE.md` e `docs/workflow.md` (`adocao.md`). Aninhado, quando uma pasta tiver convenção própria.
 
-**Papel:** índice operacional curto, carregado em toda sessão de agente. Alvo de ~100 linhas. Detalhe extenso vive em `ARCHITECTURE.md`, em `docs/`, nas Skills, no código ou nas configurações — aqui fica o resumo e o ponteiro.
+**Papel:** índice operacional carregado em **toda** sessão de agente. Contém só o que o agente erraria sem saber: comandos reais, convenções que fogem do padrão, restrições críticas, desvios deste conjunto e onde está o que não é óbvio. Não é visão geral do repositório (o agente lê a árvore), não é cópia de `ARCHITECTURE.md` e não contém instrução genérica ("escreva código limpo") — tudo isso custa contexto em toda sessão sem melhorar o resultado ([practices/ia.md](../practices/ia.md), Seção *Harness e economia de contexto*).
 
-**Aninhamento.** O `AGENTS.md` da raiz é carregado em toda sessão e deve continuar curto. Uma subárvore com convenções próprias — uma pasta de documentação, um componente, uma área com ferramental diferente — pode ter o seu próprio `AGENTS.md`, com o mesmo formato deste template reduzido ao que vale ali. A divisão de trabalho é: o raiz descreve o repositório inteiro em uma tabela e **aponta** para os aninhados; o aninhado descreve só a sua pasta e nunca repete regra do raiz. Assim o detalhe caro só é carregado quando a tarefa toca aquela pasta. Duas ressalvas: confirme que o seu harness carrega arquivos aninhados sob demanda — se não carregar, o raiz precisa dizer explicitamente qual arquivo ler para cada área; e o aninhamento vale para o `AGENTS.md`, nunca para o `ARCHITECTURE.md`, que é único no projeto por descrever o que existe entre as partes.
+**Convenções:**
 
-**Pastas que o agente não deve abrir** — saídas de build, artefatos gerados, binários arquivados — se resolvem primeiro no `.gitignore` e no arquivo de exclusão do harness, quando houver. Listá-las aqui é o último recurso, não o primeiro: documentar "não leia isto" gasta contexto para evitar contexto.
-
-**Convenções:** somente comandos verificados; comando inferido entra com marcação de estado provisório, nunca como oficial. É neste arquivo que fica registrado qual estado do conjunto de convenções o projeto adotou — e é dele que os arquivos de contexto de outras ferramentas de IA (`CLAUDE.md`, `.cursorrules`, `copilot-instructions.md`) devem ser apenas um ponteiro de três linhas, nunca uma cópia ([practices/ia.md](../practices/ia.md), Seção *Arquivos de contexto de cada ferramenta*).
+- **Curto, porque cada linha é paga em toda sessão.** O teste de cada linha: *uma tarefa típica deste projeto sairia errada sem ela?* Conteúdo que só algumas tarefas usam vai para um `AGENTS.md` aninhado, uma Skill ou um documento em `docs/` com link — é o critério, e não uma contagem de linhas, que decide.
+- **Somente comandos verificados.** Comando que ninguém rodou entra como `<a verificar>`, nunca como oficial.
+- **Seção sem conteúdo é omitida**, exceto *Comandos*, que existe desde o dia zero, mesmo com marcações.
+- **Aninhamento:** o `AGENTS.md` de uma subárvore (componente, pasta com ferramental próprio) descreve só aquela pasta e nunca repete regra do raiz; o raiz aponta para ele no *Onde fica o quê*. As ferramentas carregam o mais próximo do arquivo alterado; ferramenta que não faz isso recebe o mesmo adaptador do raiz em cada pasta.
+- **Pastas que o agente não deve abrir** (saídas de build, binários) se resolvem no `.gitignore` ou na configuração de permissões da ferramenta, não com texto aqui.
+- Ferramenta que não lê `AGENTS.md` recebe um adaptador, nunca uma cópia ([practices/ia.md](../practices/ia.md), Seção *Arquivos de cada ferramenta*).
 
 ```markdown
 # AGENTS.md
 
-## Objetivo do projeto
-<2-3 linhas: o que o projeto faz e qual o resultado esperado de uma contribuição.>
+<2-3 linhas: o que o projeto é e quando uma contribuição está pronta.>
 
-## Convenções adotadas
-Este projeto segue [docs/guide/PROJECT_GUIDE.md](docs/guide/PROJECT_GUIDE.md).
-Adotado como <cópia | submódulo>; estado adotado: `<commit curto do conjunto>`.
-<Se houve reavaliação sem atualizar: por que se manteve nesse estado.>
+## Convenções
+Segue `docs/guide/` (<submódulo | cópia do commit `<hash>`>). No início de
+toda tarefa, leia `docs/guide/PROJECT_GUIDE.md` — ele diz o que mais ler.
 
-## Mapa do repositório
-| Caminho | Conteúdo |
-| --- | --- |
-| `<pasta>` | <o que vive aqui> |
+- Domínios aplicáveis: <engenharia, ia, ...>
+- Desvios do guia: <regra — motivo — ADR, ou omita a linha>
+- Idioma: documentação em <pt-BR>; identificadores e comentários em <...>; commits em <...>.
+- <Convenção deste projeto que foge do padrão da linguagem ou ferramenta.>
 
-Arquitetura detalhada: [ARCHITECTURE.md](ARCHITECTURE.md).
-
-## Comandos oficiais
+## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
 | Configurar | `<comando>` | `<dir>` |
 | Build | `<comando>` | `<dir>` |
 | Testes | `<comando>` | `<dir>` |
-| Lint | `<comando>` | `<dir>` |
-| Varredura de segredos | `<comando>` | `<dir>` |
+| Lint / análise | `<comando>` | `<dir>` |
+| Links da documentação | `python docs/guide/tools/verificar.py` | raiz |
 
-Somente comandos verificados. Comando inferido não entra aqui.
-
-## Antes de alterar
-1. Ler esta página e `ARCHITECTURE.md`.
-2. Verificar `docs/specs/` e `docs/decisions/` sobre a área afetada.
-3. Criar branch de trabalho conforme [docs/workflow.md](docs/workflow.md).
-
-## Depois de alterar
-1. Rodar os sensores existentes (build, teste direcionado, lint, segredos).
-2. Atualizar a documentação afetada na mesma mudança.
-3. Listar arquivos alterados, validações executadas e verificações pendentes.
+## Onde fica o quê
+<Só o que a árvore não deixa óbvio, e os AGENTS.md aninhados.>
+- `<caminho>` — <o que é, quando ler>
 
 ## Restrições críticas
-- <limite que nunca deve ser violado: compatibilidade, interface pública, submódulo, memória, norma>
-- O agente não executa merge, push para branch principal nem reescrita de histórico.
+- <limite que nunca pode ser violado: interface pública, memória, protocolo, norma>
+- Agente trabalha em branch própria (`docs/workflow.md`) e não executa merge, push para `<branch principal>` nem reescrita de histórico.
 
-## Skills disponíveis
-- `.agents/skills/<nome>/` — <quando usar>
-
-## Prompts de papel disponíveis
-- `.agents/prompts/<nome>.md` — <para que serve>
+## Ao terminar
+1. Rodar os comandos de build, testes e análise que se aplicam à mudança.
+2. Atualizar a documentação afetada, uma vez, com o comportamento já verificado.
+3. Entregar o resumo da mudança no formato de
+   `docs/guide/practices/engenharia.md`, Seção *Processo de uma mudança*.
 ```
 
 ## Exemplo preenchido (ilustrativo)
 
-Projeto fictício de firmware embarcado, o mesmo dos demais exemplos deste conjunto. Repare na marcação de estado provisório numa linha da tabela de comandos.
+Projeto fictício de firmware, o mesmo dos demais exemplos. Repare na pendência marcada na tabela de comandos e na ausência de visão geral do repositório.
 
 ```markdown
 # AGENTS.md
 
-## Objetivo do projeto
 Firmware do módulo de comunicação: expõe UART e Ethernet ao controlador
-principal. Uma contribuição está completa quando o comportamento novo tem
-spec, teste passando e nenhum aumento de uso de RAM no módulo.
+principal. Uma contribuição está pronta quando o comportamento novo tem spec,
+os testes em host passam e o orçamento de RAM não piora.
 
-## Convenções adotadas
-Este projeto segue [docs/guide/PROJECT_GUIDE.md](docs/guide/PROJECT_GUIDE.md).
-Adotado como submódulo; estado adotado: `a1b2c3d` (o commit fixado em `.gitmodules`).
+## Convenções
+Segue `docs/guide/` (submódulo). No início de toda tarefa, leia
+`docs/guide/PROJECT_GUIDE.md` — ele diz o que mais ler.
 
-## Mapa do repositório
-| Caminho | Conteúdo |
-| --- | --- |
-| `src/drivers/` | Drivers de periférico (UART, Ethernet, timers) |
-| `src/net/` | Pilha de rede e adaptação de protocolo |
-| `src/app/` | Máquina de estados da aplicação |
-| `test/` | Testes unitários com mock de periférico |
-| `tools/` | Scripts de configuração, build e gravação |
+- Domínios aplicáveis: engenharia, ia, c-embarcado, c-build-e-analise, firmware.
+- Desvios do guia: alocação única do pool da pilha TCP/IP na inicialização — ADR-0002.
+- Idioma: documentação, identificadores e commits em pt-BR.
+- Funções públicas no formato `Modulo_acao` (`Uart_enviar`); tipos em PascalCase.
 
-Arquitetura detalhada: [ARCHITECTURE.md](ARCHITECTURE.md).
-
-## Comandos oficiais
+## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
-| Configurar | `./tools/setup.sh` | raiz |
-| Build | `make firmware` | raiz |
-| Testes | `make test` | raiz |
-| Lint | `make lint` | raiz |
-| Uso de memória | `make size` | raiz |
-| Varredura de segredos | `<a definir: nenhuma ferramenta adotada ainda>` | — |
+| Configurar | `cmake --preset alvo-debug` | raiz |
+| Build | `cmake --build --preset alvo-debug` | raiz |
+| Testes em host | `cmake --preset host && ctest --preset host` | raiz |
+| Análise estática | `cmake --build --preset alvo-debug --target analise` | raiz |
+| Uso de memória | `cmake --build --preset alvo-debug --target tamanho` | raiz |
+| Links da documentação | `python docs/guide/tools/verificar.py` | raiz |
+| Varredura de segredos | `<a definir: nenhuma ferramenta adotada>` | — |
 
-## Antes de alterar
-1. Ler esta página e `ARCHITECTURE.md`.
-2. Verificar `docs/specs/` e `docs/decisions/` sobre a área afetada.
-3. Criar branch de trabalho conforme [docs/workflow.md](docs/workflow.md).
-
-## Depois de alterar
-1. Rodar `make test`, `make lint` e `make size`.
-2. Atualizar a documentação afetada na mesma mudança.
-3. Listar arquivos alterados, validações executadas e verificações pendentes.
+## Onde fica o quê
+- `src/net/AGENTS.md` — regras da pilha TCP/IP; ler antes de mexer em `src/net/`.
+- `third_party/` — código de fornecedor, fora do escopo de análise; não editar.
 
 ## Restrições críticas
-- Sem alocação dinâmica depois da inicialização, em nenhum ponto de `src/`.
-- RAM livre do módulo não pode cair abaixo de 4 KB (medida por `make size`).
-- Protocolo serial deve permanecer compatível com a versão 1.4 do controlador.
-- O agente não executa merge, push para `develop` nem reescrita de histórico.
+- RAM livre não pode cair abaixo de 4 KB (alvo `tamanho`).
+- Protocolo serial compatível com a versão 1.4 do controlador.
+- Agente trabalha em branch própria (`docs/workflow.md`) e não executa merge,
+  push para `develop` nem reescrita de histórico.
 
-## Skills disponíveis
-- `.agents/skills/analisar-mapa-de-memoria/` — quando `make size` acusar
-  estouro e for preciso localizar o crescimento.
-
-## Prompts de papel disponíveis
-- `.agents/prompts/bugfix.md` — correção de defeito com escopo restrito.
-- `.agents/prompts/review.md` — revisão sem escrita.
+## Ao terminar
+1. Rodar build, testes em host e análise estática.
+2. Atualizar a documentação afetada, uma vez, com o comportamento já verificado.
+3. Entregar o resumo da mudança no formato de
+   `docs/guide/practices/engenharia.md`, Seção *Processo de uma mudança*.
 ```

@@ -4,7 +4,7 @@
 
 **Papel:** apresentar o projeto a pessoas e ferramentas pela primeira vez — propósito, pré-requisitos, caminho inicial de uso, links para a documentação detalhada. Não é inventário arquitetural.
 
-**Convenções:** uma linha que aponta para um documento ainda inexistente sai do arquivo, em vez de virar link quebrado — no dia zero isso costuma valer para a linha do `docs/index.md`, que volta quando o índice nascer. Isso vale só para referências a documentos: campos que outros templates declaram obrigatórios continuam obrigatórios, e ausência deles é lacuna, não simplificação. Comando ainda não verificado entra com a marcação de estado provisório.
+**Convenções:** link para documento que ainda não existe fica fora do arquivo, em vez de virar link quebrado. Comando ainda não verificado entra com a marcação de estado provisório. Como o conjunto é submódulo, o primeiro comando de quem clona precisa trazê-lo.
 
 ````markdown
 # <nome do projeto>
@@ -16,6 +16,7 @@
 
 ## Como começar
 ```
+git clone --recurse-submodules <url>
 <comando de configuração>
 <comando de build>
 <comando de execução ou teste>
@@ -23,8 +24,9 @@
 
 ## Documentação
 - Arquitetura: [ARCHITECTURE.md](ARCHITECTURE.md)
-- Guia operacional para agentes: [AGENTS.md](AGENTS.md)
-- Índice da documentação: [docs/index.md](docs/index.md)
+- Instruções para agentes de IA: [AGENTS.md](AGENTS.md)
+- Convenções de projeto: [docs/guide/PROJECT_GUIDE.md](docs/guide/PROJECT_GUIDE.md)
+- Workflow de revisão: [docs/workflow.md](docs/workflow.md)
 
 ## Licença
 <licença ou "uso interno">

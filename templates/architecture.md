@@ -1,8 +1,8 @@
 # Template: `ARCHITECTURE.md`
 
-**Quando usar:** no dia zero, logo depois de copiar o guia — é o que dá vocabulário (componentes, limites, dependências) a todos os outros documentos.
+**Quando usar:** no dia zero, primeiro documento depois de montar o conjunto — é o que dá vocabulário (componentes, limites, dependências) a todos os outros.
 
-**Papel:** mapa arquitetural de alto nível — domínios, camadas, componentes, dependências, fluxos, interfaces e limites externos, restrições a preservar, pontos não determinados. Não descreve exaustivamente funções ou arquivos.
+**Papel:** mapa arquitetural de alto nível — componentes, dependências, fluxos, interfaces e limites externos, restrições a preservar, pontos não determinados. **Único no projeto**: o que ele tem de mais valioso é o que existe *entre* as partes, e um mapa por pasta descreve bem cada pedaço enquanto ninguém descreve as interfaces. Não descreve funções nem arquivos um a um; detalhe que não cabe no mapa vira design-doc ou referência, com link daqui. Não é carregado em toda sessão — é lido quando a tarefa atravessa componentes ou mexe em interface. Em projeto de um componente só (uma biblioteca, por exemplo) ele é curto: visão geral, dependências externas e restrições a preservar; seções sem conteúdo são omitidas. Existe mesmo assim para que o lugar das restrições arquiteturais seja o mesmo em todo projeto.
 
 **Convenções:** a tabela de componentes lista o que **este projeto implementa**, ainda que seja pouco; serviço de terceiros, plataforma gerenciada ou API externa entram em "Dependências e interfaces externas", com o limite do que não deve vazar para o resto do sistema — projeto que delega quase tudo a um serviço externo terá poucas linhas na primeira tabela e várias na segunda, e isso é a descrição correta, não uma lacuna. O que ainda não foi decidido vai em "Pontos não determinados", nunca em suposição. Descrever estrutura que ainda não existe é legítimo desde que rotulada como planejada — o proibido é apresentar intenção como fato consumado.
 

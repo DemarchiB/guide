@@ -1,59 +1,30 @@
-# AGENTS.md
+# AGENTS.md — conjunto de convenções
 
-## Objetivo do projeto
-Este repositório é o conjunto de convenções que outros projetos adotam em `docs/guide/`. Uma
-contribuição está completa quando a regra alterada tem um dono só, nenhum arquivo estourou seu
-orçamento de contexto, e o corpo do commit declara o impacto para os projetos que já adotaram.
+**Escopo:** este arquivo só vale para tarefas que **alteram este conjunto**. Num projeto que o adotou ele aparece como `docs/guide/AGENTS.md`; se você está apenas consultando o guia a partir de um projeto, ignore este arquivo e siga o `AGENTS.md` da raiz do projeto.
 
-> Num projeto que adotou o conjunto, este arquivo vira `docs/guide/AGENTS.md` — um `AGENTS.md`
-> aninhado, que vale só para esta pasta. O `AGENTS.md` da raiz do projeto continua sendo o
-> operacional; este só é carregado quando a tarefa toca o conjunto.
+## Objetivo
+Manter um conjunto de convenções, independente de ferramenta de IA, que outros projetos adotam sem alteração. Uma contribuição está pronta quando o verificador passa, cada regra tem um dono só e se justifica como boa prática, e o commit declara o impacto para quem já adotou.
 
-## Convenções adotadas
-Este repositório segue a si mesmo: [PROJECT_GUIDE.md](PROJECT_GUIDE.md).
+## Convenções
+Este repositório segue a si mesmo ([PROJECT_GUIDE.md](PROJECT_GUIDE.md)), com um desvio: não tem `ARCHITECTURE.md` nem `docs/workflow.md` — não há código, e a organização está em `manutencao-do-conjunto.md`, Seção *Que conteúdo entra, e onde*. Domínios aplicáveis: `engenharia`, `ia`.
 
-## Mapa do repositório
-| Caminho | Conteúdo |
-| --- | --- |
-| `PROJECT_GUIDE.md` | Índice: onde cada informação mora; lido em toda tarefa de todo projeto. |
-| `adocao.md` | Como um projeto passa a usar o conjunto. |
-| `manutencao.md` | Como o projeto mantém sua documentação. |
-| `manutencao-do-conjunto.md` | Como este conjunto evolui: propagação, domínios, orçamento. |
-| `practices/` | Um arquivo por domínio. |
-| `templates/` | Um arquivo por documento gerado. |
+- Conteúdo em português (pt-BR); nomes de arquivo em kebab-case sem acento.
+- Nenhuma convenção, nome de arquivo ou recurso exclusivo de uma ferramenta de IA entra como regra.
 
-Este repositório não tem `ARCHITECTURE.md` — não há código nem componentes, e a estrutura
-inteira está na Seção *Estrutura de arquivos do projeto* do `PROJECT_GUIDE.md`.
-
-## Comandos oficiais
+## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
-| Orçamento de contexto | `LC_ALL=C.UTF-8 wc -m PROJECT_GUIDE.md practices/*.md` | raiz |
-| Verificação de links | `<a definir: nenhuma ferramenta adotada ainda>` | — |
-| Varredura de segredos | `<a definir: nenhuma ferramenta adotada ainda>` | — |
+| Verificação (links, seções citadas, Skills) | `python tools/verificar.py` | raiz |
 
-Somente comandos verificados. Comando inferido não entra aqui.
-
-## Antes de alterar
-1. Ler o `PROJECT_GUIDE.md` e o `manutencao-do-conjunto.md`.
-2. Procurar a regra no conjunto inteiro antes de escrevê-la: ela pode já ter um dono.
-3. Criar branch de trabalho `<tipo>/<assunto-curto>` a partir de `main`.
-
-## Depois de alterar
-1. Medir o orçamento dos arquivos tocados (`LC_ALL=C.UTF-8 wc -m`).
-2. Conferir o checklist de `manutencao-do-conjunto.md`.
-3. Se alguma regra mudou de sentido, declarar no corpo do commit o que os projetos que já
-   adotaram precisam fazer.
+Requer Python 3.8+, sem dependências.
 
 ## Restrições críticas
-- Nenhum fato específico de um projeto entra em arquivo deste conjunto.
-- Uma regra tem um dono só; o segundo lugar recebe ponteiro, nunca uma segunda redação.
-- Referência cruzada cita arquivo e **título** da seção, nunca só o número.
-- `PROJECT_GUIDE.md` tem teto firme de 18.000 caracteres; cada domínio, gatilho de revisão em 15.000.
-- O agente não executa merge, push para `main` nem reescrita de histórico.
+- Nenhum fato específico de um projeto entra aqui.
+- Uma regra tem um dono só; o segundo lugar recebe ponteiro com arquivo e **título** da seção.
+- Antes de escrever uma regra, procure se ela já existe (`grep -ri`) e diga por que ela é boa prática.
+- O agente não cria commit, branch nem push neste repositório: altera os arquivos e relata; quem mantém revisa e commita.
 
-## Skills disponíveis
-Nenhuma até o momento.
-
-## Prompts de papel disponíveis
-Nenhum até o momento.
+## Ao terminar
+1. Rodar `python tools/verificar.py`.
+2. Conferir o checklist de `manutencao-do-conjunto.md`.
+3. Entregar o resumo da mudança (`practices/engenharia.md`, Seção *Processo de uma mudança*), com os trailers `Impacto-adocao` propostos para o commit, quando aplicável.

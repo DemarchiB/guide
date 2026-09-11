@@ -1,13 +1,14 @@
 # Domínio: arquitetura de firmware embarcado
 
-Cobre como o firmware é estruturado e como ele se comporta no tempo: separação de camadas, máquinas de estado, interrupções, escolha entre laço principal e RTOS, base de tempo, watchdog e estado seguro, dados externos e preparação para safety. Não cobre a escrita do código em si — tipos, memória, MISRA e análise estática estão em [c-embarcado.md](c-embarcado.md). As regras de [engenharia.md](engenharia.md) e [ia.md](ia.md) continuam valendo integralmente.
+Cobre como o firmware é estruturado e como ele se comporta no tempo: separação de camadas, máquinas de estado, interrupções, escolha entre laço principal e RTOS, base de tempo, watchdog e estado seguro, dados externos e preparação para safety. Não cobre a escrita do código em si, que está em [c-embarcado.md](c-embarcado.md), nem build e análise estática, em [c-build-e-analise.md](c-build-e-analise.md).
 
-**Leia este arquivo quando:** for definir a estrutura de um firmware novo, introduzir uma máquina de estado, escrever ou revisar código que roda em interrupção, decidir entre laço principal e RTOS, ou tratar dado que vem de fora do dispositivo.
+**Aplica-se a:** firmware embarcado, em qualquer linguagem.
+**Leia quando:** for definir a estrutura de um firmware, introduzir ou alterar máquina de estado, escrever ou revisar código que roda em interrupção ou RTOS, tratar tempo, watchdog, reset, persistência, atualização ou dado que vem de fora do dispositivo.
 
 ## 1. Camadas e portabilidade
 
-1. **Três camadas, com dependência em um sentido só:** hardware (registradores, HAL do fabricante) → serviços (drivers do produto, comunicação, persistência) → aplicação (regras do produto). A aplicação nunca acessa registrador diretamente.
-2. **A camada de aplicação compila no PC.** Esse é o critério prático da separação: se a lógica do produto não compila sem a toolchain do alvo, as camadas estão misturadas. É também o que habilita teste em host ([c-embarcado.md](c-embarcado.md), Seção *Sensores da linguagem*).
+1. **Camadas com dependência em um sentido só, e no mínimo uma fronteira: hardware ↔ aplicação.** A aplicação (regras do produto) nunca acessa registrador nem HAL do fabricante diretamente. Uma camada intermediária de serviços (drivers do produto, comunicação, persistência) aparece quando há o que colocar nela — criá-la vazia é camada sem responsabilidade.
+2. **A camada de aplicação compila no PC.** Esse é o critério prático da separação: se a lógica do produto não compila sem a toolchain do alvo, as camadas estão misturadas. É também o que habilita teste em host ([c-build-e-analise.md](c-build-e-analise.md), Seção *Sensores da linguagem*).
 3. **O acesso a hardware é concentrado por periférico**, atrás de uma interface pequena e declarada. Trocar de microcontrolador deve afetar a camada de hardware, não a aplicação.
 4. **Código gerado por ferramenta de fabricante fica isolado** e não é editado à mão; a customização vive nos pontos de extensão previstos ou numa camada acima. Regeneração que apaga edição manual é defeito de estrutura, não acidente.
 5. **O mapa das camadas e dos módulos mora no `ARCHITECTURE.md`** do projeto, não neste guia.
@@ -19,23 +20,23 @@ Cobre como o firmware é estruturado e como ele se comporta no tempo: separaçã
 3. **Estados e eventos são enums nomeados**, nunca inteiros soltos, e a máquina inteira é observável por uma única variável de estado — não por três flags que combinam.
 4. **A transição é a única forma de mudar de estado**, concentrada numa função ou numa tabela de transição. Estado atribuído em pontos espalhados pelo código anula a máquina.
 5. **A tabela de transição, quando houver, é `const`** e fica em flash ([c-embarcado.md](c-embarcado.md), Seção *Tipos, expressões e conversões*).
-6. **Todo par estado × evento tem destino definido**, inclusive os que não fazem nada — e "não faz nada" é uma decisão registrada, não uma lacuna.
+6. **Todo par estado × evento tem destino definido**, inclusive os que não fazem nada — "não faz nada" é decisão, não lacuna. Uma regra padrão declarada explicitamente ("evento não listado neste estado: ignorado e contado") cobre os pares restantes; o que não vale é o par simplesmente não ter sido pensado.
 7. **A máquina tem estado de erro ou seguro alcançável**, e a saída dele é explícita (reinicialização, intervenção, reset). Máquina sem estado de falha esconde a falha.
 8. **Ação de entrada e de saída são explícitas** quando existirem, e a máquina não bloqueia: espera é um estado com temporizador, nunca um laço de espera dentro da transição.
-9. **Toda máquina de estado não trivial é documentada** a partir de `../templates/fsm.md`, no diretório de documentação do projeto. A documentação e o código mudam na mesma alteração.
+9. **Toda máquina de estado não trivial é documentada** a partir de `../templates/fsm.md`, em `docs/design-docs/` (os critérios de "não trivial" estão no template). A documentação e o código mudam na mesma alteração.
 
 ## 3. Interrupções
 
 1. **A rotina de interrupção é curta e não bloqueia.** Ela lê ou escreve o periférico, guarda o mínimo e devolve o controle; o processamento acontece fora dela.
 2. **Nada de bloqueio, alocação, E/S formatada ou espera dentro da interrupção** — nem `printf`, nem `malloc`, nem laço de espera por outro periférico.
-3. **Dado compartilhado entre interrupção e contexto principal é `volatile`**, e o acesso a dado maior que uma palavra do processador acontece dentro de seção crítica ou por primitiva do RTOS. `volatile` sozinho não garante atomicidade ([c-embarcado.md](c-embarcado.md), Seção *Defensividade*).
+3. **Dado compartilhado entre interrupção e contexto principal é `volatile`**, e o acesso a dado maior que uma palavra do processador acontece dentro de seção crítica ou por primitiva do RTOS. `volatile` sozinho não garante atomicidade ([c-embarcado.md](c-embarcado.md), Seção *Defensividade e comportamento indefinido*).
 4. **Seção crítica é a menor possível**, com o tempo máximo dentro dela conhecido — ela é o teto da latência de todas as outras interrupções.
 5. **Comunicação com o contexto principal por mecanismo declarado**: sinalizador, fila circular de produtor/consumidor único, ou primitiva do RTOS específica para interrupção. Estrutura genérica compartilhada sem proteção é defeito.
 6. **Prioridades de interrupção são atribuídas explicitamente e documentadas**, com o efeito de aninhamento considerado. Prioridade herdada do default da ferramenta não é escolha.
 7. **Toda condição de erro do periférico é tratada** — estouro, ruído, quadro inválido —, não apenas o caminho feliz.
 8. **O tempo de execução de toda rotina de interrupção é conhecido e compatível com o período do que ela atende** — não só o tempo da seção crítica dentro dela, mas o tempo da rotina inteira, do início ao retorno.
-9. **Barreira de memória ou de compilador só entra com justificativa explícita no local**: qual reordenação ela impede, e por que essa reordenação seria um problema ali. Barreira colocada por precaução, sem essa justificativa, é tão perigosa quanto a ausência dela — esconde uma suposição não verificada.
-10. **Buffer usado por DMA, em alvo com cache de dados, exige alinhamento, seção de memória dedicada e manutenção explícita de cache antes e depois da transferência.** `volatile` não garante coerência de cache — é a mesma distinção da Seção *Defensividade e comportamento indefinido* de [c-embarcado.md](c-embarcado.md): `volatile` marca o que muda fora do fluxo do programa, não sincroniza nem mantém coerência.
+9. **Instrução de sincronização do núcleo (barreira de dados ou de instrução) e atributo que impede otimização só entram com justificativa no local**: que efeito de pipeline, cache ou reordenação pelo compilador eles evitam ali, com referência à documentação do núcleo ou do fabricante. Colocados "por precaução" escondem uma suposição não verificada — e a próxima pessoa não sabe se pode removê-los.
+10. **Buffer usado por DMA, em alvo com cache de dados, exige alinhamento, seção de memória dedicada e manutenção explícita de cache antes e depois da transferência.** `volatile` não garante coerência de cache: ele marca o que muda fora do fluxo do programa, não sincroniza ([c-embarcado.md](c-embarcado.md), Seção *Defensividade e comportamento indefinido*).
 
 ## 4. Laço principal e RTOS
 
@@ -54,7 +55,7 @@ Cobre como o firmware é estruturado e como ele se comporta no tempo: separaçã
 1. **Uma base de tempo monotônica** para o firmware inteiro, com resolução e origem declaradas. Cada módulo medir tempo do seu jeito produz comportamento incoerente.
 2. **Comparação de tempo tolerante a estouro do contador**: sempre por diferença (`agora - marca >= intervalo`), nunca por comparação direta de instantes.
 3. **Espera ocupada só onde for a única opção** (atraso de microssegundos exigido por periférico), delimitada e comentada.
-4. **Prazo é requisito, não expectativa.** Onde o produto tiver requisito temporal, ele entra em `docs/specs/` com número, e a forma de verificá-lo é declarada — medição, pino de depuração, contador.
+4. **Prazo é requisito, não expectativa.** Onde o produto tiver requisito temporal, ele entra em `docs/specs/` com valor numérico e tolerância, e a forma de verificá-lo é declarada — medição, pino de depuração, contador.
 
 ## 6. Watchdog, reset e estado seguro
 
@@ -63,8 +64,8 @@ Cobre como o firmware é estruturado e como ele se comporta no tempo: separaçã
 3. **Watchdog alimentado em um único ponto do código**, e só depois de verificar que o que devia rodar rodou. Alimentar dentro da interrupção do temporizador, ou em vários pontos, transforma o watchdog em enfeite.
 4. **A causa do último reset é lida e registrada** na inicialização. Reset por watchdog que ninguém observa é defeito que nunca será encontrado.
 5. **Falha detectada leva a um estado declarado** — degradado ou seguro —, nunca a seguir adiante com dado inválido.
-6. **A integridade da própria imagem é verificada na partida**, por soma de verificação ou assinatura gravada junto com o binário. Flash degrada, gravação falha pela metade, e firmware corrompido executando trecho arbitrário é a pior falha possível num produto que aciona carga.
-7. **Diagnóstico observável em produto fechado**: contador de erro persistido, código de falha legível por comunicação ou sinalização, e a identificação de build ([c-embarcado.md](c-embarcado.md), Seção *Toolchain, build e identificação*) legível em execução. Depuração que só existe com sonda conectada não serve para campo — e defeito relatado sem saber qual firmware estava rodando não se investiga.
+6. **A integridade da própria imagem é verificada na partida**, por soma de verificação ou assinatura gravada junto com o binário. Flash degrada, gravação falha pela metade, e firmware corrompido executando trecho arbitrário é a pior falha possível num produto que aciona carga. Onde o hardware não comportar a verificação (sem bootloader, sem espaço), a ausência é decisão registrada, com o risco aceito.
+7. **Diagnóstico observável em produto fechado**: contador de erro persistido, código de falha legível por comunicação ou sinalização, e a identificação de build ([c-build-e-analise.md](c-build-e-analise.md), Seção *Toolchain, build e identificação*) legível em execução. Depuração que só existe com sonda conectada não serve para campo — e defeito relatado sem saber qual firmware estava rodando não se investiga.
 
 ## 7. Dados externos, configuração e persistência
 
@@ -79,7 +80,7 @@ Cobre como o firmware é estruturado e como ele se comporta no tempo: separaçã
 
 Enquanto o projeto não adotar uma norma, este guia permanece agnóstico a ela: nenhuma das regras abaixo depende de norma específica, e todas reduzem o custo de adotar uma depois.
 
-1. **Rastreabilidade auditável desde já** ([engenharia.md](engenharia.md), Seção *Convenções de branch e commit, e rastreabilidade*): identificador do requisito presente na spec, no commit, no teste e no registro de validação. A ponta que fecha essa cadeia é a identificação de build ([c-embarcado.md](c-embarcado.md), Seção *Toolchain, build e identificação*): sem saber qual binário está no produto, nenhuma evidência anterior se liga ao equipamento em campo.
+1. **Rastreabilidade auditável desde já** ([engenharia.md](engenharia.md), Seção *Branch, commit e rastreabilidade*): identificador do requisito presente na spec, no commit, no teste e no registro de validação. A ponta que fecha essa cadeia é a identificação de build ([c-build-e-analise.md](c-build-e-analise.md), Seção *Toolchain, build e identificação*): sem saber qual binário está no produto, nenhuma evidência anterior se liga ao equipamento em campo.
 2. **Estado seguro definido e verificável** (Seção *Watchdog, reset e estado seguro*) é a peça que toda norma vai exigir e que nenhum projeto consegue reconstruir depois.
 3. **Determinismo antes de conformidade**: sem alocação dinâmica, sem recursão, pilha orçada, prazos declarados ([c-embarcado.md](c-embarcado.md), Seção *Memória e recursos*).
 4. **Modos de falha listados por função crítica** — o que pode falhar, como é detectado, o que acontece então. Uma tabela curta por função vale mais do que a norma inteira lida sem aplicação.

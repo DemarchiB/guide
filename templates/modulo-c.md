@@ -12,21 +12,22 @@
 1. **Um par de arquivos por módulo**, com o mesmo nome do tipo. Todo símbolo público leva o prefixo do módulo, e o projeto escolhe uma convenção de caixa e a mantém.
 2. **`me` é o primeiro parâmetro**, sempre `<Tipo> *const me` — o ponteiro é constante, o objeto não. Nunca use `this`: é palavra reservada em C++ e quebra o dia em que o header for incluído de lá.
 3. **Os campos da estrutura são privados por convenção.** Só as operações do próprio módulo os tocam; nenhum chamador acessa `objeto.campo` diretamente. C não impõe isso — a revisão impõe.
-4. **Todo campo é documentado com unidade e faixa**, do mesmo modo que os parâmetros ([c-embarcado.md](../practices/c-embarcado.md), Seção *Estrutura, nomes e interface*).
+4. **Todo campo é documentado com unidade e faixa**, do mesmo modo que os parâmetros ([practices/c-embarcado.md](../practices/c-embarcado.md), Seção *Estrutura, nomes e interface*).
 5. **O construtor valida e retorna erro.** `_init` verifica `me` e os parâmetros e devolve o tipo de erro do projeto; construtor `void` obriga o chamador a supor que deu certo.
-6. **O destrutor só existe se tiver o que fazer** — levar saída a estado seguro, liberar um recurso de hardware, cancelar um temporizador. Sem alocação dinâmica ([c-embarcado.md](../practices/c-embarcado.md), Seção *Memória e recursos*), `_deinit` vazio é ruído: remova-o em vez de mantê-lo por simetria.
-7. **A guarda de inclusão não usa sublinhado duplo nem sublinhado seguido de maiúscula** — `MODULO_H`, nunca `__MODULO__` ([c-embarcado.md](../practices/c-embarcado.md), Seção *Estrutura, nomes e interface*, regra 4).
-8. **Nada de `@version` nem `@date` no cabeçalho do arquivo.** Os dois envelhecem no primeiro commit que alguém esquece de atualizar, e a informação verdadeira já está no VCS e na identificação de build ([c-embarcado.md](../practices/c-embarcado.md), Seção *Toolchain, build e identificação*). Cabeçalho registra o que não está no VCS: arquivo, responsabilidade e copyright.
-9. **O header inclui só o que a interface precisa.** `stdint.h` e `stdbool.h` costumam ser necessários; o que só a implementação usa fica no `.c`.
+6. **O destrutor só existe se tiver o que fazer** — levar saída a estado seguro, liberar um recurso de hardware, cancelar um temporizador. Sem alocação dinâmica ([practices/c-embarcado.md](../practices/c-embarcado.md), Seção *Memória e recursos*), `_deinit` vazio é ruído: remova-o em vez de mantê-lo por simetria.
+7. **A guarda de inclusão não usa identificador reservado** — `MODULO_H`, nunca `__MODULO_H__` ([practices/c-embarcado.md](../practices/c-embarcado.md), Seção *Estrutura, nomes e interface*).
+8. **Nada de `@version`, `@date` nem `@author` no cabeçalho do arquivo.** Envelhecem no primeiro commit que alguém esquece de atualizar, e a informação verdadeira já está no VCS e na identificação de build ([practices/c-build-e-analise.md](../practices/c-build-e-analise.md), Seção *Toolchain, build e identificação*). Cabeçalho registra o que não está no VCS: arquivo, responsabilidade e copyright.
+9. **O header inclui só o que a interface precisa** e é incluível por C++ (`extern "C"`), para o teste em host. O que só a implementação usa fica no `.c`.
 
 ## Esqueleto
+
+Os comentários de seção organizam a leitura de arquivos longos; em módulo pequeno, **remova as seções que ficarem vazias** — banner sem conteúdo é ruído que se repete em todo arquivo.
 
 ```c
 /* ------------------------------- <modulo>.h ------------------------------- */
 /**
  * @file <modulo>.h
  * @brief <responsabilidade do módulo, em uma linha>
- * @author <autor>
  * @copyright <empresa> (c) <ano>
  */
 
@@ -36,6 +37,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Defines -------------------------------------------------------------------*/
 
@@ -70,6 +75,10 @@ typedef struct {
  */
 void <Modulo>_deinit(<Modulo> *const me);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* <MODULO>_H */
 ```
 
@@ -78,7 +87,6 @@ void <Modulo>_deinit(<Modulo> *const me);
 /**
  * @file <modulo>.c
  * @brief <responsabilidade do módulo, em uma linha>
- * @author <autor>
  * @copyright <empresa> (c) <ano>
  */
 
@@ -157,8 +165,8 @@ typedef struct {
 
 **Duas regras de uso, e elas importam mais do que o mecanismo:**
 
-- **Só introduza a tabela virtual quando existirem duas implementações reais hoje.** Uma implementação atrás de despacho indireto é custo sem benefício, e "vai que um dia" não é evidência.
-- **Ponteiro para função tem preço em análise.** Ele quebra o grafo de chamadas estático, e com ele a análise automática de profundidade de pilha e a rastreabilidade de qual código roda em qual caminho — exatamente o que uma norma de safety vai querer ver ([firmware.md](../practices/firmware.md), Seção *Preparação para safety*). Onde o polimorfismo for usado em código crítico, a tabela é `const`, o conjunto de implementações é fechado e conhecido em tempo de compilação, e o `vptr` é verificado contra nulo antes do primeiro despacho.
+- **Só introduza a tabela virtual quando existirem duas implementações reais hoje.** Uma implementação atrás de despacho indireto é custo sem benefício, e "vai que um dia" não é evidência. Um dublê de teste conta como segunda implementação quando o despacho é o que permite testar o cliente em host sem o hardware — mas, se a troca em tempo de link resolve (outro `.c` no build de teste), ela é mais simples e não custa análise.
+- **Ponteiro para função tem preço em análise.** Ele quebra o grafo de chamadas estático, e com ele a análise automática de profundidade de pilha e a rastreabilidade de qual código roda em qual caminho — exatamente o que uma norma de safety vai querer ver ([practices/firmware.md](../practices/firmware.md), Seção *Preparação para safety*). Onde o polimorfismo for usado em código crítico, a tabela é `const`, o conjunto de implementações é fechado e conhecido em tempo de compilação, e o `vptr` é verificado contra nulo antes do primeiro despacho.
 
 ## Exemplo preenchido (ilustrativo)
 
@@ -167,7 +175,6 @@ typedef struct {
 /**
  * @file motor.h
  * @brief Controle de um eixo: partida, parada e leitura de corrente.
- * @author Fulano de Tal
  * @copyright <empresa> (c) 2026
  */
 
@@ -178,6 +185,10 @@ typedef struct {
 #include <stdbool.h>
 
 #include "erro/erro.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
     uint8_t  canal;             /**< Canal de acionamento, 0 a 3. */
@@ -195,6 +206,10 @@ typedef struct {
  * @return ERRO_OK, ou ERRO_PARAM se algum argumento estiver fora da faixa.
  */
 erro_t Motor_init(Motor *const me, uint8_t canal, uint16_t corrente_max_ma);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MOTOR_H */
 ```

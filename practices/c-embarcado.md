@@ -1,118 +1,72 @@
 # Domínio: C em alvo embarcado
 
-Cobre como se produz o código-fonte em C para microcontrolador: toolchain e build, tipos e conversões, uso de memória, estrutura dos arquivos, defensividade, adoção de um subconjunto normativo (MISRA) e análise estática. Não cobre a arquitetura do firmware — camadas, máquinas de estado, interrupções, RTOS e tempo estão em [firmware.md](firmware.md). As regras de [engenharia.md](engenharia.md) continuam valendo integralmente; este domínio acrescenta os sensores próprios da linguagem.
+Cobre como se escreve código C para microcontrolador: tipos e conversões, uso de memória, estrutura dos arquivos, nomes e contratos, defensividade e compilação condicional. Não cobre toolchain, build, análise estática nem MISRA — estão em [c-build-e-analise.md](c-build-e-analise.md) —, nem a arquitetura do firmware (camadas, interrupções, RTOS, tempo), que está em [firmware.md](firmware.md).
 
-**Leia este arquivo quando:** for escrever ou revisar código C de firmware, configurar o build de um projeto novo, decidir se um desvio de regra é aceitável, ou introduzir análise estática num projeto que ainda não tem.
+**Aplica-se a:** projetos com código C para microcontrolador.
+**Leia quando:** for escrever ou revisar código C.
 
-Comandos e flags aparecem na notação do GCC e do CMake como ilustração. O conjunto real de um projeto — compilador, padrão, flags, ferramenta de análise — é fato daquele projeto e mora no seu `docs/workflow.md`.
+## 1. Tipos, expressões e conversões
 
-## 1. Toolchain, build e identificação
-
-1. **O padrão da linguagem é declarado explicitamente** no build (`-std=c99`, `-std=c11`), nunca deixado no default do compilador. Padrão implícito muda quando a toolchain é atualizada.
-2. **Warning é erro.** O build roda no mínimo com `-Wall -Wextra`, e `-Werror` é o alvo. Projeto legado que ainda não passa nessa configuração adota o ratchet da Seção *Sensores da linguagem* — não desliga o aviso.
-3. **A toolchain é fixada e arquivada.** O projeto declara a versão exata do compilador e guarda o meio de reproduzi-la (instalador, contêiner, gerenciador de toolchain). Produto de automação vive muitos anos: recompilar depois com outra versão produz um binário diferente do que foi validado, e não há como demonstrar equivalência.
-4. **O build é reprodutível por linha de comando**, independente de IDE. Build que só existe dentro de uma IDE não pode ser verificado por sensor nem por agente.
-5. **O firmware carrega sua própria identificação**: versão, identificador do commit e data de build, **gerados pelo build** e legíveis em execução — nunca digitados à mão numa constante. O binário liberado é arquivado junto com a tag correspondente no VCS.
-6. **Consumo de flash e RAM é orçado**, extraído do mapa de memória a cada build e comparado com um limite declarado. Descobrir que a flash acabou na última funcionalidade é o defeito clássico de firmware, e ele só aparece cedo se for medido desde cedo.
-7. **Extensão de compilador é decisão consciente**, em ADR quando afeta portabilidade, e o código que depende dela fica isolado na camada de hardware.
-8. **Otimização faz parte da configuração declarada.** Código que só funciona em um nível de otimização tem defeito — tipicamente `volatile` ausente ou comportamento indefinido — e o defeito se corrige, não se contorna baixando a otimização.
-
-## 2. Tipos, expressões e conversões
-
-1. **Tipos de largura explícita** (`uint8_t`, `int32_t`, de `<stdint.h>`) em toda variável cuja largura importe: registradores, protocolos, buffers, campos persistidos. `int` e `char` só onde a largura é irrelevante.
+1. **Tipos de largura explícita** (`uint8_t`, `int32_t`) em toda variável cuja largura importe: registradores, protocolos, buffers, campos persistidos. `int` e `char` só onde a largura é irrelevante.
 2. **`bool` para condição lógica** (`<stdbool.h>`), não `int` nem `uint8_t` com 0/1.
-3. **Não misture sinalizado e não sinalizado na mesma expressão.** A conversão implícita é silenciosa e é uma das fontes mais comuns de defeito em C embarcado. Onde a conversão for necessária, ela é explícita e comentada com o motivo.
-4. **Toda conversão que perde faixa ou precisão é explícita** e acompanhada da verificação que garante que o valor cabe.
-5. **Comparação de ponto flutuante nunca por igualdade**, e ponto flutuante não entra em caminho crítico de tempo sem justificativa — em muitos alvos não há FPU.
-6. **`const` é o padrão**, não a exceção: parâmetro de ponteiro que não modifica é `const`, tabela imutável é `const` (fica em flash, não em RAM).
-7. **Enum para conjunto fechado de valores**, com todos os casos tratados no `switch` — sem `default` que mascare um caso novo esquecido. Onde houver `default`, ele leva ao estado de erro, não ao silêncio.
-8. **Precedência explícita por parênteses** em expressão composta, mesmo quando a linguagem já garantiria o resultado.
-9. **Tamanho usa `size_t`, endereço usa `uintptr_t`.** Não use `int` para tamanho nem aritmética de ponteiro para representar um endereço absoluto — a largura de ambos varia entre plataformas, e `size_t`/`uintptr_t` são os tipos que o padrão garante caber o alvo real.
+3. **Não misture sinalizado e não sinalizado na mesma expressão.** A conversão implícita é silenciosa e é das fontes mais comuns de defeito em C embarcado. Onde a conversão for necessária, ela é explícita.
+4. **Conversão que perde faixa ou precisão é explícita** e acompanhada da verificação que garante que o valor cabe.
+5. **Ponto flutuante nunca é comparado por igualdade**, e não entra em caminho crítico de tempo sem justificativa — muitos alvos não têm FPU.
+6. **`const` é o padrão**: parâmetro de ponteiro que não modifica é `const`; tabela imutável é `const` (fica em flash, não em RAM).
+7. **Enum para conjunto fechado de valores**, com todos os casos tratados no `switch`. Onde houver `default`, ele leva ao tratamento de erro, nunca ao silêncio — é o que impede que um caso novo esquecido passe despercebido.
+8. **Parênteses explícitos quando a expressão mistura famílias de operadores** — bit a bit, deslocamento, lógicos, relacionais, ternário. A precedência entre elas é contraintuitiva em C (`x & MASCARA == 0` compara antes de mascarar). Em aritmética simples (`a + b * c`), parêntese a mais é ruído.
+9. **Tamanho usa `size_t`; endereço como inteiro usa `uintptr_t`.** A largura de ambos varia entre plataformas, e são os tipos que o padrão garante caberem no alvo.
 
-## 3. Memória e recursos
+## 2. Memória e recursos
 
-1. **Sem alocação dinâmica.** Nada de `malloc`/`free` em tempo de execução. Onde a alocação for inevitável, ela acontece uma única vez na inicialização, nunca é liberada, e é registrada em ADR.
-2. **Sem recursão** e sem arranjo de tamanho variável (VLA): ambos tornam o consumo de pilha indeterminável.
-3. **Todo buffer tem tamanho conhecido em tempo de compilação** e todo acesso indexado tem limite verificado quando o índice vem de fora do módulo.
-4. **Consumo de pilha é orçado**, não descoberto: pilha de cada tarefa ou contexto é dimensionada, e o projeto documenta como isso foi verificado (marca d'água, análise da toolchain) ou registra a verificação como pendente.
-5. **Escopo mínimo.** Variável usada por um único arquivo é `static`; variável global compartilhada tem dono declarado — um módulo que a escreve — e os demais leem por função de acesso.
-6. **Estruturas usadas em protocolo ou persistência não dependem de layout implícito**: alinhamento, preenchimento e ordem de bytes são tratados na serialização, nunca assumidos do compilador.
+1. **Sem alocação de heap em tempo de execução** (`malloc`/`free` ou equivalentes). Fragmentação e falha de alocação não aparecem em teste e aparecem em campo, meses depois. Onde memória variável for necessária: alocação única na inicialização, ou pool de blocos de tamanho fixo com capacidade declarada e esgotamento tratado — em ambos os casos registrado em ADR.
+2. **Sem recursão e sem arranjo de tamanho variável (VLA)**: ambos tornam o consumo de pilha indeterminável.
+3. **Todo buffer tem tamanho conhecido em compilação**, e todo acesso indexado com índice vindo de fora do módulo tem limite verificado.
+4. **Consumo de pilha é orçado, não descoberto**: a pilha de cada tarefa ou contexto é dimensionada, e o projeto documenta como isso foi verificado (marca d'água, análise da toolchain) ou registra a verificação como pendente.
+5. **Escopo mínimo.** Variável usada por um só arquivo é `static`; variável global compartilhada tem dono declarado — um módulo que a escreve —, e os demais leem por função de acesso.
+6. **Estrutura de protocolo ou persistência não depende de layout implícito**: alinhamento, preenchimento e ordem de bytes são tratados na serialização, nunca assumidos do compilador.
 
-## 4. Estrutura, nomes e interface
+## 3. Estrutura, nomes e interface
 
-1. **Um módulo = um `.c` + um `.h`**, com uma responsabilidade declarada no topo do header. Módulo com estado — que tem ou pode vir a ter mais de uma instância — parte de `../templates/modulo-c.md`.
-2. **Todo símbolo público leva o prefixo do módulo** (`motor_iniciar`, `motor_parar`, `MOTOR_ESTADO_PARADO`). C não tem espaço de nomes: o prefixo é o que evita colisão no link, torna o módulo de origem visível na revisão e permite localizar todos os usos por busca textual.
-3. **A unidade faz parte do nome** sempre que a grandeza tiver uma: `timeout_ms`, `corrente_ma`, `tensao_mv`, `angulo_decigrau`. Elimina uma classe inteira de defeito que nenhum analisador estático detecta, e custa nada.
-4. **Identificador reservado não se usa.** Nome começando com sublinhado duplo, ou com sublinhado seguido de maiúscula, é reservado para a implementação em qualquer escopo — inclusive guarda de inclusão, onde o erro é mais comum. `__MODULO__` é comportamento indefinido; a forma correta é `MODULO_H`.
-5. **O header expõe a interface, nunca a implementação**: sem definição de variável, sem corpo de função não `inline`, sem `#include` que só a implementação precisa. Guarda de inclusão em todo header.
-6. **Cada função pública tem contrato declarado no header**: o que ela faz, pré-condições, faixa válida de cada parâmetro com a unidade, aceitação ou não de ponteiro nulo, posse e tempo de vida de todo ponteiro recebido ou retornado, o contexto de execução permitido (tarefa, ciclo ou interrupção), e o significado de cada valor de retorno de erro. É o contrato que torna verificável, na revisão, a regra de validação da Seção *Defensividade* — e é o material que uma norma de safety vai exigir depois, escrito no momento em que custa pouco.
-7. **Sem número mágico.** Valor com significado é `const`, `enum` ou máscara nomeada; registrador é acessado por campos e máscaras com nome, não por literal hexadecimal no meio da expressão.
-8. **Função tem uma responsabilidade e cabe na tela.** Função que precisa de comentário de seção interna normalmente são duas funções.
-9. **Toda função tem protótipo** e o parâmetro vazio se escreve `(void)`.
-10. **Macro só onde função não serve.** Constante é `const` ou `enum`; cálculo é função (`static inline` quando o custo importar). Macro que sobrar é parametrizada com parênteses em cada uso do argumento e sem efeito colateral no argumento.
-11. **Sem `goto`**, exceto o salto único para um bloco de limpeza ao fim da própria função.
-12. **Código morto não fica no repositório.** Alternativa antiga vive no histórico do VCS, não comentada nem sob `#if 0`.
-13. **Um arquivo inclui primeiro o próprio header, depois os headers internos do projeto, por último a biblioteca padrão** — a ordem expõe cedo uma dependência ausente no próprio header. Caminho de include parte da raiz de includes do projeto, nunca com `../`; um header inclui diretamente todo tipo de que depende, em vez de contar com a ordem de inclusão de quem o usa.
-14. **Decisão de hardware, contorno (workaround) ou risco de segurança fica comentado no local**, com o motivo — não a implementação, que o código já mostra. Comentário que descreve uma decisão superada é removido na mesma mudança que a supera.
+1. **Um módulo = um `.c` + um `.h`**, com a responsabilidade declarada no topo do header. Módulo com estado, que tem ou pode vir a ter mais de uma instância, parte de `../templates/modulo-c.md`.
+2. **Todo símbolo público leva o prefixo do módulo** (`motor_ligar`, `MOTOR_ESTADO_PARADO`; ou `Motor_ligar` na forma de `templates/modulo-c.md`). C não tem espaço de nomes: o prefixo evita colisão no link e torna a origem visível na revisão e na busca textual. A convenção de caixa e o idioma dos identificadores são decisão do projeto, declarada no `AGENTS.md`.
+3. **A unidade faz parte do nome** sempre que a grandeza tiver uma: `timeout_ms`, `corrente_ma`, `tensao_mv`. Elimina uma classe de defeito que nenhum analisador detecta, a custo zero.
+4. **Identificador reservado não se usa.** Nome começando com dois sublinhados, ou sublinhado e maiúscula, é reservado à implementação — inclusive em guarda de inclusão: `__MODULO_H__` é comportamento indefinido; o correto é `MODULO_H`.
+5. **O header expõe interface, nunca implementação**: sem definição de variável, sem corpo de função não `inline`, sem `#include` que só a implementação usa. Guarda de inclusão em todo header.
+6. **Cada função pública tem contrato no header**, com os itens que se aplicam a ela e que a assinatura não deixa óbvios: o que faz, pré-condições, faixa e unidade de cada parâmetro, aceitação ou não de ponteiro nulo, posse e tempo de vida de ponteiro recebido ou retornado, contexto de execução permitido (tarefa, laço principal, interrupção) e o significado de cada retorno de erro. É o que torna a regra de validação verificável na revisão — e é o material que uma norma de safety vai exigir depois. Item que não se aplica é omitido, não preenchido com "—".
+7. **Sem número mágico.** Valor com significado é `const`, `enum` ou máscara nomeada; registrador é acessado por campos e máscaras com nome.
+8. **Função tem uma responsabilidade.** Função que precisa de comentário de seção interna costuma ser duas. O limite objetivo é o de complexidade, medido por sensor ([c-build-e-analise.md](c-build-e-analise.md), Seção *Sensores da linguagem*) — contar linhas pune tabela e `switch` de máquina de estado, que são longos e simples.
+9. **Toda função tem protótipo**; lista de parâmetros vazia é `(void)`.
+10. **Macro só onde função não serve.** Constante é `const` ou `enum`; cálculo é função (`static inline` quando o custo importar). Macro restante tem parênteses em cada uso do argumento e não tem efeito colateral no argumento.
+11. **Sem `goto`**, exceto o salto para um bloco único de limpeza no fim da própria função.
+12. **Código morto não fica no repositório** — nem comentado, nem sob `#if 0`. O histórico do VCS guarda a alternativa antiga.
+13. **O `.c` inclui o próprio header primeiro**: é o que prova que o header é autossuficiente. A ordem dos demais é estilo do projeto. Um header inclui diretamente tudo de que depende, e caminho de include parte das raízes declaradas no build, sem `../`.
+14. **Decisão de hardware, contorno ou risco fica comentado no local**, com o motivo — não a implementação, que o código já mostra. Comentário que descreve decisão superada sai na mesma mudança que a supera.
+15. **Header incluível por C++** (teste em host costuma ser C++): `extern "C"` sob `#ifdef __cplusplus` no próprio header, em vez de exigir a adaptação de quem inclui; e nenhum identificador que seja palavra reservada de C++ (`this`, `new`, `class`).
 
-## 5. Defensividade e comportamento indefinido
+## 4. Defensividade e comportamento indefinido
 
-1. **Toda função pública valida o que vem de fora do módulo**: ponteiro nulo, índice fora de faixa, valor de enum inválido, tamanho incoerente.
-2. **Retorno de erro é verificado ou explicitamente descartado** com comentário do motivo. Função que pode falhar retorna estado de erro; não sinaliza falha por valor mágico dentro da faixa útil, nem mistura no mesmo retorno status permanente, quantidade processada e código de erro. A causa da falha é propagada ou convertida explicitamente para quem chama, nunca descartada em silêncio.
-3. **Erro tem um tipo próprio** (enum de resultado) usado por todo o projeto, em vez de cada módulo inventar sua convenção.
-4. **Suposição sobre o alvo vira verificação de compilação.** Tamanho de estrutura persistida ou trafegada, largura de tipo, potência de dois de um buffer circular, coerência entre um enum e o tamanho de uma tabela: tudo isso se afirma com asserção estática (`_Static_assert`, ou macro equivalente em C99). Falha em tempo de compilação custa segundos; a mesma suposição quebrada em campo custa uma visita.
-5. **`assert` de execução é para invariante de programação**, verificada em desenvolvimento; nunca para validar entrada externa, que é sempre tratada em produção.
-6. **Nada de comportamento indefinido como recurso**: deslocamento maior que a largura do tipo, estouro de sinalizado, leitura de variável não inicializada, ponteiro para objeto fora de escopo, violação de aliasing. O compilador é livre para otimizar em cima disso, e o sintoma aparece longe da causa.
-7. **`volatile` marca o que muda fora do fluxo do programa** — registrador de periférico, variável escrita por interrupção. `volatile` **não** é mecanismo de sincronização: acesso compartilhado precisa de seção crítica ou primitiva do RTOS ([firmware.md](firmware.md), Seção *Interrupções*).
+1. **Função pública valida o que vem de fora do módulo**: ponteiro nulo, índice fora de faixa, enum inválido, tamanho incoerente.
+2. **Retorno de erro é verificado, ou descartado explicitamente** com `(void)` e o motivo. Função que pode falhar retorna estado de erro; não sinaliza falha por valor mágico dentro da faixa útil nem mistura status, quantidade e código de erro no mesmo retorno. A causa da falha é propagada ou convertida explicitamente para quem chama, nunca perdida.
+3. **Erro tem um tipo próprio** (enum de resultado) usado pelo projeto inteiro, em vez de cada módulo inventar sua convenção.
+4. **Suposição sobre o alvo vira verificação de compilação**: tamanho de estrutura persistida ou trafegada, largura de tipo, potência de dois de buffer circular, coerência entre enum e tamanho de tabela — tudo por `_Static_assert` (ou macro equivalente em C99). Falha de compilação custa segundos; a mesma suposição quebrada em campo custa uma visita.
+5. **`assert` de execução é para invariante de programação**, verificada em desenvolvimento; nunca para validar entrada externa, que é tratada sempre, também em produção.
+6. **Comportamento indefinido nunca é recurso**: deslocamento maior ou igual à largura do tipo, estouro de sinalizado, variável não inicializada, ponteiro para objeto fora de escopo, violação de aliasing. O compilador otimiza em cima disso, e o sintoma aparece longe da causa.
+7. **`volatile` marca o que muda fora do fluxo do programa** — registrador, variável escrita por interrupção. `volatile` **não** sincroniza: acesso compartilhado precisa de seção crítica ou primitiva do RTOS ([firmware.md](firmware.md), Seção *Interrupções*).
 
-## 6. Adoção do MISRA
+## 5. Compilação condicional
 
-MISRA C é um subconjunto seguro da linguagem, publicado como documento normativo. O texto das regras **não é reproduzido aqui**: é protegido por direito autoral e só citável a partir do documento oficial. O que este guia define é o processo de adoção.
-
-1. **Adoção declarada, não presumida.** O projeto registra em ADR: a edição adotada, o conjunto de regras adotado e a ferramenta que verifica. Projeto que "segue MISRA" sem esses três fatos não segue.
-2. **Adesão parcial é legítima quando é explícita.** O padrão deste guia é o subconjunto pragmático: as regras de categoria *Mandatory* na íntegra, as *Required* de maior retorno, as *Advisory* como recomendação. O que ficou de fora é listado, com o motivo.
-3. **Desvio é registrado, não silenciado.** Todo desvio de regra adotada tem registro com: identificador da regra, local, motivo técnico, análise do risco e quem aprovou. Supressão inline sem esse registro é violação do processo, mesmo que a ferramenta fique verde.
-4. **Aplica-se a código novo primeiro.** Código legado entra pelo ratchet da Seção *Sensores da linguagem* e é migrado quando a área for tocada por outra tarefa — nunca por mutirão, que gera diff irrevisável ([engenharia.md](engenharia.md), Seção *Convenções de branch e commit*).
-5. **Código de terceiro é isolado e declarado fora do escopo**: HAL do fabricante, RTOS, biblioteca de comunicação. Fronteira explícita e validação dos dados que atravessam.
-6. **As regras deste arquivo não substituem o documento.** Boa parte das seções de tipos, memória, interface e defensividade coincide com o espírito do MISRA e é adotável hoje, sem o documento e sem ferramenta — mas conformidade declarada exige o documento e a ferramenta.
-
-## 7. Sensores da linguagem e adoção incremental
-
-Ao conjunto mínimo de sensores de [engenharia.md](engenharia.md), este domínio acrescenta:
-
-1. **Compilador em modo estrito** — o analisador estático mais barato que existe, e o primeiro a adotar.
-2. **Analisador estático dedicado** rodando no mesmo comando de build ou num alvo próprio do build (`make analyze`, alvo do CMake), não como passo manual.
-3. **Orçamento de memória** verificado a cada build (Seção *Toolchain, build e identificação*, regra 6).
-4. **Complexidade limitada por sensor**, onde houver ferramenta: função acima do limite declarado falha o build ou entra na lista de dívida. Complexidade alta não é defeito, mas é o melhor indicador barato de onde os defeitos vão aparecer — tipicamente uma máquina de estado implícita pedindo para virar explícita ([firmware.md](firmware.md), Seção *Máquinas de estado*).
-5. **Teste em host é sensor, não luxo.** A lógica independente de hardware compila e roda no PC; onde ainda não houver suíte, isso é registrado como verificação pendente — nunca declarado como coberto por teste manual em bancada. O que o torna possível é a separação de camadas ([firmware.md](firmware.md), Seção *Camadas e portabilidade*).
-6. **Teste em host isola casos por caminho nominal, limite e falha**, usa fake/stub/mock só nas fronteiras que o exigem, e verifica o efeito colateral esperado — não apenas o valor de retorno. Onde o teste compila um header C a partir de um executor em C++, o header cobre a própria inclusão a partir dos dois lados (`extern "C"` sob `#ifdef __cplusplus`), em vez de depender de quem o inclui fazer essa adaptação.
-
-**Ordem de adoção num projeto sem nada:** warnings do compilador → analisador aberto na configuração padrão → conjunto de regras normativo → conformidade completa. Pular etapa produz milhares de achados e abandono da ferramenta.
-
-**Como impedir achado novo sem parar para limpar o legado.** O mecanismo depende de quem emite o achado, e confundir os dois é o erro comum:
-
-- **Compilador — ratchet, não linha de base.** `-Werror` é tudo-ou-nada: não existe baseline nativo. Duas formas de avançar, combináveis: *por escopo*, aplicando `-Werror` apenas aos alvos já limpos e deixando o legado em `-Wall -Wextra` sem promoção (em CMake isso é por alvo, com `target_compile_options`, nunca uma flag global); e *por regra*, promovendo uma categoria de cada vez (`-Werror=implicit-function-declaration`, `-Werror=return-type`, `-Werror=conversion`) à medida que ela zera no projeto inteiro. Escopo ou regra promovida nunca regride: essa é a catraca.
-- **Analisador estático — linha de base de supressões.** Os achados existentes são congelados num arquivo versionado, e o sensor falha apenas em achado fora dele. A alternativa equivalente é analisar somente as linhas alteradas pelo diff da tarefa.
-- **A linha de base é indexada por arquivo e regra, nunca por número de linha.** Congelar `driver.c:412` faz com que qualquer inserção acima reabra o achado antigo e mascare o novo; em uma semana o sensor vira ruído e é desligado.
-- **A dívida é medida e encolhe.** O tamanho atual da linha de base — e a lista de alvos ainda sem `-Werror` — é registrado no projeto e revisitado; catraca sem número não é catraca, é adiamento.
-- **Achado suprimido tem justificativa no próprio local** e, quando for desvio de regra adotada, o registro da Seção *Adoção do MISRA*.
-
-## 8. Compilação condicional
-
-1. **Toda opção de compilação vale `0` ou `1`**, testada com `#if (OPCAO == 1)` — nunca `#ifdef` isolado para uma opção que também precisa poder estar explicitamente desligada, porque `#ifdef` não distingue "desligada" de "nunca definida".
-2. **Macros de seleção de variante ou produto são mutuamente exclusivas.** Definir mais de uma no mesmo build é erro de configuração; rejeite a combinação por asserção estática quando a linguagem permitir, ou por checagem no próprio script de build.
-3. **O `#if` fica perto do código ou do `#include` que ele condiciona.** Condicional distante do trecho que afeta obriga quem revisa a procurar o efeito em outro lugar do arquivo.
-4. **Toda alteração num trecho condicional revisa os dois ramos** — o incluído e o excluído — em cada opção ou variante que ele afeta. Revisar só o ramo que o build atual usa deixa o outro silenciosamente quebrado até a próxima vez que for compilado.
+1. **Opção de compilação vale `0` ou `1`** e é testada com `#if (OPCAO == 1)` — `#ifdef` não distingue "desligada" de "esquecida". Com `-Wundef` o compilador acusa a opção não definida.
+2. **Macros de seleção de variante ou produto são mutuamente exclusivas**; combinação inválida é rejeitada por asserção estática ou pelo script de build.
+3. **O `#if` fica perto do código que condiciona.** Condicional distante obriga quem revisa a procurar o efeito em outro lugar.
+4. **Alteração num trecho condicional revisa os dois ramos**, em cada variante afetada — e, onde houver CI, compila todas as variantes. O ramo que o build atual não usa quebra em silêncio.
 
 ## Checklist deste domínio
 
-- [ ] O build declara padrão e toolchain fixada, e não introduziu aviso novo no escopo já promovido.
-- [ ] O firmware identifica sua própria versão e commit; o orçamento de flash e RAM foi verificado.
 - [ ] Tipos de largura explícita onde a largura importa; nenhuma conversão implícita entre sinalizado e não sinalizado.
-- [ ] Nenhuma alocação dinâmica, recursão ou arranjo de tamanho variável foi introduzida.
-- [ ] Símbolos públicos levam prefixo do módulo, grandezas levam unidade no nome, e nenhum número mágico entrou no diff.
-- [ ] Toda função pública tem contrato no header, valida entrada externa e tem retorno de erro verificado ou descartado com motivo.
-- [ ] Nenhum código morto, comentado ou sob `#if 0` entrou no diff.
-- [ ] Desvio de regra adotada tem registro com motivo, risco e aprovação.
-- [ ] Os sensores da linguagem rodaram; o analisador não acusa achado fora da linha de base.
-- [ ] Toda condicional de compilação alterada teve os dois ramos revisados, e nenhuma macro de variante foi combinada com outra incompatível.
+- [ ] Nenhuma alocação dinâmica, recursão ou VLA introduzida.
+- [ ] Símbolos públicos com prefixo do módulo, grandezas com unidade no nome, nenhum número mágico.
+- [ ] Função pública nova ou alterada tem contrato no header, valida entrada externa e tem retorno de erro verificado.
+- [ ] Nenhum identificador reservado, código morto ou `#if 0` entrou no diff.
+- [ ] Suposição sobre o alvo foi afirmada por asserção estática.
+- [ ] Toda condicional de compilação alterada teve os dois ramos revisados.

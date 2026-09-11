@@ -1,113 +1,141 @@
 # Domínio: engenharia e qualidade
 
-Cobre como uma mudança entra no repositório e como se verifica que ela está correta: branching e revisão, mensagens de commit, rastreabilidade, verificações automáticas, tratamento de segredos, e o processo de conduzir a mudança do início ao fim — inclusive quando ela mexe na estrutura, num submódulo ou num arquivo gerado. Vale para qualquer contribuição, feita por pessoa ou por agente. O que é específico do trabalho com agentes está em [ia.md](ia.md); o que é específico da documentação, em [../manutencao.md](../manutencao.md).
+Cobre como uma mudança entra no repositório e como se verifica que ela está correta: branching e revisão, commits e rastreabilidade, sensores, segredos, dependências, e o processo de conduzir a mudança do início ao fim — inclusive quando ela mexe na estrutura, num submódulo ou num arquivo gerado. Vale para qualquer contribuição, de pessoa ou de agente. O que é específico de agentes está em [ia.md](ia.md); o que é específico da documentação, em [../manutencao.md](../manutencao.md).
 
-**Leia este arquivo quando:** for iniciar, revisar ou integrar uma mudança; for preencher o `docs/workflow.md` do projeto; ou for decidir quais verificações rodar antes de concluir uma tarefa.
+**Aplica-se a:** todo projeto.
+**Leia quando:** for iniciar, revisar ou integrar uma mudança; preencher o `docs/workflow.md`; ou decidir quais verificações rodar antes de concluir.
 
 ## 1. Workflow de revisão
 
-Dois cenários cobrem qualquer projeto: o fluxo local, sempre disponível, e o fluxo com plataforma de Pull/Merge Request. As regras abaixo são completas e valem como estão. O que vale é o conceito — branch de trabalho separada, branch base declarado, diff contra o ponto comum, cópias de trabalho independentes para paralelismo; os comandos aparecem na notação do Git por ser a mais difundida, como ilustração. Projeto em outro VCS registra os comandos equivalentes no seu `docs/workflow.md`, sem que a regra mude. Onde o VCS não tiver branch local barata, o equivalente pode não ser um comando e sim outro mecanismo de isolamento — cópia de trabalho separada, changelist, shelve; o que permanece obrigatório é o princípio: trabalho isolado do tronco, revisão por diff antes de integrar, e integração feita manualmente por uma pessoa.
+O que vale é o conceito — mudança revisável pelo diff antes de chegar ao tronco, integração decidida por uma pessoa, e trabalho de agente sempre isolado. Os comandos estão na notação do Git como ilustração; projeto em outro VCS registra os equivalentes no seu `docs/workflow.md`, sem que a regra mude.
+
+**Branch curta, não obrigatória para tudo.** Branch de vida curta (horas ou poucos dias) é o padrão, porque é o que torna a revisão por diff possível e barata. Branch longa é o problema real: acumula divergência e vira merge irrevisável. Commit direto no tronco é legítimo quando o projeto o declara no `docs/workflow.md` — mantenedor único, mudança trivial — e os sensores rodam antes. Trabalho de agente nunca vai direto ao tronco: a branch é o que torna a ação dele reversível ([ia.md](ia.md), Seção *Limites de execução do agente*).
 
 ### Cenário 1 — Local, sem plataforma de PR/MR
 
-1. Toda tarefa roda em uma branch separada, criada a partir de um branch base declarado, nunca direto na branch principal ou nas branches de integração.
-2. Ao terminar, a revisão é feita pelo diff completo da branch contra esse base: `git diff <base>...<branch>`. A forma com três pontos compara contra o merge-base, então mudanças que entraram no base depois não poluem o diff.
-3. O merge é sempre um comando executado manualmente por um humano. Um agente nunca executa o merge, mesmo que sugira que a mudança está pronta.
-4. Um diretório de trabalho local só tem uma branch ativa por vez. Para trabalhar em mais de uma branch em paralelo localmente, use `git worktree` — cada worktree é uma pasta separada com sua própria branch ativa, a partir do mesmo repositório: `git worktree add -b <branch> ../<pasta> <base>`.
+1. A tarefa roda numa branch criada a partir de um branch base declarado — salvo a exceção de commit direto que o projeto tiver declarado para pessoas.
+2. A revisão é feita pelo diff completo contra esse base: `git diff <base>...<branch>`. Os três pontos comparam contra o merge-base, então o que entrou no base depois não polui o diff.
+3. O merge é sempre um comando executado por uma pessoa. Um agente nunca executa o merge, mesmo que a mudança pareça pronta.
+4. Para trabalhar em mais de uma branch em paralelo, use `git worktree add -b <branch> ../<pasta> <base>` — cada worktree é uma pasta com sua própria branch, sobre o mesmo repositório, e os commits dela já são visíveis no diretório principal para revisão e merge.
 
-Como as worktrees compartilham o mesmo repositório, os commits feitos nelas já estão visíveis no diretório principal no instante em que são criados: revisão (`git log --oneline <base>..<branch>`, `git diff <base>...<branch>`) e merge acontecem normalmente a partir dele, sem remoto no meio. Quatro ressalvas práticas:
+Ressalvas de worktree:
 
-- a mesma branch não pode estar ativa em duas worktrees — o VCS recusa, e isso é proteção, não limitação;
-- só o histórico é compartilhado: cada worktree começa sem artefatos de build e sem arquivos ignorados ou não versionados (configuração local, ambiente virtual, dependências baixadas), e projetos de IDE com caminho absoluto podem precisar de reimportação;
-- submódulos não vêm populados — inicialize-os dentro da worktree nova;
-- remova a worktree pelo comando próprio (`git worktree remove`), nunca apagando a pasta na mão, para não deixar metadado órfão.
+- a mesma branch não pode estar ativa em duas worktrees — o Git recusa, e isso é proteção;
+- só o histórico é compartilhado: cada worktree começa sem artefatos de build, arquivos ignorados e configuração local;
+- submódulos — inclusive `docs/guide/` — não vêm populados: rode `git submodule update --init` na worktree nova;
+- remova com `git worktree remove`, nunca apagando a pasta na mão;
+- worktree isola o repositório, não o ambiente: trabalhos paralelos continuam disputando toolchain, portas e hardware de gravação/depuração.
 
-Worktree isola o repositório, não o ambiente: trabalhos em paralelo continuam disputando toolchain, portas, dispositivos e hardware de gravação/depuração.
-
-Enquanto o projeto não tiver uma plataforma de PR/MR efetivamente adotada, o Cenário 1 é o vigente, e o `docs/workflow.md` registra o Cenário 2 como o fluxo previsto para quando ela existir — nunca como se já valesse.
+Enquanto o projeto não tiver plataforma de PR/MR efetivamente em uso, o Cenário 1 é o vigente.
 
 ### Cenário 2 — Plataforma com PR/MR
 
-1. Cada tarefa declara explicitamente o **branch base**: o branch de onde a branch de trabalho nasce e para onde o PR/MR é aberto de volta.
-2. A branch da tarefa é criada a partir desse base, nunca de outro branch não especificado.
-3. Ao concluir, o PR/MR é aberto de volta para o mesmo base — nunca direto para a branch principal, a menos que ela seja explicitamente o base da tarefa.
-4. Revisão humana é obrigatória antes do merge, e o merge continua sendo uma ação humana.
-5. Vários trabalhos podem correr em paralelo, cada um com sua branch e seu PR/MR independentes.
+1. Cada tarefa declara o **branch base**: origem da branch de trabalho e destino do PR/MR.
+2. A branch da tarefa nasce desse base, nunca de outro não especificado.
+3. O PR/MR volta para o mesmo base — nunca direto para a branch principal, a menos que ela seja o base declarado.
+4. Revisão humana obrigatória antes do merge; o merge é ação humana.
 
-## 2. Convenções de branch e commit, e rastreabilidade
+## 2. Branch, commit e rastreabilidade
 
-Estas convenções existem para que o diff seja revisável e para fechar a rastreabilidade **spec → commit → revisão**, que sem elas termina dentro da spec.
+Estas convenções existem para que o diff seja revisável e para fechar a cadeia **spec → commit → revisão**.
 
-1. **Uma tarefa, uma branch, um assunto.** Nome no formato `<tipo>/<assunto-curto>` em kebab-case, com os tipos: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`.
-2. **Assunto do commit no imperativo**, curto (alvo de 72 caracteres) e sem ponto final.
-3. **O corpo explica o porquê e o impacto**, não o que o diff já mostra. Commit sem corpo é aceitável apenas quando o assunto esgota a explicação.
-4. **Todo commit que implementa requisito cita o identificador** (`REQ-NNN`) e, quando houver, o ADR relacionado. O mesmo vale para a descrição do PR/MR.
-5. **Não misture assuntos no mesmo commit.** Reformatação em massa, renomeação de arquivos e mudança de comportamento vão em commits separados — misturá-los torna o diff irrevisável.
-6. **Histórico já compartilhado não é reescrito** sem combinação explícita entre quem trabalha nele.
-7. **Onde houver norma aplicável** (safety funcional, dispositivos médicos, aviônica), a rastreabilidade precisa ser **auditável**, e não apenas existir: o identificador do requisito aparece na spec, no commit, no teste e no registro de validação arquivado. É a mesma cadeia da regra 4, fechada nas duas pontas — e é barata enquanto está sendo escrita, cara quando alguém precisa reconstruí-la depois.
+1. **Uma branch, um assunto.** Nome `<tipo>/<assunto-curto>` em kebab-case; os tipos padrão são `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, e o projeto pode trocá-los no `docs/workflow.md`. O que importa é o nome dizer o assunto; a lista fixa só evita discussão.
+2. **Assunto do commit no imperativo**, até ~72 caracteres, sem ponto final. O idioma dos commits é decisão do projeto, declarada no `AGENTS.md`.
+3. **O corpo explica o porquê e o impacto**, não o que o diff já mostra. Commit sem corpo só quando o assunto esgota a explicação.
+4. **Commit que implementa requisito cita o identificador** (`REQ-<PREFIXO>-NNN`, `templates/spec.md`) e, quando houver, o ADR. O mesmo vale para a descrição do PR/MR. Com isso, `git log --grep REQ-UART-003` reconstrói a implementação de um requisito sem nenhuma tabela mantida à mão.
+5. **Não misture assuntos no mesmo commit.** Reformatação em massa, renomeação de arquivos e mudança de comportamento vão em commits separados.
+6. **Histórico compartilhado não é reescrito** sem combinação explícita entre quem trabalha nele.
+7. **Finais de linha são normalizados pelo repositório** (`.gitattributes`, por exemplo `* text=auto`), não pela configuração de cada máquina. Sem isso, um editor em Windows transforma um commit de uma linha num diff do arquivo inteiro.
+8. **Onde houver norma aplicável** (safety funcional, dispositivo médico), a rastreabilidade precisa ser **auditável**: o identificador aparece na spec, no commit, no teste e no registro de validação arquivado. É barata enquanto é escrita e cara quando precisa ser reconstruída.
 
 ## 3. Sensores e validação automática
 
-Uma **regra** é orientação prévia, consultada antes de agir; um **sensor** é verificação automática posterior, que roda depois da ação e detecta desvio. Regras reduzem a chance de erro; sensores detectam o erro que passou pela regra. Um projeto que só tem regras depende de todo mundo lembrar de tudo.
+Uma **regra** orienta antes de agir; um **sensor** verifica depois, automaticamente, e detecta o erro que passou pela regra. Projeto que só tem regras depende de todo mundo lembrar de tudo.
 
 Conjunto mínimo, em ordem crescente de custo:
 
 1. **Build** do módulo afetado.
 2. **Teste direcionado** à mudança, ampliando para a suíte conforme o risco.
 3. **Lint / análise estática** na configuração do próprio projeto.
-4. **Verificação de links relativos** da documentação — o que impede que uma migração de caminho quebre referências em silêncio. O verificador precisa **ignorar blocos de código cercados**: templates contêm links que só resolvem no projeto que os usa, e um verificador ingênuo transforma isso em ruído até alguém desligá-lo.
+4. **Links relativos da documentação** — o que impede que mover um arquivo quebre referências em silêncio. O conjunto fornece um verificador: `python docs/guide/tools/verificar.py`, que ignora blocos de código (templates contêm links que só resolvem no projeto que os usa).
 5. **Varredura de segredos** antes do commit.
 
 Regras de uso:
 
-- os sensores existentes são executados **antes** de declarar a tarefa concluída, e quem executou informa quais rodou;
-- sensor que não existe no projeto é registrado como verificação pendente, com o motivo — nunca simulado, nunca presumido como aprovado;
-- sensor que falha bloqueia a conclusão: o resultado é corrigir ou relatar, não seguir adiante;
-- onde o ambiente permitir, os sensores rodam automaticamente (hook local, verificação de pré-commit, pipeline). Sensor que depende de alguém lembrar não é sensor, é regra.
+- os sensores existentes rodam **antes** de declarar a tarefa concluída, e quem executou informa quais rodou;
+- sensor que não existe é registrado como verificação pendente, com o motivo — nunca simulado nem presumido aprovado;
+- sensor que falha bloqueia a conclusão: corrigir ou relatar, não seguir adiante;
+- onde o ambiente permitir, sensores rodam sozinhos (hook de pré-commit, pipeline). Sensor que depende de alguém lembrar é regra.
 
 ## 4. Segredos e dados sensíveis
 
-1. Credencial, chave, token, certificado privado ou dado pessoal nunca vão para o repositório — nem em código, nem em configuração versionada, nem em spec, ADR, exemplo de documentação ou log de execução colado num documento.
-2. O `.gitignore` (ou equivalente do VCS) faz parte do harness: mantê-lo correto é parte da tarefa que introduz um arquivo local sensível. No mínimo ele cobre artefatos de build, dependências instaladas, configuração local de máquina ou IDE, arquivos de ambiente e credenciais (`.env` e equivalentes) e saídas de ferramenta — e nunca serve de justificativa para manter um segredo real dentro da pasta do projeto.
-3. Documentação cita o **nome** da variável ou do parâmetro de configuração, nunca o valor.
-4. Se um segredo chegou ao histórico, **rotacione o segredo**. Remover o arquivo num commit seguinte não desfaz a exposição: o valor continua no histórico e em toda cópia já clonada.
-5. Dado de produção (log real, dump, base de clientes) não entra no repositório nem em exemplo de documentação; use dado sintético.
+1. Credencial, chave, token, certificado privado ou dado pessoal nunca vão para o repositório — nem em código, configuração, spec, ADR, exemplo ou log colado num documento.
+2. O `.gitignore` faz parte do harness: cobre no mínimo artefatos de build, dependências instaladas, configuração local de máquina ou IDE, arquivos de ambiente (`.env` e equivalentes) e saídas de ferramenta. Mantê-lo correto é parte da tarefa que introduz o arquivo local — e ele nunca justifica guardar um segredo real dentro da pasta do projeto.
+3. Documentação cita o **nome** da variável ou parâmetro, nunca o valor.
+4. Segredo que chegou ao histórico é **rotacionado**. Apagar num commit seguinte não desfaz a exposição: o valor continua no histórico e em todo clone.
+5. Dado de produção (log real, dump, base de clientes) não entra no repositório; use dado sintético.
 
 ## 5. Testes, comandos e dependências
 
-Use testes existentes como mecanismo de validação, não como especificação absoluta. Execute primeiro os testes mais direcionados, amplie a validação conforme o risco, não declare cobertura que não foi medida, registre validações manuais quando forem o mecanismo real do projeto.
-
-Documente somente comandos existentes e verificáveis (configuração, build, testes, lint, geração, empacotamento, execução, implantação), registrando diretório de execução, pré-requisitos, parâmetros, arquivos produzidos, efeitos colaterais e modo de validação quando relevante. Não transforme comandos inferidos em instruções oficiais. Dependências novas devem ser necessárias, confiáveis e versionadas de forma compatível; nomes incomuns devem ser verificados para evitar pacotes maliciosos ou typosquatting. Nenhum comando documentado deve conter credencial embutida.
+1. **Teste existente é mecanismo de validação, não especificação absoluta.** Rode primeiro o mais direcionado, amplie conforme o risco, não declare cobertura que não foi medida, e registre a validação manual quando ela for o mecanismo real do projeto.
+2. **Só se documenta comando que existe e foi executado**, com diretório, pré-requisitos e efeitos colaterais quando relevantes. Comando inferido não vira instrução oficial; nenhum comando documentado contém credencial.
+3. **Dependência nova precisa ser necessária, confiável e ter versão fixada.** Nome incomum é verificado contra o registro oficial antes de instalar — typosquatting e pacote inventado por agente são o mesmo ataque.
 
 ## 6. Processo de uma mudança
 
-1. **Classificar**: objetivo e critérios de sucesso, arquivos/módulos/produtos afetados, risco, se há código gerado/submódulo/dependência externa, se muda comportamento/arquitetura/build ou só documentação, validações disponíveis.
-2. **Obter contexto proporcional**: inspecione a estrutura relevante, leia documentação e configurações aplicáveis, identifique linguagem/plataforma/toolchain, rastreie interfaces e dependências afetadas, verifique o estado do VCS inicial. Pare de investigar quando houver evidência suficiente.
-3. **Implementar**: mudanças mínimas e coesas, preserve estilo e abstrações existentes, evite refatorações não relacionadas, atualize referências e imports ao mover arquivos, não introduza dependências sem justificar necessidade, versão e impacto.
-4. **Validar**: rode os sensores existentes, do mais específico ao mais amplo — teste direcionado, build do módulo, build do produto; para mudança apenas documental, inspeção do diff e verificação de links. Se uma validação não puder ser executada, registre o motivo e a verificação pendente.
-5. **Encerrar**: liste arquivos criados, modificados, movidos e removidos; resuma mudanças de comportamento ou estrutura; informe validações executadas e limitações; confirme que submódulos e áreas fora do escopo não foram alterados.
+Vale para pessoa e agente; o que o agente precisa observar a mais em cada etapa está em [ia.md](ia.md), Seção *Como o agente conduz uma tarefa*.
+
+1. **Entender**: objetivo e critério de sucesso, áreas afetadas, risco, se envolve código gerado, submódulo ou dependência externa, e quais validações existem. Leia o que se aplica à área (código, specs, ADRs, domínio), rastreie as interfaces afetadas e confira o estado inicial do VCS. Pare de investigar quando houver evidência suficiente.
+2. **Planejar na medida da mudança**: mudança trivial vai direto; mudança não trivial ganha um plano curto antes da primeira edição — arquivos, passos, como verificar; funcionalidade maior ganha spec ([specs.md](specs.md)).
+3. **Implementar em incrementos verificáveis**: cada incremento é uma alteração coesa seguida do sensor mais barato que a verifica. Erro encontrado logo depois de uma alteração pequena tem causa óbvia; o mesmo erro depois de vinte alterações vira investigação. Mudança mínima, no estilo e nas abstrações existentes, sem refatoração não relacionada; ao mover arquivos, atualize todas as referências.
+4. **Validar**: sensores do mais específico ao mais amplo; para mudança só documental, inspeção do diff e verificação de links. O que não puder ser executado é registrado com o motivo.
+5. **Documentar**: uma passada, com o comportamento já estável e verificado ([../manutencao.md](../manutencao.md), Seção *Quando e como atualizar*).
+6. **Encerrar com o resumo da mudança** (abaixo).
+
+### Resumo da mudança
+
+Toda mudança termina com um resumo curto, escrito para quem vai revisar sem ter acompanhado o trabalho. É a resposta final do agente, a descrição do PR/MR e a base do corpo do commit — o mesmo texto, não três.
+
+```markdown
+**Principais mudanças**
+- <o que mudou e por quê, em termos de comportamento, estrutura ou regra — não uma lista de arquivos>
+
+**Decisões e suposições**
+- <o que foi decidido ou suposto sem confirmação, para quem revisa validar; omita se não houver>
+
+**Verificação**
+- Executado: <comandos e resultado>
+- Não executado: <o que faltou e por quê>
+
+**Pendências e riscos**
+- <o que ficou para depois, o que pode quebrar, o que foi visto fora do escopo; omita se não houver>
+
+**Arquivos**
+- Criados / alterados / movidos / removidos: <lista curta; em mudança grande, agrupe por pasta>
+```
+
+O resumo diz a verdade sobre o estado: o que não foi verificado aparece como não verificado, e o que ficou pela metade aparece como pendente. "Pronto" sem verificação declarada não é pronto.
 
 ## 7. Modificações estruturais
 
-Antes de mover ou dividir componentes: identifique responsabilidade e proprietário lógico de cada área, mapeie dependências de entrada e saída, localize imports, scripts, configurações, pipelines e documentação afetados, verifique caminhos codificados e ferramentas que dependem da estrutura atual, preserve compatibilidade ou defina uma migração explícita, e atualize o `ARCHITECTURE.md` se limites ou responsabilidades mudarem.
+Antes de mover ou dividir componentes: identifique a responsabilidade de cada área, mapeie dependências de entrada e saída, localize imports, scripts, configurações, pipelines e documentação afetados, verifique caminhos codificados, preserve compatibilidade ou declare a migração, e atualize o `ARCHITECTURE.md` se limites mudarem.
 
-Evite: mover arquivos sem atualizar consumidores; criar camadas sem responsabilidade própria; duplicar utilitários; misturar infraestrutura, domínio e integração sem necessidade; reorganizar código apenas para acomodar uma IA ou uma IDE.
+Evite: mover arquivos sem atualizar consumidores; criar camada sem responsabilidade própria; duplicar utilitários; reorganizar código apenas para acomodar uma IA ou uma IDE.
 
 ## 8. Submódulos e projetos externos
 
-Trate todo submódulo (ou equivalente do VCS em uso) como projeto externo e independente por padrão: identifique-os pela configuração de submódulos do VCS, não altere código, configuração ou documentação dentro deles, não crie `AGENTS.md`, `ARCHITECTURE.md` ou Skills dentro deles, não assuma permissão para enviar alterações, documente apenas a interface e a dependência observáveis pelo projeto principal. Só modifique um submódulo quando isso for solicitado explicitamente, tratando a mudança como trabalho separado.
+Todo submódulo é projeto externo por padrão — inclusive `docs/guide/`. Não altere código, configuração ou documentação dentro dele, não crie `AGENTS.md`, `ARCHITECTURE.md` ou Skills nele, não assuma permissão para enviar alterações, e documente só a interface que o projeto principal usa. Mudança num submódulo acontece apenas quando pedida explicitamente, como trabalho separado no repositório dele.
 
 ## 9. Arquivos gerados
 
-Antes de editar um arquivo, determine se ele é gerado (cabeçalhos indicando geração, templates, scripts de exportação, diretórios de saída, regras de build). Quando houver gerador: altere a fonte ou o template correto, execute o processo oficial, revise todas as saídas — inclusive as remoções — e valide os consumidores afetados. Não simule manualmente a saída de um gerador indisponível sem autorização; registre a limitação.
+Antes de editar um arquivo, determine se ele é gerado (cabeçalho de geração, diretório de saída, regra de build). Havendo gerador: altere a fonte, execute o processo oficial, revise todas as saídas — inclusive remoções — e valide os consumidores. Não simule à mão a saída de um gerador indisponível; registre a limitação.
 
 ## Checklist deste domínio
 
-- [ ] A mudança rodou em branch separada, a partir de um base declarado.
-- [ ] Commits seguem a Seção *Convenções de branch e commit* e citam requisito ou ADR quando aplicável.
+- [ ] A mudança seguiu o fluxo do `docs/workflow.md`; se feita por agente, em branch própria.
+- [ ] Commits têm um assunto só, explicam o porquê e citam requisito ou ADR quando aplicável.
 - [ ] Os sensores existentes foram executados; os ausentes, registrados como pendência.
-- [ ] Nenhum segredo, credencial ou dado de produção entrou no diff ou na documentação.
-- [ ] Nenhum comando inferido foi documentado como oficial.
-- [ ] O encerramento listou arquivos alterados, validações executadas e limitações.
-- [ ] Nenhum submódulo foi alterado sem solicitação explícita.
-- [ ] Arquivo gerado foi alterado pela fonte, nunca à mão.
+- [ ] Nenhum segredo, credencial ou dado de produção entrou no diff.
+- [ ] Nenhum comando inferido foi documentado como oficial; dependência nova tem versão fixada.
+- [ ] A mudança terminou com o resumo no formato da Seção *Processo de uma mudança*, incluindo o que não foi verificado.
+- [ ] Nenhum submódulo foi alterado sem pedido explícito; arquivo gerado foi alterado pela fonte.

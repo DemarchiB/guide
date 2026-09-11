@@ -1,63 +1,87 @@
 # Manutenção do próprio conjunto
 
-Cobre o que só quem **edita este conjunto** precisa saber: como uma alteração chega aos projetos que já adotaram, quando um domínio novo se justifica, para onde vai um trecho que não cabe mais onde está, e quanto cada arquivo pode pesar. Nada aqui é lido para trabalhar num projeto — é por isso que este conteúdo saiu do índice, que é pago em toda tarefa de todo projeto.
+Cobre o que só quem **edita este conjunto** precisa saber: que tipo de conteúdo cabe aqui e onde, quando um domínio novo se justifica e qual o seu formato, como decidir o tamanho e a divisão dos arquivos, e como uma alteração chega aos projetos que já adotaram. Nada aqui é lido para trabalhar num projeto.
 
-**Leia este arquivo quando:** for criar, dividir ou remover um domínio; mover um trecho de um arquivo do conjunto para outro; ou propagar uma mudança aos projetos que já adotaram.
+**Leia este arquivo quando:** for acrescentar, dividir, mover ou remover conteúdo do conjunto, ou declarar o impacto de uma alteração.
 
-## 1. Identificação e propagação
+## 1. Que conteúdo entra, e onde
 
-Não há número de versão nem changelog neste conjunto. O VCS responde melhor, e de graça, as duas perguntas que eles responderiam:
+| Tipo | Onde | Carregado |
+| --- | --- | --- |
+| Ponto de entrada: precedência, regras invioláveis, roteamento | `PROJECT_GUIDE.md` | em toda tarefa |
+| Procedimento que atravessa projetos (adotar, estruturar, manter) | arquivo na raiz (`adocao.md`, `estrutura.md`, `manutencao.md`) | sob demanda |
+| Prática de um assunto técnico | um arquivo por domínio em `practices/` | quando o projeto declara o domínio e a tarefa o toca |
+| Formato de um documento ou arquivo de código recorrente | um arquivo por documento em `templates/` | ao criar aquele documento |
+| Sensor reutilizável | `tools/`, só biblioteca padrão da linguagem, sem instalação | executado, não lido |
 
-- **Que estado do conjunto este projeto adotou?** No submódulo, o commit fixado. Na cópia, o commit de origem, registrado numa linha do `AGENTS.md` do projeto — `git rev-parse --short HEAD` no clone do conjunto, no momento em que a cópia foi feita.
-- **O que mudou desde então?** `git diff <estado adotado>..main` no repositório do conjunto. Na cópia, esse mesmo diff; e comparar a pasta `docs/guide/` com o conjunto no commit adotado mostra de quebra se alguém editou a cópia, o que a regra proíbe.
+**Só entra o que vale para mais de um projeto.** Fato de um projeto — seu produto, seus comandos, a norma que ele adotou — mora nos documentos daquele projeto. Uma prática de linguagem ou plataforma (C embarcado, TypeScript, uma família de microcontroladores) é legítima aqui quando é o padrão de quem mantém o conjunto para todos os projetos daquele tipo; o domínio declara a quem se aplica e cada projeto decide se o adota.
 
-Um número de versão só carregaria informação se fosse decidido com cuidado a cada alteração e nunca esquecido. Na prática ele vira decoração que discorda do repositório — e um rótulo em que ninguém confia é pior do que rótulo nenhum, porque ainda custa a manutenção. Duas obrigações o substituem, e as duas são baratas porque acontecem no momento em que a informação existe:
+## 2. Antes de criar um domínio ou template
 
-1. **O corpo do commit declara o impacto para quem já adotou** sempre que uma regra mudar de sentido, um caminho canônico mudar ou a organização dos arquivos mudar. Uma linha — "quem já adotou precisa: …" — escrita onde não tem como divergir do diff que a acompanha. Alteração que não obriga ninguém a nada não gera linha nenhuma.
-2. **O conjunto é propagado inteiro**, nunca arquivo a arquivo: atualizar metade produz combinação que ninguém validou.
+Conteúdo novo nasce de repetição observada, não de lacuna percebida. Verifique nesta ordem:
 
-**Quando um arquivo do conjunto muda, os projetos que o adotaram reavaliam — não necessariamente atualizam.** Reavaliar é ler o diff e decidir. Ficar no estado atual é decisão legítima, e ela fica registrada no `AGENTS.md` do projeto ao lado do commit adotado; o que não é legítimo é o projeto não saber em que estado está.
+1. **Já existe?** Procure no conjunto inteiro (`grep -ri`). Se for caso particular de regra existente, refine a existente.
+2. **É um procedimento na voz de quem executa uma tarefa** (revisar, corrigir, liberar versão)? Então é Skill do projeto, que **aponta** para os domínios em vez de repetir suas regras.
+3. **Vale só para um projeto?** Então é documento daquele projeto.
+4. **Já foi praticado?** Convenção escrita antes do primeiro uso real é palpite com aparência de norma. Template, em especial, nasce quando o segundo documento real mostra a forma repetida.
 
-## 2. Antes de criar um domínio, descarte três alternativas
+Só o que sobrevive aos quatro entra. Não crie arquivo vazio "para o futuro".
 
-Domínio nasce de repetição observada, não de lacuna percebida — lista de tópicos que faltam é o antipadrão da árvore preenchida aplicado a este conjunto. Verifique nesta ordem:
+## 3. Formato de um domínio
 
-- **É reformulação de regras que já existem em outro domínio, na voz de quem executa uma tarefa específica?** Então é prompt de papel em `.agents/prompts/`, ou seção do `docs/workflow.md` do projeto — e ele **aponta** para os domínios em vez de repetir suas regras. Duas cópias da mesma regra divergem, e a partir daí ninguém sabe qual vale.
-- **Depende do produto, da linguagem, da ferramenta ou da norma adotada por um projeto?** Então é documento daquele projeto, não deste conjunto.
-- **Ainda não foi praticado em nenhum projeto real?** Então espere. Convenção escrita antes do primeiro uso é palpite com aparência de norma, e vira o arquivo que todos contornam. Um projeto só mostra uma solução; o que é geral só fica visível no segundo.
+```markdown
+# Domínio: <assunto>
 
-Só o que sobrevive aos três é domínio. O mesmo teste vale para um template novo: ele nasce quando o segundo documento real daquele tipo mostra qual é a forma repetida, não quando alguém percebe que a área existe sem template.
+<2-3 linhas: o que cobre e, explicitamente, o que fica de fora e onde está.>
 
-## 3. Para adicionar um domínio novo
+**Aplica-se a:** <tipo de projeto — "todo projeto", "código C para microcontrolador">
+**Leia quando:** <tarefas concretas que exigem este arquivo>
 
-1. **Só entra o que é geral.** Regra que depende da linguagem, do produto ou da norma adotada por um projeto pertence aos documentos daquele projeto.
-2. **Um arquivo por domínio** em `practices/`, no formato declarado na Seção *Domínios de prática* do índice, e listado na tabela de lá.
-3. **Templates novos** vão para `templates/`, um por documento, e entram no catálogo da Seção *Estrutura de arquivos do projeto* e na lista da Seção *Onde registrar uma informação* do índice.
-4. **Regra pertence a um domínio só.** Se parecer caso particular de regra existente em outro domínio, refine a existente em vez de duplicar.
-5. **Não crie o arquivo vazio.** Domínio só nasce quando há regras reais a escrever.
-6. **Declare o impacto no corpo do commit** se alguma regra mudou de sentido (Seção *Identificação e propagação*).
+## 1. <Tema>
 
-## 4. Orçamento de contexto
+1. **<Regra acionável e verificável, em negrito.>** <Porquê em uma ou duas frases.>
 
-Meça com `wc -m`, não em linhas: linha longa e linha curta pesam diferente, e um arquivo pode estar folgado no limite de linhas pesando o dobro de outro que parece maior. Rode a medição sob locale UTF-8 (`LC_ALL=C.UTF-8 wc -m arquivo.md`): fora dele, `wc -m` conta **bytes**, e em texto em português cada acento vira um caractere a mais — a diferença chega a 4% e já foi suficiente para dar um arquivo como estourado sem estar.
+## Checklist deste domínio
 
-- **O índice: teto firme de ~18.000 caracteres.** Ele é lido em toda tarefa, então cada caractere ali é pago em todas elas. Estourou, alguma coisa sai — e para onde, decide a regra de destino da Seção *Para onde vai um trecho que precisa sair*.
-- **Cada domínio: ~15.000 caracteres como gatilho de revisão**, não como tesoura. Domínios são carregados sob demanda, um ou dois por tarefa; o número não manda cortar texto, manda parar e decidir. As respostas legítimas são três: o domínio virou dois; parte dele é fato específico de projeto e vai para os documentos do projeto; ou há regra duplicada de outro domínio para eliminar. Encolher a prosa até a regra parar de se explicar não é uma delas.
-- **Documentos procedurais e templates não têm teto** — são lidos um por vez, e só por quem vai fazer aquela tarefa ou criar aquele documento.
+- [ ] <verificação que um revisor ou agente confere no diff>
+```
+
+Ao criar um domínio: acrescente a linha na tabela *Domínios de prática* do `PROJECT_GUIDE.md` (com "Aplica-se a" e "Leia quando"). Ao criar um template: acrescente-o ao catálogo de `estrutura.md` e, se ele muda onde algo é registrado, à tabela *Onde registrar uma informação*.
+
+## 4. Custo de contexto e divisão de arquivos
+
+Tamanho de arquivo não é, por si, um problema; o que custa é contexto lido sem necessidade. Por isso o conjunto não impõe limite numérico de caracteres ou linhas — um número fixo acaba cortando justificativa para caber, ou dividindo um assunto coeso, e o que ele mede não é o que importa. O que se aplica são dois critérios:
+
+- **O que é lido em toda tarefa é o mínimo possível.** Vale para o `PROJECT_GUIDE.md` e, nos projetos, para o `AGENTS.md`. Cada acréscimo passa pelo teste: *uma tarefa típica sairia errada sem isto?* Se só algumas tarefas precisam, o conteúdo vai para um arquivo lido sob demanda e o ponto de entrada ganha, no máximo, uma linha de roteamento. `python tools/verificar.py` informa o tamanho desses arquivos para que o crescimento fique visível na revisão, sem reprovar nada.
+- **O que é lido sob demanda é dividido por coesão, não por tamanho.** Um arquivo reúne o que uma tarefa comum precisa ler junto. É sinal para dividir quando tarefas frequentes usam só uma parte dele — como escrever código C, que não precisa das regras de configurar o build —, e sinal para juntar quando dois arquivos são quase sempre lidos em conjunto. Arquivo longo e coeso fica inteiro.
+
+Nos dois casos, o que se corta primeiro é duplicação, exemplo redundante e adjetivo — nunca o porquê de uma regra, que é o que impede que ela seja contornada na primeira vez que incomodar.
 
 ## 5. Para onde vai um trecho que precisa sair
 
-**O destino se escolhe pelo assunto, nunca pelo espaço livre.** Empurrar um trecho para o arquivo que tem folga é o jeito mais fácil de caber no orçamento e o jeito mais rápido de tornar o conjunto ilegível: quem procura o assunto não vai olhar ali. Se o trecho não pertence a nenhum arquivo existente, ele **vira arquivo próprio** — o conjunto admite documentos procedurais novos ao lado de `adocao.md` e `manutencao.md`, e um arquivo a mais lido sob demanda custa menos que um parágrafo no lugar errado. Arquivo novo assim entra na árvore da Seção *Estrutura de arquivos do projeto* e na tabela *Como usar* do índice.
+**O destino se escolhe pelo assunto, nunca por onde há menos texto.** Trecho empurrado para o arquivo mais curto não é encontrado por quem procura o assunto. Se nenhum arquivo existente é o dono, o trecho vira arquivo próprio e entra na tabela de roteamento do `PROJECT_GUIDE.md`.
 
-**O que nunca é cortado para caber:** o motivo de uma regra. Regra sem o porquê é contornada na primeira vez que incomoda, e isso custa mais do que os caracteres economizados. Corte duplicação, exemplo redundante e adjetivo — nunca a justificativa.
+**Uma regra tem um dono só.** O segundo lugar recebe um ponteiro — arquivo e **título** da seção, nunca só o número, que muda quando se insere uma seção. A exceção é o texto que um template contém para o projeto copiar: ali a repetição é conteúdo gerado, não regra duplicada.
 
-**Uma regra tem um dono só.** Antes de escrever uma regra num arquivo, procure se ela já existe em outro: o conjunto inteiro cabe numa busca textual. Quando a mesma regra parecer necessária em dois lugares, o segundo lugar recebe um **ponteiro**, não uma segunda redação — duas redações da mesma regra divergem na primeira alteração, e a partir daí ninguém sabe qual vale. A exceção é o texto que os templates **contêm** para o projeto copiar: ali a repetição é conteúdo gerado, não regra duplicada.
+## 6. Identificação e propagação
 
-## 6. Checklist de alteração do conjunto
+O estado que um projeto adotou é o commit do submódulo, e o que mudou desde então é o `git log` do conjunto (`adocao.md`, Seção *Atualizar o conjunto num projeto*). Não há número de versão nem arquivo de changelog: para um consumidor que fixa um commit, uma versão só acrescentaria um rótulo a manter em sincronia com o repositório.
 
-- [ ] A regra alterada tem um dono só, e os outros arquivos apontam para ele em vez de repeti-la.
-- [ ] Nenhum fato específico de um projeto entrou em arquivo do conjunto.
-- [ ] O índice continua abaixo do teto e cada domínio tocado continua abaixo do gatilho (`wc -m`).
-- [ ] Referências cruzadas citam o arquivo e o **título** da seção, nunca só o número.
-- [ ] Documento ou domínio novo entrou na árvore, no catálogo e na tabela "Como usar" do índice.
-- [ ] Mudança de sentido de regra, de caminho canônico ou de organização tem o impacto declarado no corpo do commit.
+O que o changelog daria — saber o que fazer ao atualizar — vem de um **trailer no commit**, escrito no momento em que a informação existe e impossível de divergir do diff que o acompanha. Todo commit que exige ação de quem já adotou — regra que mudou de sentido, caminho ou título de seção que mudou, arquivo renomeado ou removido — termina com um trailer por ação, em linhas seguidas no último parágrafo da mensagem:
+
+```text
+Impacto-adocao: trocar referências a practices/x.md, Seção "Y", por practices/z.md
+Impacto-adocao: remover docs/index.md do projeto, se não tiver conteúdo próprio
+```
+
+Alteração que não obriga ninguém a nada não leva trailer. O nome sem acento é deliberado: trailers são filtráveis por ferramentas de linha de comando (`git log --format='%(trailers:key=Impacto-adocao)'`), e acento no nome da chave é fonte de erro de digitação e de codificação.
+
+Commits são atômicos por assunto, como em qualquer projeto: mudança de sentido de regra não vai junto com reformatação.
+
+## 7. Checklist de alteração do conjunto
+
+- [ ] `python tools/verificar.py` passa: links e títulos de seção citados.
+- [ ] A regra alterada tem um dono só; os outros arquivos apontam para ele.
+- [ ] Nenhum fato específico de um projeto entrou.
+- [ ] Arquivo novo, renomeado ou removido está refletido no `PROJECT_GUIDE.md`, em `estrutura.md` e no `README.md`.
+- [ ] O commit tem um trailer `Impacto-adocao` para cada ação exigida de quem já adotou, quando aplicável.

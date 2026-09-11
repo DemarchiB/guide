@@ -1,98 +1,104 @@
-# Template: spec em EARS (`docs/specs/<nome-da-spec>.md`)
+# Template: spec (`docs/specs/<nome>.md`)
 
-**Quando usar:** antes de implementar uma funcionalidade nova ou um comportamento não trivial. Preceder a implementação por uma spec reduz ambiguidade antes de escrever código, torna o comportamento esperado testável e dá ao revisor um contrato claro para comparar com o resultado.
+**Quando usar:** antes de implementar uma funcionalidade que atenda aos critérios de [practices/specs.md](../practices/specs.md), Seção *Quando escrever uma spec*. Como criar, seguir e manter a spec também está lá; este arquivo é o formato.
+
+**Papel:** descrever o comportamento verificável de **uma funcionalidade**, enquanto ela existir. Não descreve como implementar (design-doc) nem por que uma decisão foi tomada (ADR).
 
 **Padrões EARS** — todo requisito usa um dos cinco:
 
 - Ubíquo: "O `<sistema>` deve `<comportamento>`"
 - Evento: "Quando `<gatilho>`, o `<sistema>` deve `<resposta>`"
 - Estado: "Enquanto `<estado>`, o `<sistema>` deve `<resposta>`"
-- Erro/comportamento indesejado: "Se `<condição>`, então o `<sistema>` deve `<resposta>`"
-- Recurso opcional: "Onde `<feature presente>`, o `<sistema>` deve `<resposta>`"
+- Comportamento indesejado: "Se `<condição>`, então o `<sistema>` deve `<resposta>`"
+- Opcional: "Onde `<recurso presente>`, o `<sistema>` deve `<resposta>`"
 
-**Convenções:** um arquivo por spec, nome em kebab-case sem acento (`deteccao-overflow-uart.md`); identificadores `REQ-NNN` únicos dentro da spec; campo `Status` no cabeçalho (`rascunho` → `aprovada` → `implementada` → `substituída por <spec>`). Uma spec implementada não é apagada: vira o registro do que foi acordado. O commit que implementa um requisito cita o `REQ-NNN` correspondente. Ferramentas com modo de planejamento nativo devem escrever o resultado neste formato e local, não em formato ou pasta proprietários.
+**Convenções:**
+
+- Nome do arquivo em kebab-case sem acento (`deteccao-overflow-uart.md`).
+- **Identificador único no projeto inteiro:** `REQ-<PREFIXO>-NNN`, com um prefixo curto em maiúsculas por spec, declarado no cabeçalho (`REQ-UART-001`). Commit cita só o identificador; se dois arquivos tivessem `REQ-001`, a citação não diria qual. Número nunca é reaproveitado: requisito removido fica na lista marcado `(removido)`.
+- `Status`: `rascunho` → `aprovada` → `implementada`; ou `substituída por <spec>`; ou `obsoleta`, só em projeto com rastreabilidade auditável.
+- *Tarefas* existe só enquanto há trabalho em andamento; spec `implementada` não tem essa seção.
+- A rastreabilidade até o commit vem das mensagens de commit (`git log --grep REQ-UART-001`), não de uma tabela: o hash de um commit não pode ser escrito dentro dele mesmo, e tabela de hashes mantida à mão sempre atrasa.
+- Ferramenta com modo de planejamento próprio escreve o resultado neste formato e neste local, não em pasta proprietária.
+- Seção sem conteúdo é omitida — "Design", por exemplo, só existe quando houver decisão de arquitetura envolvida.
 
 ````markdown
 # Spec: <título curto>
 
-- **Status:** rascunho | aprovada | implementada | substituída por <spec>
+- **Status:** rascunho | aprovada | implementada | substituída por <spec> | obsoleta
 - **Data:** <AAAA-MM-DD da última atualização>
+- **Prefixo:** <PREFIXO>
 
 ## Contexto
-<O quê e por quê, 2-3 linhas. Cite a evidência (código, configuração ou decisão) que motiva a spec.>
+<O quê e por quê, em 2-3 linhas, citando a evidência que motiva a spec.>
 
-## Requisitos (EARS)
-REQ-001 (<padrão>): <requisito>
-REQ-002 (<padrão>): <requisito>
+## Requisitos
+- REQ-<PREFIXO>-001 (<padrão EARS>): <requisito>
+- REQ-<PREFIXO>-002 (<padrão EARS>): <requisito>
 
 ## Critérios de aceite
-- [ ] <critério testável>
-- [ ] <critério testável>
+- [ ] <critério verificável, com o requisito que comprova>
 
-## Tasks
-Checklist sequencial, cada tarefa referenciando o(s) requisito(s) que atende.
-Marque `[x]` conforme cada uma for executada, uma a uma.
+## Tarefas
+<Só enquanto houver trabalho em andamento. Cada tarefa entrega e verifica
+seus requisitos, com o teste junto; marque [x] depois de verificada.>
+- [ ] 1. <incremento> e seu teste (REQ-<PREFIXO>-NNN)
+- [ ] 2. <incremento> e seu teste (REQ-<PREFIXO>-NNN)
 
-- [ ] 1. <tarefa> (REQ-NNN)
-- [ ] 2. <tarefa> (REQ-NNN)
-
-## Rastreabilidade
-| Requisito | Implementação | Teste | Commit / PR |
-| --- | --- | --- | --- |
-| REQ-001 | `<arquivo ou módulo>` | `<teste>` | `<hash ou PR>` |
+## Verificação
+| Requisito | Implementação | Teste |
+| --- | --- | --- |
+| REQ-<PREFIXO>-001 | `<arquivo ou módulo>` | `<teste, ou "pendente: motivo">` |
 
 ## Fora de escopo
 <O que esta spec explicitamente não cobre.>
 
 ## Restrições
-<Memória, timing, norma de codificação, variante de produto, conformidade regulatória se aplicável.>
+<Memória, tempo, norma, variante de produto — quando houver.>
 
 ## Design
-<Link para o ADR correspondente, quando a spec envolver decisão de arquitetura.
-Não duplique o conteúdo do ADR aqui; omita esta seção se não houver decisão envolvida.>
+<Link para o ADR ou design-doc. Omita a seção se não houver decisão envolvida.>
 ````
 
 ## Exemplo preenchido (ilustrativo)
+
+Spec já implementada: por isso não tem a seção *Tarefas*. Durante a implementação ela tinha, por exemplo, `- [x] 1. Detecção de overflow e teste (REQ-UART-001)`.
 
 ```markdown
 # Spec: Driver UART com detecção de overflow
 
 - **Status:** implementada
 - **Data:** 2026-03-14
+- **Prefixo:** UART
 
 ## Contexto
-O driver de UART atual não sinaliza quando o buffer de recepção enche,
-causando perda silenciosa de bytes em rajadas de dados.
+O driver de UART não sinaliza quando o buffer de recepção enche, e bytes
+se perdem em silêncio em rajadas de dados (ver `src/drivers/uart.c`).
 
-## Requisitos (EARS)
-REQ-001 (Evento): Quando o buffer RX atingir 90% de ocupação, o driver deve sinalizar overflow via flag.
-REQ-002 (Estado): Enquanto overflow estiver ativo, o driver deve rejeitar novos bytes recebidos.
-REQ-003 (Erro): Se a paridade de um byte for inválida, então o driver deve descartar o byte e incrementar um contador de erro.
+## Requisitos
+- REQ-UART-001 (Evento): Quando o buffer RX atingir 90% de ocupação, o driver deve sinalizar overflow.
+- REQ-UART-002 (Estado): Enquanto o overflow estiver sinalizado, o driver deve descartar novos bytes recebidos.
+- REQ-UART-003 (Comportamento indesejado): Se a paridade de um byte for inválida, então o driver deve descartar o byte e incrementar o contador de erro de paridade.
+- REQ-UART-004 (Evento): Quando `uart_limpar_overflow` for chamada, o driver deve limpar a sinalização de overflow.
 
 ## Critérios de aceite
-- [x] Testável via mock de UART, sem hardware físico
-- [x] Não deve alocar memória dinamicamente
-- [x] Flag de overflow deve ser limpa apenas por chamada explícita de reset
+- [x] Cada requisito tem teste em host com mock de UART, sem hardware.
+- [x] Nenhuma alocação dinâmica introduzida.
 
-## Tasks
-- [x] 1. Implementar detecção de overflow (REQ-001)
-- [x] 2. Implementar rejeição de bytes durante overflow (REQ-002)
-- [x] 3. Implementar contador de erro de paridade (REQ-003)
-- [x] 4. Escrever testes para cada item acima
-
-## Rastreabilidade
-| Requisito | Implementação | Teste | Commit / PR |
-| --- | --- | --- | --- |
-| REQ-001 | `src/drivers/uart.c` | `test/test_uart_overflow.c` | `a1b2c3d` |
-| REQ-002 | `src/drivers/uart.c` | `test/test_uart_overflow.c` | `a1b2c3d` |
-| REQ-003 | `src/drivers/uart.c` | `test/test_uart_parity.c` | `d4e5f6a` |
+## Verificação
+| Requisito | Implementação | Teste |
+| --- | --- | --- |
+| REQ-UART-001 | `src/drivers/uart.c` | `test/test_uart_overflow.c` |
+| REQ-UART-002 | `src/drivers/uart.c` | `test/test_uart_overflow.c` |
+| REQ-UART-003 | `src/drivers/uart.c` | `test/test_uart_paridade.c` |
+| REQ-UART-004 | `src/drivers/uart.c` | `test/test_uart_overflow.c` |
 
 ## Fora de escopo
-Mudança de baud rate não faz parte desta spec.
+Mudança de baud rate.
 
 ## Restrições
-RAM disponível para o buffer: 256 bytes. Deve compilar sem warning na análise estática do projeto.
+Buffer RX de 256 bytes. Sem aviso novo na análise estática do projeto.
 
 ## Design
-Ver docs/decisions/ADR-0001-driver-uart-overflow.md
+[ADR-0003](../decisions/ADR-0003-buffer-circular-uart.md)
 ```

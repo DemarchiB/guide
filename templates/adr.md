@@ -7,14 +7,14 @@
 - envolve alternativas descartadas que alguém vai perguntar "por que não X" no futuro;
 - muda um limite, dependência ou responsabilidade descrito no `ARCHITECTURE.md`.
 
-**Quando não registrar:** escolhas locais, reversíveis ou já cobertas pelas convenções de código do projeto. Consulte `docs/decisions/` antes de uma mudança que toque uma decisão já registrada.
+**Quando não registrar:** escolhas locais, reversíveis ou já cobertas pelas convenções. Desvio de uma regra deste conjunto que atenda a algum critério acima também é ADR (`PROJECT_GUIDE.md`, Seção *Precedência*).
 
-**Convenções:** um arquivo por decisão, numeração sequencial nunca reaproveitada, `Status` e `Data` obrigatórios. **Um ADR nunca é apagado nem reescrito quando a decisão muda**: o antigo passa a `substituído por ADR-NNNN` e o novo registra `substitui ADR-NNNN`. É esse par de campos que distingue decisão vigente de decisão histórica — sem ele, a pasta vira arquivo morto em que decisões velhas e válidas têm a mesma aparência.
+**Convenções:** um arquivo por decisão, numeração sequencial de quatro dígitos nunca reaproveitada, `Status` e `Data` obrigatórios. Proposta recusada que atenda aos critérios também fica registrada, com `Status: rejeitado` — é ela que responde "por que não fizemos X" da próxima vez que alguém propuser X. **Um ADR nunca é apagado nem reescrito quando a decisão muda**: o antigo passa a `substituído por ADR-NNNN` e o novo registra `substitui ADR-NNNN`. É esse par de campos que distingue decisão vigente de decisão histórica — sem ele, a pasta vira arquivo morto em que decisões velhas e válidas têm a mesma aparência.
 
 ```markdown
 # ADR-NNNN: <título curto>
 
-- **Status:** proposto | aceito | substituído por ADR-NNNN
+- **Status:** proposto | aceito | rejeitado | substituído por ADR-NNNN
 - **Data:** <AAAA-MM-DD>
 - **Substitui:** <ADR-NNNN, ou "—">
 
@@ -56,6 +56,6 @@ Adotar FreeRTOS para esse módulo, com uma task por periférico.
   neste módulo específico.
 
 ## Consequências
-Aumento de ~8KB de flash pelo kernel do RTOS. Ganho de isolamento entre
+Aumento de ~8 KB de flash pelo kernel do RTOS. Ganho de isolamento entre
 periféricos e testabilidade de cada task separadamente.
 ```

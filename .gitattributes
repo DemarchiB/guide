@@ -1,0 +1,4 @@
+# Finais de linha normalizados: o diff mostra só mudança real, e a contagem de
+# caracteres do orçamento não varia entre Windows e Linux.
+* text=auto eol=lf
+*.py text eol=lf

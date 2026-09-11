@@ -1,72 +1,78 @@
 # Manutenção documental
 
-Cobre como a documentação de um projeto se mantém coerente ao longo do tempo: de onde vem o fato que ela registra, o que se exige das áreas que não têm template, como o texto é revisado e o que se confere ao terminar. O processo de conduzir uma mudança — classificar, validar, encerrar — é de [practices/engenharia.md](practices/engenharia.md); aqui ficam só as regras documentais.
+Cobre como a documentação de um projeto se mantém verdadeira: de onde vem o fato que ela registra, como se declara o que ainda não foi verificado, quando e como o texto é atualizado, e o que se confere ao terminar. Onde cada documento mora é assunto de [estrutura.md](estrutura.md); o processo de conduzir uma mudança é de [practices/engenharia.md](practices/engenharia.md).
 
-**Leia este arquivo quando:** for criar, mover, renomear ou remover um documento; reorganizar a estrutura documental; documentar uma área a partir de evidência; ou encerrar uma mudança que alterou a documentação.
+**Leia este arquivo quando:** for documentar uma área a partir do código, revisar documentação existente, ou encerrar uma mudança que alterou a estrutura documental.
 
 ## 1. Princípios
 
-1. O repositório é a fonte de verdade.
-2. Conhecimento permanente é versionado em formatos simples e acessíveis.
-3. A documentação reflete o projeto; o projeto não é reorganizado apenas para atender a uma ferramenta ou agente.
-4. Documentos, diretórios, planos e Skills não são criados apenas para completar uma estrutura idealizada.
+1. **O repositório é a fonte de verdade.** Regra, arquitetura, comando e decisão vivem em arquivo versionado — nunca só em memória de agente, histórico de conversa, configuração de IDE ou arquivo local.
+2. **A documentação reflete o projeto**; o projeto não é reorganizado para atender a uma ferramenta ou agente.
+3. **Documentação desatualizada é instrução errada.** Para um agente, o que está escrito é o que vale; um documento velho faz mais estrago do que um documento ausente.
+4. **Cada fato tem um dono.** O segundo lugar que precisa dele recebe um link, não uma segunda redação — duas redações divergem na primeira alteração.
 
-O papel de cada documento — o que ele é e o que ele não é — está no template correspondente, listado no catálogo da Seção *Estrutura de arquivos do projeto* do índice. Não há uma segunda descrição aqui: template é quem define forma e responsabilidade do documento que gera.
+## 2. Fontes de evidência
 
-## 2. Áreas sem template
-
-Quatro áreas não têm template e são de formato livre. O que se exige delas é o mínimo abaixo — e um template só nasce quando o segundo documento real da área mostrar qual é a forma repetida.
-
-- **`docs/design-docs/`**: designs, princípios e decisões de funcionamento que exigem mais explicação do que o mapa arquitetural, mas sem a rigidez formal de um ADR. Mínimo: propósito, a alternativa que foi descartada e por quê, e a data. Máquina de estado é a exceção: tem template (`templates/fsm.md`).
-- **`docs/exec-plans/`**: trabalhos que exigem etapas, riscos, migração ou coordenação. Mínimo: objetivo, etapas em ordem, risco de cada uma e critério de conclusão. `active/` para o que está em execução, `completed/` para o concluído com valor histórico.
-- **`docs/product-specs/`**: comportamento vigente do produto, já consolidado e mantido enquanto esse comportamento existir. Mínimo: o formato de `templates/spec.md` sem as seções de trabalho (Tasks, Rastreabilidade), já que não há implementação pendente.
-- **`docs/generated/`**: exclusivamente artefatos produzidos automaticamente. Mínimo: fonte, gerador e condições de regeneração identificados no próprio arquivo ou num README da pasta.
-
-## 3. Independência de ferramenta
-
-A documentação principal usa formatos amplamente acessíveis: Markdown, YAML quando necessário, scripts versionados, arquivos de configuração mantidos pelo próprio projeto. Configurações específicas de ferramentas (as de uma IDE, por exemplo) podem coexistir como camadas de adaptação, mas não são a única fonte de regras, arquitetura, comandos ou decisões. Não dependa exclusivamente de memória de um agente, histórico de conversas, prompts privados, regras exclusivas de uma IDE ou arquivos locais não versionados.
-
-O caso mais frequente disso hoje são os arquivos de contexto que cada ferramenta de IA espera com nome próprio: a regra de como conviver com eles sem duplicar o `AGENTS.md` está em [practices/ia.md](practices/ia.md).
-
-## 4. Fontes de evidência
-
-Antes de documentar ou alterar uma área, procure evidências nesta ordem, adaptando ao projeto:
+Antes de documentar ou alterar uma área, procure evidência nesta ordem:
 
 1. código-fonte e interfaces públicas;
 2. arquivos de build, dependências e configuração;
 3. testes e validações executáveis;
-4. README e documentação versionada;
+4. documentação versionada e ADRs vigentes (considerando o `Status`);
 5. scripts operacionais e automações;
-6. histórico de decisões explicitamente registrado (ADRs, considerando o `Status` de cada um);
-7. comportamento observado e reproduzível.
+6. comportamento observado e reproduzível.
 
-Quando fontes divergirem: registre a divergência, determine qual fonte governa o comportamento atual, evite atualizar documentação com uma conclusão não comprovada, e solicite decisão quando a correção exigir conhecimento externo ao repositório.
+Quando fontes divergirem: registre a divergência, determine qual fonte governa o comportamento atual, não atualize a documentação com uma conclusão não comprovada, e peça decisão quando a correção exigir conhecimento externo ao repositório.
 
-## 5. Manutenção do texto
+## 3. Estado provisório
 
-Atualize a documentação na mesma mudança quando houver alteração em propósito ou escopo, comandos e pré-requisitos, arquitetura, limites ou dependências, comportamento especificado, workflows especializados, formatos gerados, riscos e restrições operacionais.
+Nenhum documento fica bloqueado por falta de fato confirmado, e nenhum buraco é preenchido por suposição. O fato pendente é declarado na própria linha:
 
-Ao revisar: remova fatos obsoletos, preserve conteúdo ainda correto, substitua duplicações por links, diferencie fatos de decisões e de hipóteses, verifique links e caminhos, mantenha o texto conciso — cortando duplicação e adjetivo, nunca a justificativa de uma regra.
+- `<a definir>` — ainda não há escolha feita;
+- `<a verificar: motivo>` — há expectativa razoável, ainda não confirmada.
 
-## 6. Checklist de mudança documental
+Comando que ninguém rodou entra como `<a verificar>`, nunca como oficial. A marcação sai na mesma mudança que confirma o fato.
 
-- [ ] `AGENTS.md` continua curto, funciona como índice e registra qual estado do conjunto o projeto adotou.
-- [ ] `ARCHITECTURE.md` permanece de alto nível e continua único no projeto.
-- [ ] Documentos criados partiram do template correspondente, ou pertencem a uma área sem template e cumprem o mínimo da Seção *Áreas sem template*.
-- [ ] Não existe arquivo `TEMPLATE.md` (ou equivalente) duplicando um template do conjunto.
-- [ ] Skills possuem nome, diretório e frontmatter válidos.
-- [ ] Specs seguem a notação EARS, têm `Status` e critérios de aceite verificáveis.
-- [ ] ADRs têm `Status` e `Data`, registram alternativas e consequências, e os superados apontam para o substituto.
-- [ ] Prompts de papel referenciam o harness global e não o substituem.
-- [ ] Links relativos resolvem corretamente, incluindo após qualquer migração de caminho.
-- [ ] Arquivos gerados e suas fontes estão identificados.
-- [ ] Fatos ainda não confirmados aparecem com marcação de estado provisório.
-- [ ] Nenhum documento do conjunto de convenções recebeu conteúdo específico do projeto.
+**Seção sem conteúdo.** Seção prevista no template cujo conteúdo ainda não existe é **omitida** — o template continua dizendo onde ela entra quando o conteúdo surgir, e uma linha "nenhum até o momento" repetida em toda sessão de agente é custo sem informação. A exceção são campos que o template declara obrigatórios: esses ficam, com a marcação acima.
 
-## 7. Antipadrões
+## 4. Quando e como atualizar
 
-Evite: documentação criada apenas para preencher uma árvore; `AGENTS.md` longo duplicando todo o repositório; arquitetura baseada em suposição não registrada; comandos hipotéticos apresentados como oficiais; specs sem critério de aceite verificável; ADR para decisões triviais ou reversíveis; ADR reescrito ou apagado quando a decisão muda, em vez de substituído; arquivos de template espalhados pelo projeto duplicando os do conjunto; arquivo de domínio criado vazio "para o futuro"; a mesma regra repetida em dois lugares com redações diferentes; arquivo de contexto de ferramenta com uma cópia do `AGENTS.md` em vez de um ponteiro; fato específico de um projeto incorporado a um arquivo do conjunto.
+Atualize a documentação **na mesma mudança** que alterar: propósito ou escopo, comandos e pré-requisitos, arquitetura, limites ou dependências, comportamento especificado, workflows de Skills, formatos gerados, riscos e restrições.
 
-## 8. Critérios de sucesso
+**"Na mesma mudança" quer dizer no mesmo commit ou PR, não a cada edição.** Enquanto a implementação está em andamento o comportamento ainda muda: documentar a cada passo reescreve o mesmo texto várias vezes, gasta contexto e deixa um diff que não estabiliza. A documentação afetada é atualizada **uma vez, depois que o comportamento está implementado e verificado**, antes de encerrar. Durante o trabalho, o progresso vai para onde ele pertence — as tarefas da spec ou o plano, marcadas em marcos.
 
-A organização documental está adequada quando uma pessoa ou agente sem histórico prévio consegue: entender o propósito do projeto; encontrar o mapa arquitetural; localizar comandos e pré-requisitos reais; reconhecer limites, riscos e dependências externas; encontrar specs, ADRs e planos quando existirem, distinguindo decisão vigente de histórica; localizar Skills e prompts de papel; saber em qual arquivo do conjunto uma regra está descrita; criar um documento novo no formato correto sem procurar exemplos fora do repositório; saber quais verificações rodar e o que fazer quando falham; distinguir fonte manual de artefato gerado; modificar o projeto sem depender de conhecimento privado; validar e comunicar a mudança de forma reproduzível.
+Duas exceções, ambas porque o documento é **entrada** do trabalho, não registro dele: a spec é escrita e aprovada antes de implementar; e, se a implementação mostrar que a spec está errada, o trabalho para e a spec é corrigida primeiro ([practices/specs.md](practices/specs.md), Seção *Seguir uma spec*).
+
+Ao escrever ou revisar:
+
+- remova o obsoleto, preserve o que continua correto, troque duplicação por link;
+- diferencie fato, decisão e hipótese;
+- escreva instrução concreta e verificável ("rode `cmake --build --preset debug`"), não intenção genérica ("garanta a qualidade");
+- não escreva o que o agente descobre sozinho lendo a árvore ou o manifesto — visão geral do repositório em arquivo carregado em toda sessão aumenta custo sem melhorar resultado ([practices/ia.md](practices/ia.md), Seção *Harness e economia de contexto*);
+- corte duplicação e adjetivo, nunca a justificativa de uma regra: regra sem porquê é contornada na primeira vez que incomoda.
+
+## 5. Checklist de mudança documental
+
+- [ ] Todo documento novo partiu do template, ou pertence a uma área sem template e cumpre o mínimo de `estrutura.md`, Seção *Áreas sem template*.
+- [ ] `AGENTS.md` continua curto, declara os domínios aplicáveis e os desvios, e só lista comandos verificados.
+- [ ] `ARCHITECTURE.md` continua de alto nível e único no projeto.
+- [ ] Specs têm `Status`, requisitos com identificador único no projeto e critérios de aceite verificáveis.
+- [ ] ADRs têm `Status` e `Data`; os superados apontam para o substituto e nenhum foi reescrito.
+- [ ] Skills passam na verificação de frontmatter, e adaptadores de ferramenta não duplicam conteúdo.
+- [ ] Links relativos resolvem — inclusive depois de mover arquivos (`python docs/guide/tools/verificar.py`).
+- [ ] Fato não confirmado aparece com marcação de estado provisório.
+- [ ] Nenhum arquivo de `docs/guide/` foi alterado e nenhuma cópia de template ficou solta no projeto.
+
+## 6. Antipadrões
+
+- Árvore preenchida: pasta, documento ou Skill criado para completar a estrutura.
+- `AGENTS.md` longo, com visão geral do repositório, instrução genérica ou cópia de outros documentos.
+- Arquivo de instrução de uma ferramenta específica com cópia do `AGENTS.md`, ou criado para ferramenta que ninguém usa no projeto.
+- Comando hipotético apresentado como oficial; arquitetura baseada em suposição não marcada.
+- Spec sem critério de aceite verificável; ADR para decisão trivial ou reversível; ADR reescrito em vez de substituído.
+- A mesma regra escrita em dois lugares com redações diferentes.
+- Fato específico de um projeto incorporado a um arquivo do conjunto.
+
+## 7. Critério de sucesso
+
+A documentação está adequada quando uma pessoa ou agente sem histórico prévio consegue, só com o repositório: localizar comandos reais e rodá-los; saber quais regras se aplicam e onde estão; encontrar specs, ADRs e planos distinguindo vigente de histórico; criar um documento novo no formato certo; saber quais verificações rodar e o que fazer quando falham; e concluir uma mudança sem depender de conhecimento privado.
