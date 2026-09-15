@@ -10,9 +10,10 @@ Cobre o que só quem **edita este conjunto** precisa saber: que tipo de conteúd
 | --- | --- | --- |
 | Ponto de entrada: precedência, regras invioláveis, roteamento | `PROJECT_GUIDE.md` | em toda tarefa |
 | Procedimento que atravessa projetos (adotar, estruturar, manter) | arquivo na raiz (`adocao.md`, `estrutura.md`, `manutencao.md`) | sob demanda |
-| Prática de um assunto técnico | um arquivo por domínio em `practices/` | quando o projeto declara o domínio e a tarefa o toca |
+| Prática de um assunto técnico | um arquivo em `practices/` | quando o projeto declara o domínio e a tarefa o toca |
 | Formato de um documento ou arquivo de código recorrente | um arquivo por documento em `templates/` | ao criar aquele documento |
 | Sensor reutilizável | `tools/`, só biblioteca padrão da linguagem, sem instalação | executado, não lido |
+| Mapa arquitetural e limites de um projeto | `ARCHITECTURE.md` do projeto | quando a tarefa cruza componentes, interfaces, variantes ou dependências |
 
 **Só entra o que vale para mais de um projeto.** Fato de um projeto — seu produto, seus comandos, a norma que ele adotou — mora nos documentos daquele projeto. Uma prática de linguagem ou plataforma (C embarcado, TypeScript, uma família de microcontroladores) é legítima aqui quando é o padrão de quem mantém o conjunto para todos os projetos daquele tipo; o domínio declara a quem se aplica e cada projeto decide se o adota.
 

@@ -8,6 +8,7 @@ Uso (da raiz do repositório):
 Verifica:
   links     links relativos em Markdown apontam para arquivos existentes
             (blocos de código e código inline são ignorados);
+  includes  diretivas #[[file:...]] apontam para arquivos existentes;
   skills    frontmatter de .agents/skills/*/SKILL.md segue a especificação
             Agent Skills; adaptadores em diretórios de ferramenta
             (.<ferramenta>/skills/<nome>/SKILL.md) têm name e description
@@ -15,8 +16,10 @@ Verifica:
   secoes    (só no conjunto) toda citação "Seção *Título*" corresponde a um
             título existente.
 
-Também informa o tamanho, em caracteres, dos arquivos carregados em toda
-sessão (AGENTS.md do projeto e PROJECT_GUIDE.md) — informativo, sem limite.
+Também informa, em caracteres, os arquivos permanentes e os AGENTS.md
+condicionais encontrados por caminho. Gitlinks declarados em .gitmodules
+ficam fora da varredura: são projetos externos, não documentação do
+projeto consumidor.
 
 Sai com código 1 se houver qualquer problema. Só biblioteca padrão, Python 3.8+.
 """
@@ -28,7 +31,8 @@ from pathlib import Path
 
 IGNORAR_DIRS = {".git", "node_modules", "build", "out", "dist", ".venv", "venv", "__pycache__"}
 
-LINK_RE = re.compile(r"!?\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)")
+LINK_RE = re.compile(r"!?\[[^\]]*\]\(\s*<?([^\)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)")
+INCLUDE_RE = re.compile(r"#\[\[file:([^\]\r\n]+)\]\]")
 INLINE_CODE_RE = re.compile(r"(`+)(.+?)\1")
 SECAO_RE = re.compile(r"Seç(?:ão|ões)\s+\*([^*]+)\*")
 TITULO_RE = re.compile(r"^#{1,6}\s+(.*?)\s*#*\s*$")
@@ -39,13 +43,39 @@ def ler(caminho):
     return caminho.read_text(encoding="utf-8").replace("\r\n", "\n")
 
 
+def normalizar_relativo(caminho):
+    caminho = str(caminho).replace("\\", "/")
+    while caminho.startswith("./"):
+        caminho = caminho[2:]
+    return caminho.rstrip("/")
+
+
+def caminhos_gitlink(raiz):
+    """Lê somente os caminhos de submódulos declarados no manifesto local."""
+    manifesto = raiz / ".gitmodules"
+    if not manifesto.is_file():
+        return []
+    caminhos = []
+    for linha in ler(manifesto).split("\n"):
+        m = re.match(r"^\s*path\s*=\s*(.+?)\s*$", linha)
+        if m:
+            caminhos.append(normalizar_relativo(m.group(1)))
+    return caminhos
+
+
+def ignorado(rel, caminhos):
+    rel = normalizar_relativo(rel)
+    return any(rel == caminho or rel.startswith(caminho + "/") for caminho in caminhos)
+
+
 def arquivos_md(raiz, ignorar):
+    ignorar = [normalizar_relativo(i) for i in ignorar]
     for p in sorted(raiz.rglob("*.md")):
         partes = set(p.relative_to(raiz).parts[:-1])
         if partes & IGNORAR_DIRS:
             continue
         rel = p.relative_to(raiz).as_posix()
-        if any(rel == i or rel.startswith(i.rstrip("/") + "/") for i in ignorar):
+        if ignorado(rel, ignorar):
             continue
         yield p
 
@@ -79,6 +109,20 @@ def verificar_links(raiz, ignorar):
                 destino = (arq.parent / caminho).resolve()
                 if not destino.exists():
                     problemas.append(f"{arq.relative_to(raiz).as_posix()}:{n}: link quebrado -> {alvo}")
+    return problemas
+
+
+def verificar_includes(raiz, ignorar):
+    problemas = []
+    for arq in arquivos_md(raiz, ignorar):
+        for n, linha in enumerate(ler(arq).split("\n"), 1):
+            for alvo in INCLUDE_RE.findall(linha):
+                alvo = alvo.strip()
+                destino = (arq.parent / alvo).resolve()
+                if not destino.is_file():
+                    problemas.append(
+                        f"{arq.relative_to(raiz).as_posix()}:{n}: arquivo incluído não existe -> {alvo}"
+                    )
     return problemas
 
 
@@ -180,13 +224,29 @@ def verificar_skills(raiz):
     return problemas
 
 
-def tamanhos_sempre_carregados(raiz, ignorar):
-    alvos = [p for p in (raiz / "PROJECT_GUIDE.md", raiz / "docs" / "guide" / "PROJECT_GUIDE.md") if p.is_file()]
+def formatar_tamanhos(arquivos, raiz):
+    return [f"  {len(ler(a)):>6} {a.relative_to(raiz).as_posix()}" for a in arquivos]
+
+
+def tamanhos_sempre_carregados(raiz):
+    alvos = []
+    for candidato in (
+        raiz / "PROJECT_GUIDE.md",
+        raiz / "docs" / "guide" / "PROJECT_GUIDE.md",
+        raiz / "AGENTS.md",
+    ):
+        if candidato.is_file() and candidato not in alvos:
+            alvos.append(candidato)
+    return formatar_tamanhos(alvos, raiz)
+
+
+def tamanhos_agents_condicionais(raiz, ignorar):
+    alvos = []
     for arq in arquivos_md(raiz, ignorar):
         rel = arq.relative_to(raiz).as_posix()
-        if arq.name == "AGENTS.md" and not rel.startswith("docs/guide/"):
+        if arq.name == "AGENTS.md" and rel != "AGENTS.md":
             alvos.append(arq)
-    return [f"  {len(ler(a)):>6} {a.relative_to(raiz).as_posix()}" for a in alvos]
+    return formatar_tamanhos(alvos, raiz)
 
 
 def main():
@@ -199,11 +259,19 @@ def main():
         sys.stdout.reconfigure(errors="replace")  # console Windows sem UTF-8
 
     raiz = Path(args.raiz).resolve()
+    ignorar = list(args.ignorar)
+    for caminho in caminhos_gitlink(raiz):
+        if caminho not in ignorar:
+            ignorar.append(caminho)
     e_conjunto = (raiz / "PROJECT_GUIDE.md").is_file() and (raiz / "practices").is_dir()
 
-    etapas = [("links", verificar_links(raiz, args.ignorar)), ("skills", verificar_skills(raiz))]
+    etapas = [
+        ("links", verificar_links(raiz, ignorar)),
+        ("includes", verificar_includes(raiz, ignorar)),
+        ("skills", verificar_skills(raiz)),
+    ]
     if e_conjunto:
-        etapas.append(("secoes", verificar_secoes(raiz, args.ignorar)))
+        etapas.append(("secoes", verificar_secoes(raiz, ignorar)))
 
     total = 0
     for nome, problemas in etapas:
@@ -212,10 +280,15 @@ def main():
         for p in problemas:
             print(f"  {p}")
         total += len(problemas)
-    tamanhos = tamanhos_sempre_carregados(raiz, args.ignorar)
+
+    tamanhos = tamanhos_sempre_carregados(raiz)
     if tamanhos:
         print("[tamanho do que é carregado em toda sessão, em caracteres — informativo]")
         print("\n".join(tamanhos))
+    condicionais = tamanhos_agents_condicionais(raiz, ignorar)
+    if condicionais:
+        print("[AGENTS condicionais por caminho, em caracteres — informativo]")
+        print("\n".join(condicionais))
     return 1 if total else 0
 
 

@@ -11,7 +11,7 @@
 - **Seção sem conteúdo é omitida**, exceto *Comandos*, que existe desde o dia zero, mesmo com marcações.
 - **Aninhamento:** o `AGENTS.md` de uma subárvore (componente, pasta com ferramental próprio) descreve só aquela pasta e nunca repete regra do raiz; o raiz aponta para ele no *Onde fica o quê*. As ferramentas carregam o mais próximo do arquivo alterado; ferramenta que não faz isso recebe o mesmo adaptador do raiz em cada pasta.
 - **Pastas que o agente não deve abrir** (saídas de build, binários) se resolvem no `.gitignore` ou na configuração de permissões da ferramenta, não com texto aqui.
-- Ferramenta que não lê `AGENTS.md` recebe um adaptador, nunca uma cópia ([practices/ia.md](../practices/ia.md), Seção *Arquivos de cada ferramenta*).
+- Ferramenta que não lê `AGENTS.md` recebe um adaptador, nunca uma cópia ([practices/ia-ferramentas.md](../practices/ia-ferramentas.md), Seção *Adaptadores de ferramenta*).
 
 ```markdown
 # AGENTS.md

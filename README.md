@@ -26,9 +26,9 @@ adocao.md                   montar o conjunto, documentos do dia zero, atualizar
 estrutura.md                onde cada informação mora no projeto
 manutencao.md               como a documentação do projeto se mantém verdadeira
 manutencao-do-conjunto.md   como este conjunto evolui
-practices/                  um arquivo por domínio (engenharia, ia, specs, c-embarcado, c-build-e-analise, firmware)
+practices/                  domínios e guias de apoio carregados sob demanda
 templates/                  um arquivo por documento que o projeto cria
-tools/verificar.py          verificador: links, seções citadas e frontmatter de Skills
+tools/verificar.py          verificador: links, includes, seções citadas, Skills e gitlinks externos
 ```
 
 ## Como evolui

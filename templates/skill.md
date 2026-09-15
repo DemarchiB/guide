@@ -1,10 +1,10 @@
 # Template: Skill (`.agents/skills/<nome>/SKILL.md`)
 
-**Quando criar:** quando um procedimento é recorrente, específico do projeto, difícil de acertar sem instruções e já foi executado com sucesso ao menos uma vez — revisar uma mudança, corrigir um defeito, analisar o mapa de memória, preparar uma liberação. Não crie Skill genérica para linguagem, Git ou ferramenta comum: o agente já sabe fazer isso, e cada Skill custa sua `description` em toda sessão. Como criar, testar o acionamento, usar e manter: [practices/ia.md](../practices/ia.md), Seção *Skills: criar, usar e manter*.
+**Quando criar:** quando um procedimento é recorrente, específico do projeto, difícil de acertar sem instruções e já foi executado com sucesso ao menos uma vez — revisar uma mudança, corrigir um defeito, analisar o mapa de memória, preparar uma liberação. Não crie Skill genérica para linguagem, Git ou ferramenta comum: o agente já sabe fazer isso, e cada Skill custa sua `description` em toda sessão. Como criar, testar o acionamento, usar e manter: [practices/ia-ferramentas.md](../practices/ia-ferramentas.md), Seção *Skills: criar, usar e manter*.
 
 **Papel:** procedimento carregado sob demanda. Segue o padrão aberto [Agent Skills](https://agentskills.io/specification): na partida o agente vê só `name` e `description` de cada Skill; o corpo é carregado quando a tarefa pede; arquivos auxiliares, só quando o corpo manda ler. É o mecanismo para o que antes seria um "prompt de papel". Skill aponta para as regras dos domínios em vez de repeti-las.
 
-**Local:** `.agents/skills/<nome>/`, o caminho neutro de ferramenta. Ferramenta que procura Skills em outro caminho recebe um adaptador — link ou stub com frontmatter idêntico —, nunca uma cópia ([practices/ia.md](../practices/ia.md), Seção *Arquivos de cada ferramenta*).
+**Local:** `.agents/skills/<nome>/`, o caminho neutro de ferramenta. Ferramenta que procura Skills em outro caminho recebe um adaptador — link ou stub com frontmatter idêntico —, nunca uma cópia ([practices/ia-ferramentas.md](../practices/ia-ferramentas.md), Seção *Adaptadores de ferramenta*).
 
 **Estrutura:**
 

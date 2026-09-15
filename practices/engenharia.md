@@ -57,7 +57,7 @@ Conjunto mínimo, em ordem crescente de custo:
 1. **Build** do módulo afetado.
 2. **Teste direcionado** à mudança, ampliando para a suíte conforme o risco.
 3. **Lint / análise estática** na configuração do próprio projeto.
-4. **Links relativos da documentação** — o que impede que mover um arquivo quebre referências em silêncio. O conjunto fornece um verificador: `python docs/guide/tools/verificar.py`, que ignora blocos de código (templates contêm links que só resolvem no projeto que os usa).
+4. **Links e includes relativos da documentação** — o que impede que mover um arquivo ou quebrar um ponteiro de ferramenta falhe em silêncio. O conjunto fornece um verificador: `python docs/guide/tools/verificar.py`, que ignora blocos de código e gitlinks externos.
 5. **Varredura de segredos** antes do commit.
 
 Regras de uso:
@@ -83,7 +83,7 @@ Regras de uso:
 
 ## 6. Processo de uma mudança
 
-Vale para pessoa e agente; o que o agente precisa observar a mais em cada etapa está em [ia.md](ia.md), Seção *Como o agente conduz uma tarefa*.
+Vale para pessoa e agente; o que o agente precisa observar a mais em cada etapa está em [ia.md](ia.md), Seção *O que o agente acrescenta ao processo geral*.
 
 1. **Entender**: objetivo e critério de sucesso, áreas afetadas, risco, se envolve código gerado, submódulo ou dependência externa, e quais validações existem. Leia o que se aplica à área (código, specs, ADRs, domínio), rastreie as interfaces afetadas e confira o estado inicial do VCS. Pare de investigar quando houver evidência suficiente.
 2. **Planejar na medida da mudança**: mudança trivial vai direto; mudança não trivial ganha um plano curto antes da primeira edição — arquivos, passos, como verificar; funcionalidade maior ganha spec ([specs.md](specs.md)).

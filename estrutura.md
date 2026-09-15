@@ -27,7 +27,7 @@ Cobre onde cada informação mora num projeto que adotou o conjunto: a árvore d
 
 **Só existe o que tem conteúdo.** Os quatro obrigatórios nascem no dia zero (`adocao.md`); toda outra pasta e arquivo nasce com o primeiro conteúdo real. Pasta vazia "para o futuro" é o antipadrão da árvore preenchida: gasta atenção de quem lê e sugere que falta algo.
 
-Arquivo ou pasta exigido por uma ferramenta específica de IA não faz parte da estrutura: quando existe, é adaptador do `AGENTS.md` ou de `.agents/skills/`, criado só para ferramenta em uso — regra em [practices/ia.md](practices/ia.md), Seção *Arquivos de cada ferramenta*.
+Arquivo ou pasta exigido por uma ferramenta específica de IA não faz parte da estrutura: quando existe, é adaptador do `AGENTS.md` ou de `.agents/skills/`, criado só para ferramenta em uso — regra em [practices/ia-ferramentas.md](practices/ia-ferramentas.md), Seção *Adaptadores de ferramenta*.
 
 ## 2. Catálogo de documentos
 

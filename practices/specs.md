@@ -12,7 +12,7 @@ Spec custa uma conversa e um documento antes do código. Ela se paga quando pelo
 - **o comportamento precisa ser acordado antes** — há mais de uma interpretação razoável do pedido;
 - **o trabalho atravessa vários módulos ou várias sessões**, e alguém (ou um agente) vai precisar retomá-lo sem a conversa original;
 - **há casos de erro, limite ou tempo** que precisam ser pensados, não descobertos em campo;
-- **a implementação vai ser delegada a um agente**: a spec é o critério de pronto que torna o resultado verificável ([ia.md](ia.md), Seção *Qualidade do que o agente produz*);
+- **a implementação vai ser delegada a um agente**: a spec é o critério de pronto que torna o resultado verificável ([ia.md](ia.md), Seção *Qualidade e delegação*);
 - **o requisito vem de cliente, norma ou outro sistema**, e precisa ser rastreável.
 
 Não vale o custo para correção pontual, refatoração sem mudança de comportamento ou ajuste óbvio: ali o commit bem escrito é o registro.

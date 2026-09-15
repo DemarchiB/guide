@@ -6,7 +6,7 @@
 Manter um conjunto de convenções, independente de ferramenta de IA, que outros projetos adotam sem alteração. Uma contribuição está pronta quando o verificador passa, cada regra tem um dono só e se justifica como boa prática, e o commit declara o impacto para quem já adotou.
 
 ## Convenções
-Este repositório segue a si mesmo ([PROJECT_GUIDE.md](PROJECT_GUIDE.md)), com um desvio: não tem `ARCHITECTURE.md` nem `docs/workflow.md` — não há código, e a organização está em `manutencao-do-conjunto.md`, Seção *Que conteúdo entra, e onde*. Domínios aplicáveis: `engenharia`, `ia`.
+Este repositório segue a si mesmo ([PROJECT_GUIDE.md](PROJECT_GUIDE.md)), com os domínios `engenharia` e `ia`; `practices/ia-ferramentas.md` é um guia de apoio lido apenas ao trabalhar com Skills, subagentes ou adaptadores. Não tem `ARCHITECTURE.md` nem `docs/workflow.md` — não há código, e a organização está em `manutencao-do-conjunto.md`, Seção *Que conteúdo entra, e onde*.
 
 - Conteúdo em português (pt-BR); nomes de arquivo em kebab-case sem acento.
 - Nenhuma convenção, nome de arquivo ou recurso exclusivo de uma ferramenta de IA entra como regra.
@@ -14,7 +14,7 @@ Este repositório segue a si mesmo ([PROJECT_GUIDE.md](PROJECT_GUIDE.md)), com u
 ## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
-| Verificação (links, seções citadas, Skills) | `python tools/verificar.py` | raiz |
+| Verificação (links, includes, seções citadas, Skills; gitlinks excluídos) | `python tools/verificar.py` | raiz |
 
 Requer Python 3.8+, sem dependências.
 

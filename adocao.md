@@ -30,7 +30,7 @@ Consequências que o projeto precisa conhecer:
 3. `AGENTS.md` — depois dos anteriores, porque índice só se escreve bem sobre o que já existe. Declara os domínios aplicáveis.
 4. `README.md` — a apresentação para pessoas.
 
-Nessa ordem toda referência entre documentos aponta para trás. Se alguma ferramenta de IA usada no projeto não lê `AGENTS.md`, crie o adaptador dela ([practices/ia.md](practices/ia.md), Seção *Arquivos de cada ferramenta*).
+Nessa ordem toda referência entre documentos aponta para trás. Se alguma ferramenta de IA usada no projeto não lê `AGENTS.md`, crie o adaptador dela ([practices/ia-ferramentas.md](practices/ia-ferramentas.md), Seção *Adaptadores de ferramenta*).
 
 **Todo o resto nasce com o primeiro conteúdo real** — a primeira spec com a primeira funcionalidade não trivial, o primeiro ADR com a primeira decisão que atenda aos critérios do template, a primeira Skill quando um procedimento se repetir. Num repositório sem código é normal que a tabela de comandos do `AGENTS.md` esteja inteira marcada como `<a definir>`: documento obrigatório com pendências declaradas é o estado correto do dia zero ([manutencao.md](manutencao.md), Seção *Estado provisório*).
 
