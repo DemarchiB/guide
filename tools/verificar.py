@@ -165,7 +165,7 @@ def frontmatter(texto):
             if valor in (">", "|", ">-", "|-", ""):
                 valor = ""
             campos[chave] = valor.strip("\"'")
-        elif chave and linha.startswith((" ", "\t")) and campos.get(chave, None) is not None:
+        elif chave and linha.startswith((" ", "\t")) and campos.get(chave) is not None:
             if not re.match(r"^\s+[A-Za-z0-9_-]+:", linha):  # continuação de texto, não submapa
                 campos[chave] = (campos[chave] + " " + linha.strip()).strip()
     return campos
@@ -194,11 +194,13 @@ def validar_skill(arq, raiz):
     return erros, fm
 
 
-def verificar_skills(raiz):
+def verificar_skills(raiz, ignorar):
     problemas, canonicas = [], {}
     base = raiz / ".agents" / "skills"
-    if base.is_dir():
+    if base.is_dir() and not ignorado(base.relative_to(raiz), ignorar):
         for arq in sorted(base.glob("*/SKILL.md")):
+            if ignorado(arq.relative_to(raiz), ignorar):
+                continue
             erros, fm = validar_skill(arq, raiz)
             problemas += erros
             if fm:
@@ -206,10 +208,10 @@ def verificar_skills(raiz):
     for dir_ferramenta in sorted(raiz.glob(".*/skills")):
         if dir_ferramenta.parent.name == ".agents" or dir_ferramenta.parent.name in IGNORAR_DIRS:
             continue
-        if dir_ferramenta.is_symlink():
+        if dir_ferramenta.is_symlink() or ignorado(dir_ferramenta.relative_to(raiz), ignorar):
             continue
         for arq in sorted(dir_ferramenta.glob("*/SKILL.md")):
-            if arq.parent.is_symlink():
+            if arq.parent.is_symlink() or ignorado(arq.relative_to(raiz), ignorar):
                 continue
             erros, fm = validar_skill(arq, raiz)
             problemas += erros
@@ -255,8 +257,9 @@ def main():
     ap.add_argument("--ignorar", action="append", default=[], metavar="CAMINHO",
                     help="caminho relativo a ignorar na verificação de links (repetível)")
     args = ap.parse_args()
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(errors="replace")  # console Windows sem UTF-8
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfigure):
+        reconfigure(errors="replace")  # console Windows sem UTF-8
 
     raiz = Path(args.raiz).resolve()
     ignorar = list(args.ignorar)
@@ -268,7 +271,7 @@ def main():
     etapas = [
         ("links", verificar_links(raiz, ignorar)),
         ("includes", verificar_includes(raiz, ignorar)),
-        ("skills", verificar_skills(raiz)),
+        ("skills", verificar_skills(raiz, ignorar)),
     ]
     if e_conjunto:
         etapas.append(("secoes", verificar_secoes(raiz, ignorar)))
