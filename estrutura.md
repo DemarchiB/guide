@@ -15,7 +15,7 @@ Cobre onde cada informação mora num projeto que adotou o conjunto: a árvore d
 │   └── skills/<nome>/SKILL.md   workflows reutilizáveis (padrão Agent Skills)
 ├── docs/
 │   ├── guide/              este conjunto (submódulo) — nunca editado aqui
-│   ├── workflow.md         obrigatório — como a revisão acontece neste projeto
+│   ├── workflow.md         fluxo de revisão, quando não couber na seção Fluxo do AGENTS.md
 │   ├── specs/              requisitos (EARS)
 │   ├── decisions/          ADRs
 │   ├── design-docs/        designs informais e máquinas de estado
@@ -25,7 +25,7 @@ Cobre onde cada informação mora num projeto que adotou o conjunto: a árvore d
 └── <código, testes, configuração>
 ```
 
-**Só existe o que tem conteúdo.** Os quatro obrigatórios nascem no dia zero (`adocao.md`); toda outra pasta e arquivo nasce com o primeiro conteúdo real. Pasta vazia "para o futuro" é o antipadrão da árvore preenchida: gasta atenção de quem lê e sugere que falta algo.
+**Só existe o que tem conteúdo.** Os três obrigatórios nascem no dia zero (`adocao.md`); toda outra pasta e arquivo nasce com o primeiro conteúdo real. Pasta vazia "para o futuro" é o antipadrão da árvore preenchida: gasta atenção de quem lê e sugere que falta algo.
 
 Arquivo ou pasta exigido por uma ferramenta específica de IA não faz parte da estrutura: quando existe, é adaptador do `AGENTS.md` ou de `.agents/skills/`, criado só para ferramenta em uso — regra em [practices/ia-harness.md](practices/ia-harness.md), Seção *Adaptadores de ferramenta*.
 
@@ -38,7 +38,7 @@ A definição completa do papel de cada documento — o que ele é, o que não �
 | `README.md` | Apresentação: propósito, pré-requisitos, primeiro uso. | `templates/readme.md` |
 | `AGENTS.md` | Índice operacional curto: comandos, convenções não óbvias, restrições. Pode ser aninhado por subárvore. | `templates/agents.md` |
 | `ARCHITECTURE.md` | Componentes, limites, interfaces e dependências. **Único** — nunca aninhado. | `templates/architecture.md` |
-| `docs/workflow.md` | VCS, branches reais e fluxo de revisão deste projeto. | `templates/workflow.md` |
+| `docs/workflow.md` | Fluxo de revisão deste projeto, quando não couber na seção *Fluxo* do `AGENTS.md`: liberação, CI, PR/MR, exceções. | `templates/workflow.md` |
 | `docs/specs/<nome>.md` | Requisitos de uma funcionalidade, em EARS. | `templates/spec.md` |
 | `docs/decisions/ADR-NNNN-<slug>.md` | Decisão de arquitetura e alternativas descartadas. | `templates/adr.md` |
 | `docs/references/<dependência>.md` | Conhecimento do projeto sobre uma dependência externa. | `templates/referencia.md` |
@@ -64,7 +64,8 @@ Siga a primeira linha que se aplica.
 | é procedimento recorrente, difícil de acertar sem instruções | Skill em `.agents/skills/` |
 | explica uma dependência externa no contexto do projeto | `docs/references/` |
 | é produzida por automação | `docs/generated/`, se precisar ser versionada |
-| é o fluxo de branch e revisão deste projeto | `docs/workflow.md` |
+| é o branch base, ou como o trabalho do agente é entregue | a seção *Fluxo* do `AGENTS.md` — é preciso em toda tarefa |
+| é o resto do fluxo de revisão: liberação, CI, PR/MR, exceções | `docs/workflow.md`, quando houver o que escrever |
 | é desvio de uma regra deste conjunto | uma linha no `AGENTS.md` e, se não for trivial, ADR |
 | é prática geral, válida para vários projetos | este conjunto — pelo procedimento de `manutencao-do-conjunto.md`, nunca editando a cópia do projeto |
 

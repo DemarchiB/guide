@@ -1,10 +1,10 @@
 # Template: `docs/workflow.md`
 
-**Quando usar:** no dia zero, antes do `AGENTS.md`, que aponta para ele.
+**Quando usar:** quando o fluxo deixar de caber na seção *Fluxo* do `AGENTS.md` — plataforma de PR/MR em uso, CI, processo de liberação, mais de uma pessoa, exceções a registrar. **Não** nasce no dia zero: num projeto solo sem remoto, o `AGENTS.md` é o fluxo inteiro, e um arquivo próprio só acrescenta um lugar a manter.
 
 **Papel:** dizer como as regras de [practices/git.md](../practices/git.md), Seção *Branch e revisão*, se realizam **neste** projeto — VCS, remoto, nomes reais das branches, forma de entrega, CI e exceções. As regras em si não são repetidas aqui: o domínio é o dono delas, e uma cópia em cada projeto divergiria na primeira alteração.
 
-**Convenções:** VCS ou remoto ainda não escolhidos entram como `<a definir>`. Projeto em outro VCS registra aqui os comandos equivalentes aos do domínio. Seção sem conteúdo é omitida — exceto *Trabalho de agente*, que existe desde o dia zero em projeto com agente, porque é o que decide se o trabalho dele é reversível.
+**Convenções:** o que já está na seção *Fluxo* do `AGENTS.md` não é repetido aqui — branch base e modo de trabalho do agente moram lá. VCS ou remoto ainda não escolhidos entram como `<a definir>`. Projeto em outro VCS registra aqui os comandos equivalentes aos do domínio. Seção sem conteúdo é omitida.
 
 ```markdown
 # Workflow
@@ -27,8 +27,9 @@ Este arquivo registra só o que é específico deste projeto.
 | correção urgente em versão liberada | `<release/x.y>` | `<release/x.y>` e `<develop>` |
 
 ## Trabalho de agente
-- Sessão local, modo: <commit na própria branch (recomendado) | árvore de trabalho, pessoa commita>
-- Agente assíncrono: <abre PR/MR contra `<base>` | não usado>
+<O branch base e o modo local estão no AGENTS.md; que agente assíncrono entrega
+por PR/MR é regra do conjunto. Aqui vai só o que depende deste remoto.>
+- Agente assíncrono em uso: <sim | não>
 - Proteção do tronco: <revisão obrigatória e push direto bloqueado no servidor | nenhuma>
 - Comandos negados na configuração da ferramenta: <onde está esse arquivo, ou "nenhum ainda">
 
@@ -63,8 +64,7 @@ Este arquivo registra só o que é específico deste projeto.
 | correção urgente em campo | tag da versão liberada | nova tag e `develop` |
 
 ## Trabalho de agente
-- Sessão local, modo: commit na própria branch; a revisão é `git diff develop...<branch>`
-- Agente assíncrono: não usado (sem PR no GitHub ainda)
+- Agente assíncrono em uso: não (sem PR no GitHub ainda)
 - Proteção do tronco: nenhuma — `develop` e `main` dependem de disciplina, não de mecanismo
 - Comandos negados na configuração da ferramenta: `.agents/permissoes.json`
 

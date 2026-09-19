@@ -18,12 +18,15 @@ Este repositório segue a si mesmo ([PROJECT_GUIDE.md](PROJECT_GUIDE.md)), com o
 
 Requer Python 3.8+, sem dependências.
 
+## Fluxo
+- Branch base: `main`.
+- O agente não commita: altera os arquivos e relata.
+
 ## Restrições críticas
 - Nenhum fato específico de um projeto entra aqui.
 - Uma regra tem um dono só; o segundo lugar recebe ponteiro com arquivo e **título** da seção.
 - Antes de escrever uma regra, procure se ela já existe (`grep -ri`) e diga por que ela é boa prática.
 - Regra nova entra no arquivo cujo **gatilho de leitura** corresponde a ela, não no arquivo do assunto mais próximo (`manutencao-do-conjunto.md`, Seção *Custo de contexto e divisão de arquivos*).
-- O agente não cria commit, branch nem push neste repositório: altera os arquivos e relata; quem mantém revisa e commita.
 
 ## Ao terminar
 1. Rodar `python tools/verificar.py`.

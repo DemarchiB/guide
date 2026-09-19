@@ -26,7 +26,7 @@ git clone --recurse-submodules <url>
 - Arquitetura: [ARCHITECTURE.md](ARCHITECTURE.md)
 - Instruções para agentes de IA: [AGENTS.md](AGENTS.md)
 - Convenções de projeto: [docs/guide/PROJECT_GUIDE.md](docs/guide/PROJECT_GUIDE.md)
-- Workflow de revisão: [docs/workflow.md](docs/workflow.md)
+- Workflow de revisão: [docs/workflow.md](docs/workflow.md)  <omita se o projeto não tiver este arquivo>
 
 ## Licença
 <licença ou "uso interno">

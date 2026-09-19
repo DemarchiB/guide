@@ -1,6 +1,6 @@
 # Template: `AGENTS.md`
 
-**Quando usar:** no dia zero, depois de `ARCHITECTURE.md` e `docs/workflow.md` (`adocao.md`). Aninhado, quando uma pasta tiver convenção própria.
+**Quando usar:** no dia zero, depois de `ARCHITECTURE.md` (`adocao.md`). Aninhado, quando uma pasta tiver convenção própria.
 
 **Papel:** índice operacional carregado em **toda** sessão de agente. Contém só o que o agente erraria sem saber: comandos reais, convenções que fogem do padrão, restrições críticas, desvios deste conjunto e onde está o que não é óbvio. Não é visão geral do repositório (o agente lê a árvore), não é cópia de `ARCHITECTURE.md` e não contém instrução genérica ("escreva código limpo") — tudo isso custa contexto em toda sessão sem melhorar o resultado ([practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*).
 
@@ -9,7 +9,7 @@
 - **Curto, porque cada linha é paga em toda sessão.** O teste de cada linha: *uma tarefa típica deste projeto sairia errada sem ela?* Conteúdo que só algumas tarefas usam vai para um `AGENTS.md` aninhado, uma Skill ou um documento em `docs/` com link — é o critério, e não uma contagem de linhas, que decide.
 - **Somente comandos verificados.** Comando que ninguém rodou entra como `<a verificar>`, nunca como oficial.
 - **Sensor que não existe aparece como ausente**, não é omitido: a linha `| Testes | <a definir: sem suíte> | — |` diz ao agente que ele não tem como se verificar sozinho, e é o que impede que ele declare "testado". ([practices/testes.md](../practices/testes.md), Seção *Conjunto mínimo de sensores*)
-- **Seção sem conteúdo é omitida**, exceto *Comandos*, que existe desde o dia zero, mesmo com marcações.
+- **Seção sem conteúdo é omitida**, exceto *Comandos* e *Fluxo*, que existem desde o dia zero, mesmo com marcações. *Fluxo* fica aqui, e não num arquivo à parte, porque o agente precisa dela em toda tarefa. Ela tem só os dois fatos que ele não tem como deduzir — o branch base e se ele commita —; o resto do fluxo é regra do conjunto ([practices/git.md](../practices/git.md)), e repeti-la aqui custa contexto em toda sessão e diverge na primeira alteração.
 - **Aninhamento:** o `AGENTS.md` de uma subárvore (componente, pasta com ferramental próprio) descreve só aquela pasta e nunca repete regra do raiz; o raiz aponta para ele no *Onde fica o quê*. As ferramentas carregam o mais próximo do arquivo alterado; ferramenta que não faz isso recebe o mesmo adaptador do raiz em cada pasta.
 - **Pastas que o agente não deve abrir** (saídas de build, binários) se resolvem no `.gitignore` ou na configuração de permissões da ferramenta, não com texto aqui.
 - Ferramenta que não lê `AGENTS.md` recebe um adaptador, nunca uma cópia ([practices/ia-harness.md](../practices/ia-harness.md), Seção *Adaptadores de ferramenta*).
@@ -28,6 +28,11 @@ toda tarefa, leia `docs/guide/PROJECT_GUIDE.md` — ele diz o que mais ler.
 - Idioma: documentação em <pt-BR>; identificadores e comentários em <...>; commits em <...>.
 - <Convenção deste projeto que foge do padrão da linguagem ou ferramenta.>
 
+## Fluxo
+- Branch base das tarefas: `<develop>`.
+- O agente <não commita: deixa as alterações na árvore de trabalho e entrega o resumo | commita cada incremento verificado na própria branch>.
+- <Desvio da nomenclatura de branch do conjunto, ou ponteiro para `docs/workflow.md`; omita as duas linhas se não houver.>
+
 ## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
@@ -43,7 +48,6 @@ toda tarefa, leia `docs/guide/PROJECT_GUIDE.md` — ele diz o que mais ler.
 
 ## Restrições críticas
 - <limite que nunca pode ser violado: interface pública, memória, protocolo, norma>
-- Agente trabalha em branch própria (`docs/workflow.md`) e não executa merge, push para `<branch principal>` nem reescrita de histórico.
 
 ## Ao terminar
 1. Rodar os comandos de build, testes e análise que se aplicam à mudança.
@@ -72,6 +76,11 @@ Segue `docs/guide/` (submódulo). No início de toda tarefa, leia
 - Idioma: documentação, identificadores e commits em pt-BR.
 - Funções públicas no formato `Modulo_acao` (`Uart_enviar`); tipos em PascalCase.
 
+## Fluxo
+- Branch base das tarefas: `develop`.
+- O agente não commita: deixa as alterações na árvore de trabalho e entrega o
+  resumo.
+
 ## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
@@ -90,8 +99,6 @@ Segue `docs/guide/` (submódulo). No início de toda tarefa, leia
 ## Restrições críticas
 - RAM livre não pode cair abaixo de 4 KB (alvo `tamanho`).
 - Protocolo serial compatível com a versão 1.4 do controlador.
-- Agente trabalha em branch própria (`docs/workflow.md`) e não executa merge,
-  push para `develop` nem reescrita de histórico.
 
 ## Ao terminar
 1. Rodar build, testes em host e análise estática.

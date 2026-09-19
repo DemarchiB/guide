@@ -23,12 +23,13 @@ Consequências que o projeto precisa conhecer:
 
 ## 2. Projeto novo
 
-**Conjunto mínimo:** o conjunto em `docs/guide/` e quatro documentos, nesta ordem, cada um a partir do seu template:
+**Conjunto mínimo:** o conjunto em `docs/guide/` e três documentos, nesta ordem, cada um a partir do seu template:
 
 1. `ARCHITECTURE.md` — mesmo esquelético; dá vocabulário ao resto. O que não está decidido vai em "Pontos não determinados"; estrutura planejada é legítima desde que rotulada como planejada.
-2. `docs/workflow.md` — VCS, remoto, branch principal e de integração, e como o trabalho de agente é entregue ([practices/git.md](practices/git.md), Seção *Agente em sessão local*).
-3. `AGENTS.md` — depois dos anteriores, porque índice só se escreve bem sobre o que já existe. Declara os domínios aplicáveis.
-4. `README.md` — a apresentação para pessoas.
+2. `AGENTS.md` — depois do anterior, porque índice só se escreve bem sobre o que já existe. Declara os domínios aplicáveis e, na seção *Fluxo*, o branch base e como o trabalho do agente é entregue ([practices/git.md](practices/git.md), Seção *Agente em sessão local*) — são os fatos que o agente precisa em toda tarefa e não descobre sozinho.
+3. `README.md` — a apresentação para pessoas.
+
+`docs/workflow.md` **não** nasce no dia zero: ele aparece quando o fluxo deixa de caber na seção *Fluxo* do `AGENTS.md` — plataforma de PR/MR em uso, CI, processo de liberação, mais de uma pessoa. Num projeto solo sem remoto, essas três linhas no `AGENTS.md` são o fluxo inteiro, e um arquivo próprio só acrescenta um lugar a manter.
 
 Nessa ordem toda referência entre documentos aponta para trás. Se alguma ferramenta de IA usada no projeto não lê `AGENTS.md`, crie o adaptador dela ([practices/ia-harness.md](practices/ia-harness.md), Seção *Adaptadores de ferramenta*).
 
@@ -43,7 +44,7 @@ Não pare o trabalho para documentar tudo: documentação retroativa em massa pr
 1. Monte o conjunto (Seção *Montar o conjunto*).
 2. Escreva o `AGENTS.md` com o que já é verificável hoje — comandos que você rodou, restrições que você conhece.
 3. Levante o `ARCHITECTURE.md` a partir das fontes de evidência ([manutencao.md](manutencao.md), Seção *Fontes de evidência*), marcando o que o código não comprovar.
-4. Escreva `docs/workflow.md` e ajuste o `README.md` existente, sem reescrever o que já está correto.
+4. Ajuste o `README.md` existente, sem reescrever o que já está correto; escreva `docs/workflow.md` só se o fluxo não couber na seção *Fluxo* do `AGENTS.md`.
 5. Registre como ADR só as decisões que ainda governam o código e que alguém questionaria.
 
 Daí em diante, cada tarefa que tocar uma área documenta aquela área. A cobertura cresce pelo uso, não por mutirão.
@@ -60,7 +61,9 @@ docs/guide/adocao.md (Seção "<Projeto novo | Projeto existente>").
 - Use somente fatos verificáveis no repositório; o resto entra marcado como
   <a definir> ou <a verificar: motivo>. Não invente comandos.
 - Domínios aplicáveis a este projeto: <engenharia, git, ia, testes, ...>.
-- Não crie pastas vazias nem documentos opcionais.
+- Não crie pastas vazias nem documentos opcionais; não crie docs/workflow.md.
+- Na seção Fluxo do AGENTS.md entram só dois fatos: o branch base e se você
+  commita. Pergunte-me os dois; não deduza nenhum deles nem acrescente linhas.
 - Antes de criar qualquer arquivo, liste o que vai criar e o que não encontrou
   evidência para preencher; espere minha confirmação.
 - Trabalhe numa branch docs/adocao-convencoes e não faça merge.

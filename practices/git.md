@@ -5,11 +5,11 @@ Cobre como uma mudança sai da máquina e chega ao tronco: branch, commit, rastr
 **Aplica-se a:** todo projeto versionado.
 **Leia quando:** for entregar, revisar ou integrar uma mudança, ou configurar o que um agente pode executar.
 
-Os comandos estão na notação do Git, como ilustração; projeto em outro VCS registra os equivalentes no seu `docs/workflow.md`.
+Os comandos estão na notação do Git, como ilustração; projeto em outro VCS registra os equivalentes no seu `AGENTS.md` ou em `docs/workflow.md`.
 
 ## 1. O agente propõe, uma pessoa integra
 
-A unidade de entrega de um agente é uma **proposta revisável** — uma branch, e um PR/MR quando houver plataforma —, nunca uma integração. Isso não muda entre trabalhar local e na nuvem; o que muda é quem escreve o commit e como a proposta chega à revisão, e isso o projeto declara em `docs/workflow.md`.
+A unidade de entrega de um agente é uma **proposta revisável** — uma branch, e um PR/MR quando houver plataforma —, nunca uma integração. Isso não muda entre trabalhar local e na nuvem; o que muda é quem escreve o commit e como a proposta chega à revisão, e isso o projeto declara na seção *Fluxo* do seu `AGENTS.md`.
 
 Duas consequências:
 
@@ -18,8 +18,8 @@ Duas consequências:
 
 ## 2. Branch e revisão
 
-1. **Branch curta, um assunto.** Nome `<tipo>/<assunto-curto>` em kebab-case; tipos padrão `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, trocáveis no `docs/workflow.md`. O problema real não é a quantidade de branches: é a branch longa, que acumula divergência e vira merge irrevisável.
-2. **Toda tarefa declara o branch base** — de onde a branch nasce e para onde a mudança volta. Trabalho de agente nasce de um base declarado e nunca vai direto ao tronco; commit direto no tronco por uma pessoa é legítimo quando o projeto o declara (mantenedor único, mudança trivial) e os sensores rodaram antes.
+1. **Branch curta, um assunto.** Nome `<tipo>/<assunto-curto>` em kebab-case; tipos padrão `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, trocáveis pelo projeto. O problema real não é a quantidade de branches: é a branch longa, que acumula divergência e vira merge irrevisável.
+2. **Toda tarefa declara o branch base** — de onde a branch nasce e para onde a mudança volta; o padrão do projeto fica na seção *Fluxo* do `AGENTS.md`. Trabalho de agente nasce de um base declarado e nunca vai direto ao tronco; commit direto no tronco por uma pessoa é legítimo quando o projeto o declara (mantenedor único, mudança trivial) e os sensores rodaram antes.
 3. **A revisão é pelo diff completo contra o base**: `git diff <base>...<branch>`. Os três pontos comparam contra o merge-base, então o que entrou no base depois não polui o diff.
 4. **O merge é ação de uma pessoa**, em qualquer cenário — mesmo com a mudança pronta e os sensores verdes.
 5. **Trabalho em paralelo usa worktree**: `git worktree add -b <branch> ../<pasta> <base>`. É o que permite deixar um agente trabalhando sem travar o que você está editando. Ressalvas: a mesma branch não fica ativa em duas worktrees (o Git recusa, e isso é proteção); só o histórico é compartilhado, então a worktree nasce sem artefatos de build e sem configuração local; submódulos — inclusive `docs/guide/` — exigem `git submodule update --init`; remova com `git worktree remove`, nunca apagando a pasta; e worktree isola o repositório, não o ambiente — trabalhos paralelos continuam disputando toolchain, portas e hardware de gravação.
@@ -37,20 +37,22 @@ Duas consequências:
 
 ## 4. Agente em sessão local
 
-O padrão recomendado é **o agente commitar na própria branch**, e a pessoa revisar a branch antes de integrar. Parece o contrário de "revisar antes de commitar", mas não é: nada entra no tronco sem revisão de qualquer forma, e os commits intermediários dão o que falta numa sessão longa — marcos para voltar quando o agente segue por um caminho errado, e um diff por incremento em vez de uma pilha de alterações sem ordem.
+O padrão é **o agente não commitar**: ele edita os arquivos, entrega o resumo e para; quem commita é a pessoa, depois de olhar o diff. Nada entra no histórico antes de ter sido revisado, e o que se revisa é exatamente o que o agente fez, sem mensagem de commit nenhuma explicando o que ele achou que fez.
 
-O projeto escolhe um dos dois modos e o declara em `docs/workflow.md`:
+O projeto escolhe um dos dois modos e o declara na seção *Fluxo* do `AGENTS.md`:
 
-| Modo | O agente | A pessoa | Custa |
-| --- | --- | --- | --- |
-| **Commit na branch** (recomendado) | commita cada incremento verificado na branch de trabalho | revisa `git diff <base>...<branch>` e integra | nada, desde que a branch seja só do agente |
-| **Árvore de trabalho** | edita e entrega o resumo, sem commitar | revisa o diff não commitado e commita | perde os pontos de retorno; um erro no meio da sessão custa tudo |
+| Modo | O agente | A pessoa |
+| --- | --- | --- |
+| **Árvore de trabalho** (padrão) | edita e entrega o resumo, sem commitar | revisa o diff não commitado, commita e integra |
+| **Commit na branch** | commita cada incremento verificado na branch de trabalho | revisa `git diff <base>...<branch>` e integra |
 
-Em ambos, o merge, o push ao tronco e a reescrita de histórico são da pessoa; e em ambos o agente confere o estado inicial do VCS antes de tocar em qualquer arquivo — alteração preexistente não é sobrescrita, não é formatada e não entra no commit da tarefa.
+**O que o modo padrão custa é o ponto de retorno**, e ele se compra de volta commitando por incremento em vez de só no fim: o agente para ao concluir cada passo do plano, você confere e commita, e o passo seguinte parte de um estado bom conhecido ([engenharia.md](engenharia.md), Seção *Processo de uma mudança*). Sem isso, um caminho errado no meio de uma sessão longa leva junto o que já estava bom. O modo **commit na branch** existe para quando essa parada não é prática — refatoração ampla, ou agente trabalhando enquanto você faz outra coisa — e exige branch exclusiva dele.
+
+Em ambos, o merge, o push ao tronco e a reescrita de histórico são da pessoa; e em ambos o agente confere o estado inicial do VCS antes de tocar em qualquer arquivo — alteração preexistente não é sobrescrita, não é formatada e não entra no diff da tarefa.
 
 ## 5. Agente assíncrono e PR/MR
 
-Quando o agente roda sem alguém acompanhando — na nuvem, por tarefa agendada ou a partir de uma issue —, **a entrega dele é um PR/MR aberto contra o base declarado**. Isso é a prática certa, não uma concessão: PR é proposta, passa pela mesma revisão de qualquer outra e é onde os sensores rodam sem depender de alguém lembrar.
+Quando o agente roda sem alguém acompanhando — na nuvem, por tarefa agendada ou a partir de uma issue —, **a entrega dele é sempre um PR/MR aberto contra o base declarado**. Não é escolha do projeto e não há modo alternativo: PR é proposta, passa pela mesma revisão de qualquer outra e é onde os sensores rodam sem depender de alguém lembrar. Projeto sem plataforma de PR não roda agente assíncrono.
 
 1. **O agente faz push da própria branch e abre o PR/MR**; nunca push para o base nem para o tronco.
 2. **O merge continua humano, garantido por mecanismo**: revisão obrigatória e proibição de push direto no tronco, configuradas no servidor. Agente com permissão de merge é configuração errada, não regra desobedecida.
