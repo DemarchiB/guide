@@ -166,7 +166,7 @@ typedef struct {
 **Duas regras de uso, e elas importam mais do que o mecanismo:**
 
 - **Só introduza a tabela virtual quando existirem duas implementações reais hoje.** Uma implementação atrás de despacho indireto é custo sem benefício, e "vai que um dia" não é evidência. Um dublê de teste conta como segunda implementação quando o despacho é o que permite testar o cliente em host sem o hardware — mas, se a troca em tempo de link resolve (outro `.c` no build de teste), ela é mais simples e não custa análise.
-- **Ponteiro para função tem preço em análise.** Ele quebra o grafo de chamadas estático, e com ele a análise automática de profundidade de pilha e a rastreabilidade de qual código roda em qual caminho — exatamente o que uma norma de safety vai querer ver ([practices/firmware.md](../practices/firmware.md), Seção *Preparação para safety*). Onde o polimorfismo for usado em código crítico, a tabela é `const`, o conjunto de implementações é fechado e conhecido em tempo de compilação, e o `vptr` é verificado contra nulo antes do primeiro despacho.
+- **Ponteiro para função tem preço em análise.** Ele quebra o grafo de chamadas estático, e com ele a análise automática de profundidade de pilha e a rastreabilidade de qual código roda em qual caminho — exatamente o que uma norma de safety vai querer ver ([practices/firmware-robustez.md](../practices/firmware-robustez.md), Seção *Preparação para safety*). Onde o polimorfismo for usado em código crítico, a tabela é `const`, o conjunto de implementações é fechado e conhecido em tempo de compilação, e o `vptr` é verificado contra nulo antes do primeiro despacho.
 
 ## Exemplo preenchido (ilustrativo)
 

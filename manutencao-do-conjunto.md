@@ -10,7 +10,7 @@ Cobre o que só quem **edita este conjunto** precisa saber: que tipo de conteúd
 | --- | --- | --- |
 | Ponto de entrada: precedência, regras invioláveis, roteamento | `PROJECT_GUIDE.md` | em toda tarefa |
 | Procedimento que atravessa projetos (adotar, estruturar, manter) | arquivo na raiz (`adocao.md`, `estrutura.md`, `manutencao.md`) | sob demanda |
-| Prática de um assunto técnico | um arquivo em `practices/` | quando o projeto declara o domínio e a tarefa o toca |
+| Prática de um assunto técnico | um arquivo em `practices/`, por gatilho de leitura | quando o projeto declara o domínio e a tarefa o toca |
 | Formato de um documento ou arquivo de código recorrente | um arquivo por documento em `templates/` | ao criar aquele documento |
 | Sensor reutilizável | `tools/`, só biblioteca padrão da linguagem, sem instalação | executado, não lido |
 | Mapa arquitetural e limites de um projeto | `ARCHITECTURE.md` do projeto | quando a tarefa cruza componentes, interfaces, variantes ou dependências |
@@ -47,14 +47,16 @@ Só o que sobrevive aos quatro entra. Não crie arquivo vazio "para o futuro".
 - [ ] <verificação que um revisor ou agente confere no diff>
 ```
 
-Ao criar um domínio: acrescente a linha na tabela *Domínios de prática* do `PROJECT_GUIDE.md` (com "Aplica-se a" e "Leia quando"). Ao criar um template: acrescente-o ao catálogo de `estrutura.md` e, se ele muda onde algo é registrado, à tabela *Onde registrar uma informação*.
+Ao criar um domínio: acrescente a linha de tarefa na tabela *O que ler para cada tarefa* do `PROJECT_GUIDE.md` e o arquivo na lista *Domínios de prática*. Ao criar um template: acrescente-o ao catálogo de `estrutura.md` e, se ele muda onde algo é registrado, à tabela *Onde registrar uma informação*.
 
 ## 4. Custo de contexto e divisão de arquivos
 
-Tamanho de arquivo não é, por si, um problema; o que custa é contexto lido sem necessidade. Por isso o conjunto não impõe limite numérico de caracteres ou linhas — um número fixo acaba cortando justificativa para caber, ou dividindo um assunto coeso, e o que ele mede não é o que importa. O que se aplica são dois critérios:
+O que custa não é o tamanho de um arquivo: é contexto lido sem necessidade. Um agente carrega o arquivo inteiro que a tabela de roteamento mandar ler — não existe "ler só a seção aplicável" —, e por isso **a unidade de divisão é o gatilho de leitura, não o assunto**. Dois critérios:
 
 - **O que é lido em toda tarefa é o mínimo possível.** Vale para o `PROJECT_GUIDE.md` e, nos projetos, para o `AGENTS.md`. Cada acréscimo passa pelo teste: *uma tarefa típica sairia errada sem isto?* Se só algumas tarefas precisam, o conteúdo vai para um arquivo lido sob demanda e o ponto de entrada ganha, no máximo, uma linha de roteamento. `python tools/verificar.py` informa o tamanho desses arquivos para que o crescimento fique visível na revisão, sem reprovar nada.
-- **O que é lido sob demanda é dividido por coesão, não por tamanho.** Um arquivo reúne o que uma tarefa comum precisa ler junto. É sinal para dividir quando tarefas frequentes usam só uma parte dele — como escrever código C, que não precisa das regras de configurar o build —, e sinal para juntar quando dois arquivos são quase sempre lidos em conjunto. Arquivo longo e coeso fica inteiro.
+- **O que é lido sob demanda é dividido por gatilho.** Um arquivo reúne o que uma tarefa precisa ler junto, e a linha da tabela de roteamento que leva até ele descreve uma tarefa real. **É sinal para dividir quando duas tarefas frequentes usam partes diferentes do mesmo arquivo** — mexer numa interrupção não precisa das regras de persistência, escrever código C não precisa das de configurar o build. É sinal para juntar quando dois arquivos são quase sempre lidos em conjunto.
+
+Não há limite numérico de linhas, mas há uma referência prática: um domínio que passa de ~200 linhas quase sempre está atendendo a mais de um gatilho. Confira as linhas de roteamento que levam a ele; se forem tarefas distintas, divida por elas.
 
 Nos dois casos, o que se corta primeiro é duplicação, exemplo redundante e adjetivo — nunca o porquê de uma regra, que é o que impede que ela seja contornada na primeira vez que incomodar.
 
@@ -85,4 +87,5 @@ Commits são atômicos por assunto, como em qualquer projeto: mudança de sentid
 - [ ] A regra alterada tem um dono só; os outros arquivos apontam para ele.
 - [ ] Nenhum fato específico de um projeto entrou.
 - [ ] Arquivo novo, renomeado ou removido está refletido no `PROJECT_GUIDE.md`, em `estrutura.md` e no `README.md`.
+- [ ] Cada arquivo alterado continua atendendo a um gatilho de leitura só.
 - [ ] O commit tem um trailer `Impacto-adocao` para cada ação exigida de quem já adotou, quando aplicável.

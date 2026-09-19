@@ -27,7 +27,7 @@ Cobre onde cada informação mora num projeto que adotou o conjunto: a árvore d
 
 **Só existe o que tem conteúdo.** Os quatro obrigatórios nascem no dia zero (`adocao.md`); toda outra pasta e arquivo nasce com o primeiro conteúdo real. Pasta vazia "para o futuro" é o antipadrão da árvore preenchida: gasta atenção de quem lê e sugere que falta algo.
 
-Arquivo ou pasta exigido por uma ferramenta específica de IA não faz parte da estrutura: quando existe, é adaptador do `AGENTS.md` ou de `.agents/skills/`, criado só para ferramenta em uso — regra em [practices/ia-ferramentas.md](practices/ia-ferramentas.md), Seção *Adaptadores de ferramenta*.
+Arquivo ou pasta exigido por uma ferramenta específica de IA não faz parte da estrutura: quando existe, é adaptador do `AGENTS.md` ou de `.agents/skills/`, criado só para ferramenta em uso — regra em [practices/ia-harness.md](practices/ia-harness.md), Seção *Adaptadores de ferramenta*.
 
 ## 2. Catálogo de documentos
 
@@ -57,6 +57,7 @@ Siga a primeira linha que se aplica.
 | é necessária em quase toda tarefa e o agente não a descobriria sozinho | `AGENTS.md` da raiz, em uma linha ou um link |
 | descreve componentes, limites ou o que existe **entre** as partes | `ARCHITECTURE.md` |
 | é comportamento esperado de uma funcionalidade | `docs/specs/` |
+| é comportamento que pode ser verificado automaticamente | um teste, não um documento ([practices/testes.md](practices/testes.md)) |
 | é decisão que alguém vai questionar antes de mudar algo relacionado | `docs/decisions/` (critérios em `templates/adr.md`) |
 | é design ou decisão que precisa de explicação, sem a formalidade de um ADR | `docs/design-docs/` |
 | é um plano de trabalho com etapas, riscos ou migração que não cabe nas tarefas de uma spec | `docs/exec-plans/` |

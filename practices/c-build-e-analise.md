@@ -1,6 +1,6 @@
 # Domínio: build e análise de C embarcado
 
-Cobre como o código C de firmware é compilado, identificado e verificado: toolchain e flags, identificação do binário, orçamento de memória, sensores da linguagem, adoção incremental de análise estática e adoção de MISRA. Como se escreve o código está em [c-embarcado.md](c-embarcado.md); as regras gerais de sensores, em [engenharia.md](engenharia.md), Seção *Sensores e validação automática*.
+Cobre como o código C de firmware é compilado, identificado e verificado: toolchain e flags, identificação do binário, orçamento de memória, sensores da linguagem, adoção incremental de análise estática e adoção de MISRA. Como se escreve o código está em [c-embarcado.md](c-embarcado.md); as regras gerais de sensores, em [testes.md](testes.md), Seção *Conjunto mínimo de sensores*.
 
 **Aplica-se a:** projetos com código C para microcontrolador.
 **Leia quando:** for configurar toolchain ou build, introduzir ou ajustar analisador estático, adotar MISRA, registrar desvio de regra, ou investigar aviso ou achado que o build passou a acusar.
@@ -26,8 +26,8 @@ Ao conjunto mínimo de [engenharia.md](engenharia.md), este domínio acrescenta:
 2. **Analisador estático dedicado** num alvo do próprio build (alvo do CMake, `make analyze`), não como passo manual.
 3. **Orçamento de memória** verificado a cada build (Seção *Toolchain, build e identificação*).
 4. **Complexidade limitada por sensor**, onde houver ferramenta: função acima do limite declarado falha ou entra na lista de dívida. Complexidade alta é o melhor indicador barato de onde os defeitos vão aparecer — muitas vezes uma máquina de estado implícita pedindo para virar explícita ([firmware.md](firmware.md), Seção *Máquinas de estado*).
-5. **Teste em host é sensor, não luxo.** A lógica independente de hardware compila e roda no PC; onde ainda não houver suíte, isso é pendência registrada — nunca "coberto por teste manual em bancada". O que o torna possível é a separação de camadas ([firmware.md](firmware.md), Seção *Camadas e portabilidade*).
-6. **Teste em host cobre caminho nominal, limite e falha**, usa dublê (fake, stub, mock) só nas fronteiras que o exigem, e verifica o efeito colateral esperado, não apenas o valor de retorno.
+5. **Teste em host é sensor, não luxo.** A lógica independente de hardware compila e roda no PC, num preset próprio do build; onde ainda não houver suíte, isso é pendência registrada — nunca "coberto por teste manual em bancada". O que o torna possível é a separação de camadas ([firmware.md](firmware.md), Seção *Camadas e portabilidade*); o que testar e como, em [testes.md](testes.md).
+6. **O preset de host liga os sanitizers** (`-fsanitize=address,undefined`): eles encontram, com uma flag, o estouro de buffer e o comportamento indefinido que no alvo aparecem como travamento aleatório meses depois.
 
 ## 3. Adoção incremental
 

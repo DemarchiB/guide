@@ -31,6 +31,8 @@ templates/                  um arquivo por documento que o projeto cria
 tools/verificar.py          verificador: links, includes, seções citadas, Skills e gitlinks externos
 ```
 
+Os arquivos de `practices/` são divididos pelo **gatilho de leitura**: cada tarefa carrega um arquivo pequeno, não um domínio inteiro. Só o `PROJECT_GUIDE.md` é lido em toda tarefa.
+
 ## Como evolui
 
 Sem número de versão nem changelog: o estado adotado é o commit do submódulo, e cada commit que exige ação de quem já adotou traz um trailer `Impacto-adocao` dizendo qual. Detalhes em [`manutencao-do-conjunto.md`](manutencao-do-conjunto.md).

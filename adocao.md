@@ -16,7 +16,7 @@ git commit -m "Adota convenções de projeto em docs/guide"
 Consequências que o projeto precisa conhecer:
 
 - quem clona usa `git clone --recurse-submodules`, ou roda `git submodule update --init` depois — sem isso `docs/guide/` fica vazio e o agente trabalha sem as convenções;
-- toda worktree nova também precisa de `git submodule update --init` ([practices/engenharia.md](practices/engenharia.md), Seção *Workflow de revisão*);
+- toda worktree nova também precisa de `git submodule update --init` ([practices/git.md](practices/git.md), Seção *Branch e revisão*);
 - o estado adotado é o que `git submodule status docs/guide` mostra; não o repita em outro arquivo, porque a cópia envelhece na primeira atualização.
 
 **Alternativa por cópia** — só quando o projeto não usa Git ou não pode ter submódulo: copie o diretório para `docs/guide/` e registre no `AGENTS.md` o commit de origem (`git -C <clone-do-conjunto> rev-parse --short HEAD`). A cópia continua proibida de edição.
@@ -26,11 +26,13 @@ Consequências que o projeto precisa conhecer:
 **Conjunto mínimo:** o conjunto em `docs/guide/` e quatro documentos, nesta ordem, cada um a partir do seu template:
 
 1. `ARCHITECTURE.md` — mesmo esquelético; dá vocabulário ao resto. O que não está decidido vai em "Pontos não determinados"; estrutura planejada é legítima desde que rotulada como planejada.
-2. `docs/workflow.md` — VCS, remoto, branch principal e de integração.
+2. `docs/workflow.md` — VCS, remoto, branch principal e de integração, e como o trabalho de agente é entregue ([practices/git.md](practices/git.md), Seção *Agente em sessão local*).
 3. `AGENTS.md` — depois dos anteriores, porque índice só se escreve bem sobre o que já existe. Declara os domínios aplicáveis.
 4. `README.md` — a apresentação para pessoas.
 
-Nessa ordem toda referência entre documentos aponta para trás. Se alguma ferramenta de IA usada no projeto não lê `AGENTS.md`, crie o adaptador dela ([practices/ia-ferramentas.md](practices/ia-ferramentas.md), Seção *Adaptadores de ferramenta*).
+Nessa ordem toda referência entre documentos aponta para trás. Se alguma ferramenta de IA usada no projeto não lê `AGENTS.md`, crie o adaptador dela ([practices/ia-harness.md](practices/ia-harness.md), Seção *Adaptadores de ferramenta*).
+
+**O primeiro sensor é parte da adoção, não um passo futuro.** Antes de delegar implementação a um agente, o projeto precisa de pelo menos uma verificação que o próprio agente rode sozinho — nem que seja só o build por linha de comando. Sem isso ele não tem como saber se acertou, e todo erro volta para a revisão ou para a bancada ([practices/testes.md](practices/testes.md), Seção *Conjunto mínimo de sensores*). O que existe e o que falta vai na tabela de comandos do `AGENTS.md`, com o que falta marcado.
 
 **Todo o resto nasce com o primeiro conteúdo real** — a primeira spec com a primeira funcionalidade não trivial, o primeiro ADR com a primeira decisão que atenda aos critérios do template, a primeira Skill quando um procedimento se repetir. Num repositório sem código é normal que a tabela de comandos do `AGENTS.md` esteja inteira marcada como `<a definir>`: documento obrigatório com pendências declaradas é o estado correto do dia zero ([manutencao.md](manutencao.md), Seção *Estado provisório*).
 
@@ -57,8 +59,10 @@ docs/guide/adocao.md (Seção "<Projeto novo | Projeto existente>").
   do seu template em docs/guide/templates/.
 - Use somente fatos verificáveis no repositório; o resto entra marcado como
   <a definir> ou <a verificar: motivo>. Não invente comandos.
-- Domínios aplicáveis a este projeto: <engenharia, ia, ...>.
+- Domínios aplicáveis a este projeto: <engenharia, git, ia, testes, ...>.
 - Não crie pastas vazias nem documentos opcionais.
+- Antes de criar qualquer arquivo, liste o que vai criar e o que não encontrou
+  evidência para preencher; espere minha confirmação.
 - Trabalhe numa branch docs/adocao-convencoes e não faça merge.
 Ao terminar, liste os arquivos criados, as pendências marcadas e os comandos
 que você executou para verificar o que documentou.

@@ -48,7 +48,7 @@ Ao escrever ou revisar:
 - remova o obsoleto, preserve o que continua correto, troque duplicação por link;
 - diferencie fato, decisão e hipótese;
 - escreva instrução concreta e verificável ("rode `cmake --build --preset debug`"), não intenção genérica ("garanta a qualidade");
-- não escreva o que o agente descobre sozinho lendo a árvore ou o manifesto — visão geral do repositório em arquivo carregado em toda sessão aumenta custo sem melhorar resultado ([practices/ia.md](practices/ia.md), Seção *Harness e economia de contexto*);
+- não escreva o que o agente descobre sozinho lendo a árvore ou o manifesto — visão geral do repositório em arquivo carregado em toda sessão aumenta custo sem melhorar resultado ([practices/ia-harness.md](practices/ia-harness.md), Seção *Harness e economia de contexto*);
 - corte duplicação e adjetivo, nunca a justificativa de uma regra: regra sem porquê é contornada na primeira vez que incomoda.
 
 ## 5. Checklist de mudança documental

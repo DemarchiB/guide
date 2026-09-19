@@ -52,7 +52,7 @@ Cobre como se escreve código C para microcontrolador: tipos e conversões, uso 
 4. **Suposição sobre o alvo vira verificação de compilação**: tamanho de estrutura persistida ou trafegada, largura de tipo, potência de dois de buffer circular, coerência entre enum e tamanho de tabela — tudo por `_Static_assert` (ou macro equivalente em C99). Falha de compilação custa segundos; a mesma suposição quebrada em campo custa uma visita.
 5. **`assert` de execução é para invariante de programação**, verificada em desenvolvimento; nunca para validar entrada externa, que é tratada sempre, também em produção.
 6. **Comportamento indefinido nunca é recurso**: deslocamento maior ou igual à largura do tipo, estouro de sinalizado, variável não inicializada, ponteiro para objeto fora de escopo, violação de aliasing. O compilador otimiza em cima disso, e o sintoma aparece longe da causa.
-7. **`volatile` marca o que muda fora do fluxo do programa** — registrador, variável escrita por interrupção. `volatile` **não** sincroniza: acesso compartilhado precisa de seção crítica ou primitiva do RTOS ([firmware.md](firmware.md), Seção *Interrupções*).
+7. **`volatile` marca o que muda fora do fluxo do programa** — registrador, variável escrita por interrupção. `volatile` **não** sincroniza: acesso compartilhado precisa de seção crítica ou primitiva do RTOS ([firmware-concorrencia.md](firmware-concorrencia.md), Seção *Interrupções*).
 
 ## 5. Compilação condicional
 

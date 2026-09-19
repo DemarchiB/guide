@@ -1,6 +1,6 @@
 # Domínio: desenvolvimento guiado por spec
 
-Cobre quando uma funcionalidade merece spec e como a spec é criada, seguida durante a implementação e mantida depois — por pessoa ou por agente. O formato do documento está em `../templates/spec.md`; a citação de requisitos em commits, em [engenharia.md](engenharia.md), Seção *Branch, commit e rastreabilidade*.
+Cobre quando uma funcionalidade merece spec e como a spec é criada, seguida durante a implementação e mantida depois — por pessoa ou por agente. O formato do documento está em `../templates/spec.md`; a citação de requisitos em commits, em [git.md](git.md), Seção *Commit e rastreabilidade*.
 
 **Aplica-se a:** todo projeto.
 **Leia quando:** for planejar uma funcionalidade maior, escrever ou revisar uma spec, implementar ou alterar uma funcionalidade que tem spec.
@@ -12,10 +12,12 @@ Spec custa uma conversa e um documento antes do código. Ela se paga quando pelo
 - **o comportamento precisa ser acordado antes** — há mais de uma interpretação razoável do pedido;
 - **o trabalho atravessa vários módulos ou várias sessões**, e alguém (ou um agente) vai precisar retomá-lo sem a conversa original;
 - **há casos de erro, limite ou tempo** que precisam ser pensados, não descobertos em campo;
-- **a implementação vai ser delegada a um agente**: a spec é o critério de pronto que torna o resultado verificável ([ia.md](ia.md), Seção *Qualidade e delegação*);
+- **a implementação vai ser delegada a um agente** e não cabe numa sessão: a spec é o critério de pronto que torna o resultado verificável, e é o que permite retomar o trabalho numa sessão nova sem recarregar a conversa inteira ([ia.md](ia.md), Seção *Qualidade do que o agente entrega*);
 - **o requisito vem de cliente, norma ou outro sistema**, e precisa ser rastreável.
 
 Não vale o custo para correção pontual, refatoração sem mudança de comportamento ou ajuste óbvio: ali o commit bem escrito é o registro.
+
+**Spec não é obrigatória em toda tarefa.** Exigir uma de tudo transforma em ritual o que deveria ser critério, e o custo aparece justamente nas tarefas pequenas, que são a maioria. O portão barato e esse sim obrigatório é outro: o plano aceito antes da primeira edição ([ia.md](ia.md), Seção *Plano antes da primeira edição*). A spec entra quando o plano não basta — quando o comportamento precisa ser acordado, atravessa sessões ou vai ser conferido depois.
 
 **O que vai em cada documento:**
 
@@ -34,7 +36,7 @@ Na maioria dos casos, a spec com sua lista de tarefas é tudo de que se precisa.
 2. **Levante as dúvidas antes de escrever requisitos.** Ao usar um agente para rascunhar, peça primeiro a lista de ambiguidades e perguntas; os requisitos vêm depois das respostas. Spec escrita sobre suposição transfere a suposição para o código.
 3. **Um comportamento por requisito, em EARS, verificável.** "Rápido", "adequado" e "robusto" não são verificáveis; "em até 50 ms" é.
 4. **Escreva o comportamento indesejado.** Erro, limite, tempo esgotado, dado inválido, reset no meio da operação — é onde uma spec rasa falha, e o padrão EARS "Se…, então…" existe para isso.
-5. **Critério de aceite diz como cada requisito é comprovado**: teste em host, ensaio em bancada, inspeção. Requisito sem forma de comprovação volta para a etapa 3.
+5. **Critério de aceite diz como cada requisito é comprovado**: teste em host, ensaio em bancada, inspeção. Requisito sem forma de comprovação volta para a etapa 3. Onde o requisito puder ser verificado em host, o critério de aceite **é** o teste, e ele nasce na mesma tarefa que implementa o requisito ([testes.md](testes.md), Seção *O que testar primeiro*) — é o que transforma a spec em sensor em vez de promessa.
 6. **Fora de escopo é explícito.** O que não está escrito ali será assumido por alguém.
 7. **Tarefas são incrementos entregáveis**, em ordem, cada um verificável sozinho e citando os requisitos que atende. O teste de um requisito entra na mesma tarefa que o implementa, não numa tarefa "escrever testes" no fim.
 8. **Decisão de arquitetura que a spec exige vira ADR**, e a spec aponta para ele em vez de repetir o raciocínio.
@@ -72,12 +74,15 @@ implemente nada; a spec fica com Status: rascunho.
 Para implementar uma spec aprovada:
 
 ```text
-Implemente docs/specs/<nome>.md, que está aprovada, seguindo
-docs/guide/practices/specs.md (Seção "Seguir uma spec"). Uma tarefa por
-vez, na ordem; marque cada uma só depois de verificada. Se algum requisito
-se mostrar errado ou inviável, pare e me diga antes de continuar.
+Implemente a tarefa <n> de docs/specs/<nome>.md, que está aprovada, seguindo
+docs/guide/practices/specs.md (Seção "Seguir uma spec"). Antes de editar,
+me mostre o plano: arquivos que vai tocar, passos e como verifica cada um.
+Marque a tarefa só depois de verificada, com o sensor rodado. Se algum
+requisito se mostrar errado ou inviável, pare e me diga antes de continuar.
 Ao terminar, entregue o resumo da mudança.
 ```
+
+Uma tarefa da spec por sessão, e não a spec inteira de uma vez: é o recorte que mantém o contexto pequeno, o diff revisável e o erro barato de desfazer ([ia-harness.md](ia-harness.md), Seção *Condução da sessão*).
 
 ## Checklist deste domínio
 
