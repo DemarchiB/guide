@@ -26,9 +26,8 @@ Tarefa não trivial começa com **um plano curto, aceito antes da primeira ediç
 
 ## 3. Limites de execução
 
-Ação reversível e contida na branch de trabalho é livre — é isso que torna a autonomia barata. O que tem efeito fora dela exige pedido explícito na tarefa:
+O critério e as ações de Git estão em [git.md](git.md), Seção *O que exige pedido explícito*. Fora do Git, exigem pedido explícito na tarefa:
 
-- tudo o que [git.md](git.md), Seção *O que exige pedido explícito*, lista: merge, push ao tronco, reescrita de histórico, descarte de trabalho não versionado;
 - apagar ou mover arquivo fora do escopo; comando destrutivo ou em massa;
 - instalar pacote global ou alterar toolchain, ambiente compartilhado ou configuração da máquina;
 - gravar, apagar ou reconfigurar hardware;
@@ -37,7 +36,7 @@ Ação reversível e contida na branch de trabalho é livre — é isso que torn
 
 ## 4. Qualidade do que o agente entrega
 
-- mudança de comportamento gerada vem com teste que falharia sem ela, ou com a ausência justificada;
+- mudança de comportamento gerada vem com teste que a comprova ([testes.md](testes.md), Seção *Escrever um teste*), ou com a ausência justificada;
 - quem revisa responde pelo diff inteiro; o fato de ter sido gerado por IA não reduz a responsabilidade;
 - **fato afirmado pelo agente é verificado na fonte antes de virar regra ou documentação** — inclusive nome de função, de registrador e de API de fabricante, que é onde a invenção é mais frequente e mais convincente;
 - delegação só vale quando o resultado é verificável por sensor ou revisão barata; sem critério de pronto, ou quando o erro não aparece na revisão, escreva a spec ou mantenha a decisão com uma pessoa.

@@ -28,13 +28,13 @@ manutencao.md               como a documentação do projeto se mantém verdadei
 manutencao-do-conjunto.md   como este conjunto evolui
 practices/                  domínios e guias de apoio carregados sob demanda
 templates/                  um arquivo por documento que o projeto cria
-tools/verificar.py          verificador: links, includes, seções citadas, Skills e gitlinks externos
+tools/verificar.py          verificador: links, includes, seções citadas, Skills e trechos duplicados
 ```
 
 Os arquivos de `practices/` são divididos pelo **gatilho de leitura**: cada tarefa carrega um arquivo pequeno, não um domínio inteiro. Só o `PROJECT_GUIDE.md` é lido em toda tarefa.
 
 ## Como evolui
 
-Sem número de versão nem changelog: o estado adotado é o commit do submódulo, e cada commit que exige ação de quem já adotou traz um trailer `Impacto-adocao` dizendo qual. Detalhes em [`manutencao-do-conjunto.md`](manutencao-do-conjunto.md).
+Sem número de versão nem changelog. O mecanismo está em [`manutencao-do-conjunto.md`](manutencao-do-conjunto.md); como um projeto recebe uma atualização, em [`adocao.md`](adocao.md).
 
 Conteúdo em português (pt-BR). Uso interno.

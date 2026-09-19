@@ -9,8 +9,8 @@ Cobre como uma mudança é conduzida do início ao fim e o que se exige dela em 
 
 Vale para pessoa e agente.
 
-1. **Entender**: objetivo e critério de sucesso, áreas afetadas, risco, se envolve código gerado, submódulo ou dependência externa, e quais validações existem. Leia o que se aplica à área, rastreie as interfaces afetadas e confira o estado inicial do VCS. **Pare de investigar quando houver evidência suficiente** — continuar lendo "para ter certeza" é o gasto mais comum e menos produtivo de uma sessão.
-2. **Planejar na medida da mudança**: mudança trivial vai direto; mudança não trivial ganha um plano curto antes da primeira edição — arquivos, passos, como verificar; funcionalidade maior ganha spec ([specs.md](specs.md)). Trabalho delegado a agente tem um piso mais alto: [ia.md](ia.md), Seção *Plano antes da primeira edição*.
+1. **Entender**: objetivo e critério de sucesso, áreas afetadas, risco, se envolve código gerado, submódulo ou dependência externa, e quais validações existem. Leia o que se aplica à área e rastreie as interfaces afetadas.
+2. **Planejar na medida da mudança**: mudança trivial vai direto; mudança não trivial ganha um plano antes da primeira edição ([ia.md](ia.md), Seção *Plano antes da primeira edição*); funcionalidade maior ganha spec ([specs.md](specs.md)).
 3. **Implementar em incrementos verificáveis**: cada incremento é uma alteração coesa seguida do sensor mais barato que a verifica. Erro encontrado logo depois de uma alteração pequena tem causa óbvia; o mesmo erro depois de vinte alterações vira investigação. Mudança mínima, no estilo e nas abstrações existentes, sem refatoração não relacionada; ao mover arquivos, atualize todas as referências.
 4. **Validar**: sensores do mais específico ao mais amplo ([testes.md](testes.md), Seção *Conjunto mínimo de sensores*); para mudança só documental, inspeção do diff e verificação de links. O que não puder ser executado é registrado com o motivo.
 5. **Documentar**: uma passada, com o comportamento já estável e verificado ([../manutencao.md](../manutencao.md), Seção *Quando e como atualizar*).
@@ -48,10 +48,9 @@ O resumo diz a verdade sobre o estado: o que não foi verificado aparece como n�
 4. Segredo que chegou ao histórico é **rotacionado**. Apagar num commit seguinte não desfaz a exposição: o valor continua no histórico e em todo clone.
 5. Dado de produção (log real, dump, base de clientes) não entra no repositório; use dado sintético.
 
-## 4. Comandos e dependências
+## 4. Dependências
 
-1. **Só se documenta comando que existe e foi executado**, com diretório, pré-requisitos e efeitos colaterais quando relevantes. Comando inferido não vira instrução oficial, e nenhum comando documentado contém credencial.
-2. **Dependência nova precisa ser necessária, confiável e ter versão fixada.** Nome incomum é verificado contra o registro oficial antes de instalar — typosquatting e pacote inventado por agente são o mesmo ataque. A introdução de uma dependência é decisão da pessoa, não do agente.
+**Dependência nova precisa ser necessária, confiável e ter versão fixada.** Nome incomum é verificado contra o registro oficial antes de instalar — typosquatting e pacote inventado por agente são o mesmo ataque. A introdução de uma dependência é decisão da pessoa, não do agente.
 
 ## 5. Modificações estruturais
 
@@ -68,8 +67,8 @@ Evite: mover arquivos sem atualizar consumidores; criar camada sem responsabilid
 ## Checklist deste domínio
 
 - [ ] A mudança foi implementada em incrementos, cada um verificado pelo sensor mais barato que se aplica.
-- [ ] Os sensores existentes foram executados; os ausentes, registrados como pendência.
+- [ ] Os sensores existentes foram executados e o resultado declarado; os ausentes viraram pendência, nunca "verificado manualmente" sem dizer como.
 - [ ] Nenhum segredo, credencial ou dado de produção entrou no diff.
-- [ ] Nenhum comando inferido foi documentado como oficial; dependência nova foi decidida por uma pessoa e tem versão fixada.
+- [ ] Dependência nova foi decidida por uma pessoa, é verificável no registro oficial e tem versão fixada.
 - [ ] Nenhum submódulo foi alterado sem pedido explícito; arquivo gerado foi alterado pela fonte.
 - [ ] A mudança terminou com o resumo da Seção *Resumo da mudança*, incluindo o que não foi verificado.

@@ -29,7 +29,7 @@ Consequências que o projeto precisa conhecer:
 2. `AGENTS.md` — depois do anterior, porque índice só se escreve bem sobre o que já existe. Declara os domínios aplicáveis e, na seção *Fluxo*, o branch base e como o trabalho do agente é entregue ([practices/git.md](practices/git.md), Seção *Agente em sessão local*) — são os fatos que o agente precisa em toda tarefa e não descobre sozinho.
 3. `README.md` — a apresentação para pessoas.
 
-`docs/workflow.md` **não** nasce no dia zero: ele aparece quando o fluxo deixa de caber na seção *Fluxo* do `AGENTS.md` — plataforma de PR/MR em uso, CI, processo de liberação, mais de uma pessoa. Num projeto solo sem remoto, essas três linhas no `AGENTS.md` são o fluxo inteiro, e um arquivo próprio só acrescenta um lugar a manter.
+`docs/workflow.md` **não** nasce no dia zero; os critérios para ele aparecer estão em `templates/workflow.md`.
 
 Nessa ordem toda referência entre documentos aponta para trás. Se alguma ferramenta de IA usada no projeto não lê `AGENTS.md`, crie o adaptador dela ([practices/ia-harness.md](practices/ia-harness.md), Seção *Adaptadores de ferramenta*).
 

@@ -13,7 +13,7 @@ A unidade de entrega de um agente é uma **proposta revisável** — uma branch,
 
 Duas consequências:
 
-- **Proibição em texto não é garantia.** O que impede um push indevido é proteção de branch no servidor e lista de comandos negados na configuração da ferramenta ([ia-harness.md](ia-harness.md), Seção *Adaptadores de ferramenta*). As regras abaixo orientam; o mecanismo é que segura.
+- **Proibição em texto não é garantia** ([ia-harness.md](ia-harness.md), Seção *Harness e economia de contexto*): o que impede um push indevido é proteção de branch no servidor e lista de comandos negados na configuração da ferramenta.
 - **Dentro da branch dele, tudo que o agente faz é reversível — e por isso é livre.** É a branch que torna a autonomia barata: sem ela, cada ação precisa de permissão e o trabalho vira supervisão.
 
 ## 2. Branch e revisão
@@ -28,7 +28,7 @@ Duas consequências:
 
 1. **Assunto no imperativo**, até ~72 caracteres, sem ponto final; o corpo explica o porquê e o impacto, não o que o diff já mostra. O idioma é decisão do projeto, declarada no `AGENTS.md`.
 2. **Commit pequeno e frequente é ponto de retorno.** Vale para pessoa e mais ainda para agente: uma sessão que produz um único commit gigante só pode ser desfeita inteira, e a parte boa vai junto. Um commit por incremento verificado ([engenharia.md](engenharia.md), Seção *Processo de uma mudança*) é o que permite voltar um passo em vez de recomeçar.
-3. **O que entra no commit é escolhido, não varrido.** Adicione os caminhos da tarefa; `git add -A` num repositório com trabalho preexistente, artefato de build ou arquivo local leva para o diff o que ninguém pediu. Confira `git status` e `git diff` antes de começar e antes de commitar.
+3. **O que entra no commit é escolhido, não varrido.** Adicione os caminhos da tarefa; `git add -A` num repositório com trabalho preexistente, artefato de build ou arquivo local leva para o diff o que ninguém pediu. Confira `git status` e `git diff` antes de commitar.
 4. **Commit que implementa requisito cita o identificador** (`REQ-<PREFIXO>-NNN`, `templates/spec.md`) e o ADR quando houver — no commit e na descrição do PR/MR. Assim `git log --grep REQ-UART-003` reconstrói a implementação de um requisito sem nenhuma tabela mantida à mão.
 5. **Não misture assuntos.** Reformatação em massa, renomeação de arquivos e mudança de comportamento vão em commits separados.
 6. **Histórico compartilhado não é reescrito** sem combinação explícita entre quem trabalha nele.
@@ -46,9 +46,9 @@ O projeto escolhe um dos dois modos e o declara na seção *Fluxo* do `AGENTS.md
 | **Árvore de trabalho** (padrão) | edita e entrega o resumo, sem commitar | revisa o diff não commitado, commita e integra |
 | **Commit na branch** | commita cada incremento verificado na branch de trabalho | revisa `git diff <base>...<branch>` e integra |
 
-**O que o modo padrão custa é o ponto de retorno**, e ele se compra de volta commitando por incremento em vez de só no fim: o agente para ao concluir cada passo do plano, você confere e commita, e o passo seguinte parte de um estado bom conhecido ([engenharia.md](engenharia.md), Seção *Processo de uma mudança*). Sem isso, um caminho errado no meio de uma sessão longa leva junto o que já estava bom. O modo **commit na branch** existe para quando essa parada não é prática — refatoração ampla, ou agente trabalhando enquanto você faz outra coisa — e exige branch exclusiva dele.
+**O que o modo padrão custa é o ponto de retorno** (Seção *Commit e rastreabilidade*), e ele se compra de volta commitando por incremento em vez de só no fim: o agente para ao concluir cada passo do plano, você confere e commita, e o passo seguinte parte de um estado bom conhecido. O modo **commit na branch** existe para quando essa parada não é prática — refatoração ampla, ou agente trabalhando enquanto você faz outra coisa — e exige branch exclusiva dele.
 
-Em ambos, o merge, o push ao tronco e a reescrita de histórico são da pessoa; e em ambos o agente confere o estado inicial do VCS antes de tocar em qualquer arquivo — alteração preexistente não é sobrescrita, não é formatada e não entra no diff da tarefa.
+Em ambos, o merge, o push ao tronco e a reescrita de histórico são da pessoa.
 
 ## 5. Agente assíncrono e PR/MR
 
@@ -76,7 +76,7 @@ Livre: ação reversível e contida na branch de trabalho. Exige pedido explíci
 ## Checklist deste domínio
 
 - [ ] O trabalho saiu de um base declarado, numa branch de um assunto só.
-- [ ] O estado inicial do VCS foi conferido e nenhuma alteração preexistente entrou no diff.
+- [ ] Nenhuma alteração preexistente entrou no diff.
 - [ ] O que entrou em cada commit foi escolhido por caminho, não varrido.
 - [ ] Commits explicam o porquê e citam requisito ou ADR quando aplicável.
 - [ ] Nenhum merge, push ao tronco ou reescrita de histórico compartilhado foi feito pelo agente.

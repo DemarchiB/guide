@@ -16,7 +16,7 @@ Cobre o que acontece enquanto o firmware roda: interrupções e DMA, sincroniza�
 7. **Toda condição de erro do periférico é tratada** — estouro, ruído, quadro inválido —, não apenas o caminho feliz.
 8. **O tempo de execução de toda rotina de interrupção é conhecido e compatível com o período do que ela atende** — não só o tempo da seção crítica dentro dela, mas o da rotina inteira, do início ao retorno.
 9. **Instrução de sincronização do núcleo (barreira de dados ou de instrução) e atributo que impede otimização só entram com justificativa no local**: que efeito de pipeline, cache ou reordenação pelo compilador eles evitam ali, com referência à documentação do núcleo ou do fabricante. Colocados "por precaução" escondem uma suposição não verificada — e a próxima pessoa não sabe se pode removê-los.
-10. **Buffer usado por DMA, em alvo com cache de dados, exige alinhamento, seção de memória dedicada e manutenção explícita de cache antes e depois da transferência.** `volatile` não garante coerência de cache: ele marca o que muda fora do fluxo do programa, não sincroniza.
+10. **Buffer usado por DMA, em alvo com cache de dados, exige alinhamento, seção de memória dedicada e manutenção explícita de cache antes e depois da transferência.** `volatile` não cobre coerência de cache, pelo mesmo motivo que não cobre atomicidade ([c-embarcado.md](c-embarcado.md), Seção *Defensividade e comportamento indefinido*).
 
 ## 2. Sincronização entre contextos
 

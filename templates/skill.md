@@ -1,6 +1,6 @@
 # Template: Skill (`.agents/skills/<nome>/SKILL.md`)
 
-**Quando criar:** quando um procedimento é recorrente, específico do projeto, difícil de acertar sem instruções e já foi executado com sucesso ao menos uma vez — revisar uma mudança, corrigir um defeito, analisar o mapa de memória, preparar uma liberação. Não crie Skill genérica para linguagem, Git ou ferramenta comum: o agente já sabe fazer isso, e cada Skill custa sua `description` em toda sessão. Como criar, testar o acionamento, usar e manter: [practices/ia-harness.md](../practices/ia-harness.md), Seção *Skills: criar, usar e manter*.
+**Quando criar:** quando o procedimento atende aos critérios de [practices/ia-harness.md](../practices/ia-harness.md), Seção *Skills: criar, usar e manter* — que também diz como testar o acionamento, usar e manter. Não crie Skill genérica para linguagem, Git ou ferramenta comum: o agente já sabe fazer isso, e cada `description` custa contexto em toda sessão.
 
 **Papel:** procedimento carregado sob demanda. Segue o padrão aberto [Agent Skills](https://agentskills.io/specification): na partida o agente vê só `name` e `description` de cada Skill; o corpo é carregado quando a tarefa pede; arquivos auxiliares, só quando o corpo manda ler. É o mecanismo para o que antes seria um "prompt de papel". Skill aponta para as regras dos domínios em vez de repeti-las.
 

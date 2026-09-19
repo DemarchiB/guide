@@ -11,7 +11,7 @@ Cobre o que se monta uma vez e depois molda todas as sessões: o que é carregad
 
 O contexto é pago em toda sessão, e mais contexto não é melhor contexto — texto de processo em excesso compete com o problema, e o agente passa a raciocinar sobre procedimento em vez de sobre a tarefa:
 
-1. **Carregue sempre só o que o agente erraria sem saber**: comandos reais, convenções não óbvias, restrições críticas e desvios. O que ele descobre lendo a árvore ou o manifesto não entra.
+1. **Carregue sempre só o que o agente erraria sem saber**: comandos reais, convenções não óbvias, restrições críticas e desvios. O que ele descobre lendo a árvore ou o manifesto não entra. O teste de cada linha é *uma tarefa típica sairia errada sem isto?*
 2. **Escreva instruções concretas e verificáveis.** "Rode `ctest --preset host`" é acionável; "garanta a qualidade" é ruído.
 3. **Carregue detalhes sob demanda**: o domínio quando a tarefa o toca, o `AGENTS.md` aninhado da pasta aplicável, a Skill do procedimento, o template ao criar documento. A declaração de domínios no projeto é o catálogo do que existe, nunca uma ordem de carregar tudo.
 4. **Não use texto para impor ações que exigem garantia**: hook, sensor, permissão e proteção de branch são o mecanismo correto. Uma regra escrita reduz a frequência de um erro; só o mecanismo o impede.
@@ -30,9 +30,9 @@ Onde mais se ganha em custo e em qualidade não é no texto do harness: é em co
 
 ## 3. Skills: criar, usar e manter
 
-Uma **Skill** é um procedimento reutilizável — revisar uma mudança, corrigir um defeito, analisar memória, preparar uma liberação. Só `name` e `description` ficam disponíveis para o acionamento; o corpo é carregado quando a tarefa pede. Formato: [template de Skill](../templates/skill.md) e especificação [Agent Skills](https://agentskills.io/specification).
+Uma **Skill** é um procedimento reutilizável — revisar uma mudança, corrigir um defeito, analisar memória, preparar uma liberação. O formato e a mecânica de carregamento estão em [templates/skill.md](../templates/skill.md).
 
-1. **Crie a Skill a partir de um procedimento já executado**, não de um procedimento ideal imaginado. Registre o que precisou ser explicado ou corrigido.
+1. **Crie a Skill quando o procedimento for recorrente, específico do projeto, difícil de acertar sem instruções e já executado com sucesso ao menos uma vez** — não a partir de um procedimento ideal imaginado. Registre o que precisou ser explicado ou corrigido. Procedimento genérico de linguagem, de Git ou de ferramenta comum não vira Skill: o agente já o executa, e a `description` custa contexto sem contrapartida.
 2. **Aponte para as regras, não as repita.** O procedimento manda aplicar os checklists dos domínios; não copia seu conteúdo.
 3. **Torne determinístico o que puder ser script**, em vez de deixar o agente reinterpretar cada passo.
 4. **Teste o acionamento** numa sessão nova com um pedido que deve ativar a Skill e outro parecido que não deve.

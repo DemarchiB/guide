@@ -14,7 +14,7 @@ Em ordem crescente de custo:
 1. **Build** do módulo afetado.
 2. **Teste direcionado** à mudança, ampliando para a suíte conforme o risco.
 3. **Lint / análise estática** na configuração do próprio projeto.
-4. **Links e includes relativos da documentação** — `python docs/guide/tools/verificar.py`, que ignora blocos de código e gitlinks externos.
+4. **Documentação** — `python docs/guide/tools/verificar.py`: links, includes, seções citadas, Skills e trechos repetidos entre arquivos.
 5. **Varredura de segredos** antes do commit.
 
 Regras de uso:
@@ -37,14 +37,14 @@ Em firmware o esforço não se distribui por igual. Na ordem de retorno:
 
 **Não se testa** a HAL do fabricante, o compilador, nem função de acesso trivial. **Cobertura não é meta**: perseguir percentual produz teste que existe para contar. A meta é caso de erro e caso de limite cobertos onde uma falha custa uma visita ao campo.
 
-**Num projeto sem nenhum teste**, o caminho é: um preset de host que compile e rode ([c-build-e-analise.md](c-build-e-analise.md), Seção *Sensores da linguagem*); um módulo de lógica pura coberto de ponta a ponta; e daí em diante cada tarefa cobre a área que toca. Mutirão de testes produz suíte que ninguém entende. A escolha do arcabouço de teste é decisão do projeto, declarada no `AGENTS.md` e — por ser dependência nova — registrada conforme [engenharia.md](engenharia.md), Seção *Comandos e dependências*.
+**Num projeto sem nenhum teste**, o caminho é: um preset de host que compile e rode ([c-build-e-analise.md](c-build-e-analise.md), Seção *Sensores da linguagem*); um módulo de lógica pura coberto de ponta a ponta; e daí em diante cada tarefa cobre a área que toca. Mutirão de testes produz suíte que ninguém entende. A escolha do arcabouço de teste é decisão do projeto, declarada no `AGENTS.md` e — por ser dependência nova — registrada conforme [engenharia.md](engenharia.md), Seção *Dependências*.
 
 ## 3. A costura
 
 **Costura** é a fronteira onde a implementação de hardware pode ser trocada por um dublê sem que a lógica saiba.
 
 1. **Prefira substituição em tempo de link.** A aplicação chama `uart_enviar()`; existem dois arquivos que a implementam — um para o alvo, um dublê para o host — e o preset do build escolhe qual entra. Não custa nada em execução, não usa macro e não muda o código de produção.
-2. **Ponteiro de função só quando a troca precisa acontecer em execução.** Ele quebra o grafo de chamadas estático, e com ele a análise de pilha e a rastreabilidade ([../templates/modulo-c.md](../templates/modulo-c.md)).
+2. **Ponteiro de função só quando a troca precisa acontecer em execução** — ele tem preço em análise ([../templates/modulo-c.md](../templates/modulo-c.md)).
 3. **Compilação condicional não é costura.** `#if TESTE` espalhado pelo módulo cria dois códigos diferentes: o que você testa não é o que embarca.
 4. **A base de tempo é a costura mais valiosa.** Com `agora_ms()` substituível, um teste de tempo limite de 30 segundos roda em microssegundos e verifica o instante exato da transição. Sem ela, o teste dorme — e teste que dorme ninguém roda.
 5. **Módulo com estado tem função de reinicialização** chamada antes de cada teste. Teste que só passa numa ordem é defeito do teste, e some por conta própria quando alguém acrescenta outro.
@@ -60,7 +60,7 @@ Em firmware o esforço não se distribui por igual. Na ordem de retorno:
 7. **Entrada realista, inclusive a inválida**: quadro cortado no meio, comprimento declarado maior que o recebido, valor fora da faixa, contador exatamente no ponto de estouro, buffer cheio.
 8. **A falha diz o que houve** — esperado e obtido no texto da asserção. Falha que só diz "asserção falhou na linha 74" custa uma sessão de depuração por vez que aparece.
 
-**Sensores baratos que o host dá junto**: compilar e rodar a suíte com `-fsanitize=address,undefined` encontra estouro de buffer e comportamento indefinido que no alvo aparecem como travamento aleatório meses depois — custo de uma flag no preset de host. Onde o espaço de entrada for pequeno (um byte de comando, por exemplo), varra todos os valores em vez de escolher três.
+**Sensores baratos que o host dá junto**: rodar a suíte com os sanitizers ligados ([c-build-e-analise.md](c-build-e-analise.md), Seção *Sensores da linguagem*) transforma cada teste também em detector de estouro de buffer. Onde o espaço de entrada for pequeno (um byte de comando, por exemplo), varra todos os valores em vez de escolher três.
 
 ## 5. Pedir testes a um agente
 
@@ -95,7 +95,6 @@ Escreva testes em host para <módulo>, seguindo docs/guide/practices/testes.md.
 
 ## Checklist deste domínio
 
-- [ ] Os sensores existentes rodaram; os ausentes viraram pendência declarada, nunca "verificado manualmente" sem dizer como.
 - [ ] Todo teste novo foi visto falhando antes de passar.
 - [ ] Há teste para caso de erro e de limite, não só para o caminho nominal.
 - [ ] Nenhum teste verifica estado interno, depende de ordem, de relógio real ou de espera.

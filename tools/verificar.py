@@ -14,7 +14,11 @@ Verifica:
             (.<ferramenta>/skills/<nome>/SKILL.md) têm name e description
             idênticos aos da Skill canônica, que precisa existir;
   secoes    (só no conjunto) toda citação "Seção *Título*" corresponde a um
-            título existente.
+            título existente;
+  duplicacao  trechos longos repetidos entre arquivos, fora de blocos de
+            código — candidatos a regra com dois donos. Informativo: não
+            reprova, porque repetição legítima existe (texto que um template
+            contém para o projeto copiar).
 
 Também informa, em caracteres, os arquivos permanentes e os AGENTS.md
 condicionais encontrados por caminho. Gitlinks declarados em .gitmodules
@@ -25,6 +29,7 @@ Sai com código 1 se houver qualquer problema. Só biblioteca padrão, Python 3.
 """
 
 import argparse
+import difflib
 import re
 import sys
 from pathlib import Path
@@ -37,6 +42,11 @@ INLINE_CODE_RE = re.compile(r"(`+)(.+?)\1")
 SECAO_RE = re.compile(r"Seç(?:ão|ões)\s+\*([^*]+)\*")
 TITULO_RE = re.compile(r"^#{1,6}\s+(.*?)\s*#*\s*$")
 NOME_SKILL_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+
+PALAVRAS_TRECHO = 8  # tamanho mínimo, em palavras, de um trecho repetido relatado
+# Repetição esperada: ponteiro para outro arquivo, cabeçalho padrão de domínio,
+# e o rótulo de estado provisório. Não é regra com dois donos.
+PONTEIRO_RE = re.compile(r"seç(?:ão|ões)|\bmd\b|aplica se a|leia quando|a definir|a verificar")
 
 
 def ler(caminho):
@@ -226,6 +236,54 @@ def verificar_skills(raiz, ignorar):
     return problemas
 
 
+def texto_comparavel(texto):
+    """Texto fora de blocos de código e de cabeçalhos padrão, normalizado."""
+    texto = re.sub(r"^\s*(`{3,}|~{3,}).*?^\s*\1", " ", texto, flags=re.S | re.M)
+    # os cabeçalhos "Aplica-se a" e "Leia quando" repetem por formato, não por regra
+    texto = "\n".join(
+        l for l in texto.split("\n")
+        if not re.match(r"\s*\*\*(Aplica-se a|Leia quando|Leia este arquivo quando)", l)
+    )
+    texto = re.sub(r"[^\w\s]", " ", texto)  # marcação e pontuação fora
+    return re.sub(r"\s+", " ", texto).strip().lower()
+
+
+def titulos_normalizados(raiz, ignorar):
+    """Títulos de seção, na mesma normalização dos trechos comparados."""
+    titulos = set()
+    for arq in arquivos_md(raiz, ignorar):
+        for _, linha in linhas_fora_de_codigo(ler(arq)):
+            m = TITULO_RE.match(linha)
+            if m:
+                titulos.add(texto_comparavel(normalizar_titulo(m.group(1))))
+    return {t for t in titulos if t}
+
+
+def trechos_repetidos(raiz, ignorar):
+    """Maiores trechos comuns a dois arquivos, a partir de PALAVRAS_TRECHO palavras."""
+    titulos = titulos_normalizados(raiz, ignorar)
+    documentos = []
+    for arq in arquivos_md(raiz, ignorar):
+        palavras = texto_comparavel(ler(arq)).split()
+        if len(palavras) >= PALAVRAS_TRECHO:
+            documentos.append((arq.relative_to(raiz).as_posix(), palavras))
+
+    achados = []
+    for i, (rel_a, pal_a) in enumerate(documentos):
+        for rel_b, pal_b in documentos[i + 1:]:
+            comparador = difflib.SequenceMatcher(None, pal_a, pal_b, autojunk=False)
+            for ini_a, _, tamanho in comparador.get_matching_blocks():
+                if tamanho < PALAVRAS_TRECHO:
+                    continue
+                trecho = " ".join(pal_a[ini_a:ini_a + tamanho])
+                if PONTEIRO_RE.search(trecho):
+                    continue
+                if any(trecho in titulo for titulo in titulos):
+                    continue  # título de seção citado, não regra repetida
+                achados.append(f"  {rel_a} x {rel_b}\n    ...{trecho}...")
+    return achados
+
+
 def formatar_tamanhos(arquivos, raiz):
     return [f"  {len(ler(a)):>6} {a.relative_to(raiz).as_posix()}" for a in arquivos]
 
@@ -283,6 +341,11 @@ def main():
         for p in problemas:
             print(f"  {p}")
         total += len(problemas)
+
+    repetidos = trechos_repetidos(raiz, ignorar)
+    if repetidos:
+        print("[duplicacao — informativo: confira se a regra tem dois donos]")
+        print("\n".join(repetidos))
 
     tamanhos = tamanhos_sempre_carregados(raiz)
     if tamanhos:

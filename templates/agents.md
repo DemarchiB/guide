@@ -2,12 +2,12 @@
 
 **Quando usar:** no dia zero, depois de `ARCHITECTURE.md` (`adocao.md`). Aninhado, quando uma pasta tiver convenção própria.
 
-**Papel:** índice operacional carregado em **toda** sessão de agente. Contém só o que o agente erraria sem saber: comandos reais, convenções que fogem do padrão, restrições críticas, desvios deste conjunto e onde está o que não é óbvio. Não é visão geral do repositório (o agente lê a árvore), não é cópia de `ARCHITECTURE.md` e não contém instrução genérica ("escreva código limpo") — tudo isso custa contexto em toda sessão sem melhorar o resultado ([practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*).
+**Papel:** índice operacional carregado em **toda** sessão de agente; o que entra nele é decidido por [practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*. Na prática, o que mais aparece aqui indevidamente: visão geral do repositório (o agente lê a árvore), cópia de `ARCHITECTURE.md` e instrução genérica ("escreva código limpo").
 
 **Convenções:**
 
-- **Curto, porque cada linha é paga em toda sessão.** O teste de cada linha: *uma tarefa típica deste projeto sairia errada sem ela?* Conteúdo que só algumas tarefas usam vai para um `AGENTS.md` aninhado, uma Skill ou um documento em `docs/` com link — é o critério, e não uma contagem de linhas, que decide.
-- **Somente comandos verificados.** Comando que ninguém rodou entra como `<a verificar>`, nunca como oficial.
+- **Curto, porque cada linha é paga em toda sessão**, pelo teste de [practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*. Conteúdo que só algumas tarefas usam vai para um `AGENTS.md` aninhado, uma Skill ou um documento em `docs/` com link — é o critério, e não uma contagem de linhas, que decide.
+- **Somente comandos verificados**, com o que falta marcado ([manutencao.md](../manutencao.md), Seção *Estado provisório*).
 - **Sensor que não existe aparece como ausente**, não é omitido: a linha `| Testes | <a definir: sem suíte> | — |` diz ao agente que ele não tem como se verificar sozinho, e é o que impede que ele declare "testado". ([practices/testes.md](../practices/testes.md), Seção *Conjunto mínimo de sensores*)
 - **Seção sem conteúdo é omitida**, exceto *Comandos* e *Fluxo*, que existem desde o dia zero, mesmo com marcações. *Fluxo* fica aqui, e não num arquivo à parte, porque o agente precisa dela em toda tarefa. Ela tem só os dois fatos que ele não tem como deduzir — o branch base e se ele commita —; o resto do fluxo é regra do conjunto ([practices/git.md](../practices/git.md)), e repeti-la aqui custa contexto em toda sessão e diverge na primeira alteração.
 - **Aninhamento:** o `AGENTS.md` de uma subárvore (componente, pasta com ferramental próprio) descreve só aquela pasta e nunca repete regra do raiz; o raiz aponta para ele no *Onde fica o quê*. As ferramentas carregam o mais próximo do arquivo alterado; ferramenta que não faz isso recebe o mesmo adaptador do raiz em cada pasta.

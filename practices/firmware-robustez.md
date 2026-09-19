@@ -28,7 +28,7 @@ Cobre o que o produto faz quando algo dá errado e o que ele aceita de fora: est
 
 Enquanto o projeto não adotar uma norma, este guia permanece agnóstico a ela: nenhuma das regras abaixo depende de norma específica, e todas reduzem o custo de adotar uma depois.
 
-1. **Rastreabilidade auditável desde já** ([git.md](git.md), Seção *Commit e rastreabilidade*): identificador do requisito presente na spec, no commit, no teste e no registro de validação. A ponta que fecha essa cadeia é a identificação de build ([c-build-e-analise.md](c-build-e-analise.md), Seção *Toolchain, build e identificação*): sem saber qual binário está no produto, nenhuma evidência anterior se liga ao equipamento em campo.
+1. **Rastreabilidade auditável desde já** ([git.md](git.md), Seção *Commit e rastreabilidade*). A ponta que fecha essa cadeia é a identificação de build ([c-build-e-analise.md](c-build-e-analise.md), Seção *Toolchain, build e identificação*): sem saber qual binário está no produto, nenhuma evidência anterior se liga ao equipamento em campo.
 2. **Estado seguro definido e verificável** (Seção *Estado seguro, watchdog e reset*) é a peça que toda norma vai exigir e que nenhum projeto consegue reconstruir depois.
 3. **Determinismo antes de conformidade**: sem alocação dinâmica, sem recursão, pilha orçada, prazos declarados ([c-embarcado.md](c-embarcado.md), Seção *Memória e recursos*).
 4. **Modos de falha listados por função crítica** — o que pode falhar, como é detectado, o que acontece então. Uma tabela curta por função vale mais do que a norma inteira lida sem aplicação.

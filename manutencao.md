@@ -31,7 +31,7 @@ Nenhum documento fica bloqueado por falta de fato confirmado, e nenhum buraco é
 - `<a definir>` — ainda não há escolha feita;
 - `<a verificar: motivo>` — há expectativa razoável, ainda não confirmada.
 
-Comando que ninguém rodou entra como `<a verificar>`, nunca como oficial. A marcação sai na mesma mudança que confirma o fato.
+Comando que ninguém rodou entra como `<a verificar>`, nunca como oficial; comando que foi executado é documentado com diretório, pré-requisitos e efeitos colaterais quando relevantes, e nunca com credencial. A marcação sai na mesma mudança que confirma o fato.
 
 **Seção sem conteúdo.** Seção prevista no template cujo conteúdo ainda não existe é **omitida** — o template continua dizendo onde ela entra quando o conteúdo surgir, e uma linha "nenhum até o momento" repetida em toda sessão de agente é custo sem informação. A exceção são campos que o template declara obrigatórios: esses ficam, com a marcação acima.
 

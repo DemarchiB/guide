@@ -9,7 +9,7 @@
 
 **Convenções:**
 
-1. **Um par de arquivos por módulo**, com o mesmo nome do tipo. Todo símbolo público leva o prefixo do módulo, e o projeto escolhe uma convenção de caixa e a mantém.
+1. **Um par de arquivos por módulo**, com o mesmo nome do tipo; os símbolos públicos seguem [practices/c-embarcado.md](../practices/c-embarcado.md), Seção *Estrutura, nomes e interface*.
 2. **`me` é o primeiro parâmetro**, sempre `<Tipo> *const me` — o ponteiro é constante, o objeto não. Nunca use `this`: é palavra reservada em C++ e quebra o dia em que o header for incluído de lá.
 3. **Os campos da estrutura são privados por convenção.** Só as operações do próprio módulo os tocam; nenhum chamador acessa `objeto.campo` diretamente. C não impõe isso — a revisão impõe.
 4. **Todo campo é documentado com unidade e faixa**, do mesmo modo que os parâmetros ([practices/c-embarcado.md](../practices/c-embarcado.md), Seção *Estrutura, nomes e interface*).

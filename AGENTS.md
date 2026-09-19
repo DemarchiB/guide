@@ -14,7 +14,7 @@ Este repositório segue a si mesmo ([PROJECT_GUIDE.md](PROJECT_GUIDE.md)), com o
 ## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
-| Verificação (links, includes, seções citadas, Skills; gitlinks excluídos) | `python tools/verificar.py` | raiz |
+| Verificação (links, includes, seções citadas, Skills, duplicação; gitlinks excluídos) | `python tools/verificar.py` | raiz |
 
 Requer Python 3.8+, sem dependências.
 
@@ -24,7 +24,7 @@ Requer Python 3.8+, sem dependências.
 
 ## Restrições críticas
 - Nenhum fato específico de um projeto entra aqui.
-- Uma regra tem um dono só; o segundo lugar recebe ponteiro com arquivo e **título** da seção.
+- Uma regra tem um dono só (`manutencao-do-conjunto.md`, Seção *Para onde vai um trecho que precisa sair*).
 - Antes de escrever uma regra, procure se ela já existe (`grep -ri`) e diga por que ela é boa prática.
 - Regra nova entra no arquivo cujo **gatilho de leitura** corresponde a ela, não no arquivo do assunto mais próximo (`manutencao-do-conjunto.md`, Seção *Custo de contexto e divisão de arquivos*).
 

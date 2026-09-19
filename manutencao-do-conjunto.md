@@ -53,7 +53,7 @@ Ao criar um domínio: acrescente a linha de tarefa na tabela *O que ler para cad
 
 O que custa não é o tamanho de um arquivo: é contexto lido sem necessidade. Um agente carrega o arquivo inteiro que a tabela de roteamento mandar ler — não existe "ler só a seção aplicável" —, e por isso **a unidade de divisão é o gatilho de leitura, não o assunto**. Dois critérios:
 
-- **O que é lido em toda tarefa é o mínimo possível.** Vale para o `PROJECT_GUIDE.md` e, nos projetos, para o `AGENTS.md`. Cada acréscimo passa pelo teste: *uma tarefa típica sairia errada sem isto?* Se só algumas tarefas precisam, o conteúdo vai para um arquivo lido sob demanda e o ponto de entrada ganha, no máximo, uma linha de roteamento. `python tools/verificar.py` informa o tamanho desses arquivos para que o crescimento fique visível na revisão, sem reprovar nada.
+- **O que é lido em toda tarefa é o mínimo possível.** Vale para o `PROJECT_GUIDE.md` e, nos projetos, para o `AGENTS.md`. Cada acréscimo passa pelo teste de [practices/ia-harness.md](practices/ia-harness.md), Seção *Harness e economia de contexto*. Se só algumas tarefas precisam, o conteúdo vai para um arquivo lido sob demanda e o ponto de entrada ganha, no máximo, uma linha de roteamento. `python tools/verificar.py` informa o tamanho desses arquivos para que o crescimento fique visível na revisão, sem reprovar nada.
 - **O que é lido sob demanda é dividido por gatilho.** Um arquivo reúne o que uma tarefa precisa ler junto, e a linha da tabela de roteamento que leva até ele descreve uma tarefa real. **É sinal para dividir quando duas tarefas frequentes usam partes diferentes do mesmo arquivo** — mexer numa interrupção não precisa das regras de persistência, escrever código C não precisa das de configurar o build. É sinal para juntar quando dois arquivos são quase sempre lidos em conjunto.
 
 Não há limite numérico de linhas, mas há uma referência prática: um domínio que passa de ~200 linhas quase sempre está atendendo a mais de um gatilho. Confira as linhas de roteamento que levam a ele; se forem tarefas distintas, divida por elas.
@@ -83,7 +83,7 @@ Commits são atômicos por assunto, como em qualquer projeto: mudança de sentid
 
 ## 7. Checklist de alteração do conjunto
 
-- [ ] `python tools/verificar.py` passa: links e títulos de seção citados.
+- [ ] `python tools/verificar.py` passa, e a lista de duplicação está vazia ou justificada.
 - [ ] A regra alterada tem um dono só; os outros arquivos apontam para ele.
 - [ ] Nenhum fato específico de um projeto entrou.
 - [ ] Arquivo novo, renomeado ou removido está refletido no `PROJECT_GUIDE.md`, em `estrutura.md` e no `README.md`.
