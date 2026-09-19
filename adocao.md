@@ -80,3 +80,30 @@ git submodule update --remote docs/guide                                        
 ```
 
 Cada linha `Impacto-adocao` é uma ação que o projeto precisa aplicar (`manutencao-do-conjunto.md`, Seção *Identificação e propagação*). Atualize num commit próprio, aplicando essas ações na mesma mudança. Ficar no estado atual é decisão legítima; se for deliberada e duradoura, registre o motivo numa linha do `AGENTS.md`.
+
+O que costuma precisar de ajuste no projeto é o que **aponta** para o conjunto: a lista de domínios aplicáveis e as citações de arquivo e seção no `AGENTS.md`, no `docs/workflow.md`, nas Skills e nos adaptadores de ferramenta. O conteúdo do projeto em si não muda.
+
+### Pedido pronto para um agente
+
+Use este pedido depois de rodar `git submodule update --remote docs/guide`. O `<hash-antigo>` é o commit que o projeto tinha antes da atualização: ele aparece como a linha `-Subproject commit ...` em `git diff docs/guide`, ainda não commitada.
+
+```text
+O submódulo docs/guide foi atualizado. Traga este projeto para o estado novo,
+seguindo docs/guide/adocao.md (Seção "Atualizar o conjunto num projeto").
+
+1. Liste o que mudou e o que ele exige:
+   git -C docs/guide log --format='%h %s%n%(trailers:key=Impacto-adocao)' <hash-antigo>..HEAD
+2. Para cada linha Impacto-adocao, aplique a ação nos documentos DESTE projeto.
+3. Verifique, além disso, se continuam corretos no projeto:
+   - a lista de domínios aplicáveis do AGENTS.md (nomes de arquivo em practices/);
+   - toda citação de arquivo do conjunto e de título de seção dele, em
+     AGENTS.md, docs/workflow.md, .agents/skills/ e adaptadores de ferramenta;
+   - as seções que os templates do conjunto passaram a exigir.
+   Use `grep -rn docs/guide .` e `grep -rn Seção .` para encontrá-las.
+4. Não altere nada dentro de docs/guide/ — é submódulo.
+5. Não invente conteúdo novo: só corrija ponteiros quebrados e o que o trailer
+   pedir. O que exigir decisão minha, liste em vez de decidir.
+
+Ao terminar, rode `python docs/guide/tools/verificar.py` e entregue o resumo
+da mudança, com a lista do que precisa de decisão minha.
+```
