@@ -46,17 +46,17 @@ Na maioria dos casos, a spec com sua lista de tarefas é tudo de que se precisa.
 
 1. **Só se implementa spec `aprovada`.** Implementar rascunho é decidir o comportamento no código, sem acordo.
 2. **Uma tarefa por vez, na ordem.** A tarefa é marcada `[x]` quando está implementada **e** verificada — não quando o código foi escrito.
-3. **Commits citam os identificadores** dos requisitos que implementam.
+3. A relação entre commits e requisitos, quando aplicável, segue [git.md](git.md), Seção *Commit e rastreabilidade*.
 4. **Divergência para o trabalho.** Quando a implementação revela requisito errado, incompleto ou inviável, pare: corrija a spec, obtenha a aprovação da mudança e só então continue. Implementar diferente e ajustar a spec depois para combinar apaga justamente a informação que a spec existia para guardar.
 5. **Suposição necessária para seguir não entra no código em silêncio**: vira pergunta ou nota na spec.
 6. **Ao concluir:** todos os critérios de aceite conferidos, tabela *Verificação* preenchida (o que não pôde ser verificado aparece como pendente), `Status: implementada` e `Data` atualizada. O resumo da mudança cita os requisitos atendidos.
 
 ## 4. Manter uma spec
 
-1. **Spec implementada descreve o comportamento vigente.** Mudança de comportamento edita a spec no mesmo commit ou PR que muda o código. Requisito novo recebe número novo; requisito removido fica marcado `(removido)`, para que o número não seja reaproveitado.
+1. **A spec descreve somente o comportamento vigente.** Mudança de comportamento edita a spec no mesmo commit ou PR que muda o código. Ao incluir ou remover requisitos, mantenha na spec apenas os requisitos atuais e renumere-os em sequência, atualizando critérios, tarefas e referências internas. O histórico do Git preserva as versões anteriores; não registre requisitos removidos na spec.
 2. **A lista de *Tarefas* é do trabalho em andamento.** Ao marcar a spec como `implementada`, remova a seção — o VCS guarda o histórico. Uma nova rodada de alteração cria a sua própria lista.
-3. **Reprojeto completo da funcionalidade gera spec nova**; a antiga passa a `substituída por <spec>`.
-4. **Funcionalidade removida leva a spec junto**, na mesma mudança. Projeto com rastreabilidade auditável mantém o arquivo com `Status: obsoleta`.
+3. **Reprojeto da funcionalidade atualiza a spec vigente.** Crie uma spec separada quando surgir uma funcionalidade independente; remova a spec antiga da documentação ativa se ela deixar de descrever comportamento vigente. O histórico do Git preserva as versões anteriores.
+4. **Funcionalidade removida leva a spec junto**, na mesma mudança. Se houver exigência formal de retenção auditável, preserve os registros conforme a política documental específica do projeto, fora das specs vigentes.
 5. **Divergência encontrada entre spec e código é defeito**, de um ou de outro: relate ou corrija, nunca ignore. Quem toca uma área com spec confere se ela ainda descreve o que o código faz.
 
 ## 5. Pedidos prontos para um agente
@@ -89,6 +89,7 @@ Uma tarefa da spec por sessão, e não a spec inteira de uma vez: é o recorte q
 - [ ] Funcionalidade que atende aos critérios da Seção *Quando escrever uma spec* tem spec aprovada antes do código.
 - [ ] Todo requisito é verificável, tem critério de aceite, e os casos de erro e limite foram escritos.
 - [ ] Nenhum requisito foi implementado de forma diferente da spec sem que a spec tenha sido corrigida e aprovada antes.
-- [ ] Tarefas marcadas só depois de verificadas; commits citam os requisitos.
+- [ ] Tarefas marcadas só depois de verificadas.
 - [ ] Spec concluída tem `Status: implementada`, tabela *Verificação* preenchida e sem lista de tarefas.
 - [ ] Mudança de comportamento em funcionalidade com spec alterou a spec na mesma mudança.
+- [ ] A spec contém somente requisitos atuais, com identificadores sequenciais e referências internas atualizadas.

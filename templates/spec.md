@@ -15,17 +15,17 @@
 **Convenções:**
 
 - Nome do arquivo em kebab-case sem acento (`deteccao-overflow-uart.md`).
-- **Identificador único no projeto inteiro:** `REQ-<PREFIXO>-NNN`, com um prefixo curto em maiúsculas por spec, declarado no cabeçalho (`REQ-UART-001`). Commit cita só o identificador; se dois arquivos tivessem `REQ-001`, a citação não diria qual. Número nunca é reaproveitado: requisito removido fica na lista marcado `(removido)`.
-- `Status`: `rascunho` → `aprovada` → `implementada`; ou `substituída por <spec>`; ou `obsoleta`, só em projeto com rastreabilidade auditável.
+- **Identificador único entre as specs vigentes do projeto:** `REQ-<PREFIXO>-NNN`, com um prefixo curto em maiúsculas por spec, declarado no cabeçalho (`REQ-UART-001`). Mantenha os requisitos atuais numerados em sequência e atualize referências quando renumerar. O histórico do Git preserva os identificadores e conteúdos anteriores.
+- `Status`: `rascunho` → `aprovada` → `implementada`.
 - *Tarefas* existe só enquanto há trabalho em andamento; spec `implementada` não tem essa seção.
-- A rastreabilidade até o commit vem das mensagens de commit (`git log --grep REQ-UART-001`), não de uma tabela: o hash de um commit não pode ser escrito dentro dele mesmo, e tabela de hashes mantida à mão sempre atrasa.
+- A spec descreve o estado atual. Não mantenha nela referências a requisitos removidos nem a versões anteriores; consulte o histórico do Git quando precisar recuperar o passado.
 - Ferramenta com modo de planejamento próprio escreve o resultado neste formato e neste local, não em pasta proprietária.
 - Seção sem conteúdo é omitida — "Design", por exemplo, só existe quando houver decisão de arquitetura envolvida.
 
 ````markdown
 # Spec: <título curto>
 
-- **Status:** rascunho | aprovada | implementada | substituída por <spec> | obsoleta
+- **Status:** rascunho | aprovada | implementada
 - **Data:** <AAAA-MM-DD da última atualização>
 - **Prefixo:** <PREFIXO>
 
