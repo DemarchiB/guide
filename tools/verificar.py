@@ -41,8 +41,6 @@ INCLUDE_RE = re.compile(r"#\[\[file:([^\]\r\n]+)\]\]")
 INLINE_CODE_RE = re.compile(r"(`+)(.+?)\1")
 SECAO_RE = re.compile(r"Seç(?:ão|ões)\s+\*([^*]+)\*")
 TITULO_RE = re.compile(r"^#{1,6}\s+(.*?)\s*#*\s*$")
-NOME_SKILL_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
-
 PALAVRAS_TRECHO = 8  # tamanho mínimo, em palavras, de um trecho repetido relatado
 # Repetição esperada: ponteiro para outro arquivo, cabeçalho padrão de domínio,
 # e o rótulo de estado provisório. Não é regra com dois donos.
@@ -181,6 +179,20 @@ def frontmatter(texto):
     return campos
 
 
+def nome_skill_valido(nome):
+    """Valida o nome conforme Agent Skills: letras minúsculas, números e hífens simples."""
+    if not nome or len(nome) > 64 or nome.startswith("-") or nome.endswith("-") or "--" in nome:
+        return False
+    return all(
+        caractere == "-"
+        or (
+            caractere.isalnum()
+            and (caractere.islower() or caractere.isdigit())
+        )
+        for caractere in nome
+    )
+
+
 def validar_skill(arq, raiz):
     rel = arq.relative_to(raiz).as_posix()
     fm = frontmatter(ler(arq))
@@ -191,8 +203,11 @@ def validar_skill(arq, raiz):
     desc = fm.get("description", "")
     if not nome:
         erros.append(f"{rel}: campo 'name' ausente")
-    elif len(nome) > 64 or not NOME_SKILL_RE.match(nome):
-        erros.append(f"{rel}: 'name' inválido ({nome}): 1-64 caracteres, a-z, 0-9 e hífens simples")
+    elif not nome_skill_valido(nome):
+        erros.append(
+            f"{rel}: 'name' inválido ({nome}): até 64 caracteres, letras minúsculas, "
+            "números e hífens simples; sem hífen no início/fim ou hífens consecutivos"
+        )
     elif nome != arq.parent.name:
         erros.append(f"{rel}: 'name' ({nome}) difere do nome da pasta ({arq.parent.name})")
     if not desc:

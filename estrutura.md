@@ -12,7 +12,7 @@ Cobre onde cada informação mora num projeto que adotou o conjunto: a árvore d
 ├── AGENTS.md               obrigatório — índice operacional, carregado em toda sessão de agente
 ├── ARCHITECTURE.md         obrigatório — mapa arquitetural, único no projeto
 ├── .agents/
-│   └── skills/<nome>/SKILL.md   workflows reutilizáveis (padrão Agent Skills)
+│   └── skills/<nome>/SKILL.md   pacotes reutilizáveis de capacidade (padrão Agent Skills)
 ├── docs/
 │   ├── guide/              este conjunto (submódulo) — nunca editado aqui
 │   ├── workflow.md         fluxo de revisão, quando não couber na seção Fluxo do AGENTS.md
@@ -27,7 +27,7 @@ Cobre onde cada informação mora num projeto que adotou o conjunto: a árvore d
 
 **Só existe o que tem conteúdo.** Os três obrigatórios nascem no dia zero (`adocao.md`); toda outra pasta e arquivo nasce com o primeiro conteúdo real. Pasta vazia "para o futuro" é o antipadrão da árvore preenchida: gasta atenção de quem lê e sugere que falta algo.
 
-Arquivo ou pasta exigido por uma ferramenta específica de IA não faz parte da estrutura: quando existe, é adaptador do `AGENTS.md` ou de `.agents/skills/`, criado só para ferramenta em uso — regra em [practices/ia-harness.md](practices/ia-harness.md), Seção *Adaptadores de ferramenta*.
+Arquivo ou pasta exigido por uma ferramenta específica de IA não faz parte do formato canônico: quando existe, é adaptador do `AGENTS.md` ou de um pacote em `.agents/skills/`, criado só para ferramenta em uso. O formato Agent Skills não padroniza o caminho em que cada host descobre Skills — regra em [practices/ia-harness.md](practices/ia-harness.md), Seção *Adaptadores de ferramenta*.
 
 ## 2. Catálogo de documentos
 
@@ -43,7 +43,7 @@ A definição completa do papel de cada documento — o que ele é, o que não �
 | `docs/decisions/ADR-NNNN-<slug>.md` | Decisão de arquitetura e alternativas descartadas. | `templates/adr.md` |
 | `docs/references/<dependência>.md` | Conhecimento do projeto sobre uma dependência externa. | `templates/referencia.md` |
 | `docs/design-docs/fsm-<nome>.md` | Máquina de estado. | `templates/fsm.md` |
-| `.agents/skills/<nome>/SKILL.md` | Workflow especializado, carregado sob demanda. | `templates/skill.md` |
+| `.agents/skills/<nome>/SKILL.md` | Pacote Agent Skills: instruções e recursos opcionais, carregados conforme a necessidade e o suporte do host. | `templates/skill.md` |
 | `<modulo>.h` + `<modulo>.c` | Módulo C com estado. | `templates/modulo-c.md` |
 
 ## 3. Onde registrar uma informação
@@ -61,7 +61,7 @@ Siga a primeira linha que se aplica.
 | é decisão que alguém vai questionar antes de mudar algo relacionado | `docs/decisions/` (critérios em `templates/adr.md`) |
 | é design ou decisão que precisa de explicação, sem a formalidade de um ADR | `docs/design-docs/` |
 | é um plano de trabalho com etapas, riscos ou migração que não cabe nas tarefas de uma spec | `docs/exec-plans/` |
-| é procedimento recorrente, difícil de acertar sem instruções | Skill em `.agents/skills/` |
+| é uma capacidade recorrente que precisa de instruções, workflow ou referências especializadas | pacote Agent Skills em `.agents/skills/` |
 | explica uma dependência externa no contexto do projeto | `docs/references/` |
 | é produzida por automação | `docs/generated/`, se precisar ser versionada |
 | é o branch base, ou como o trabalho do agente é entregue | a seção *Fluxo* do `AGENTS.md` — é preciso em toda tarefa |

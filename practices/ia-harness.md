@@ -30,32 +30,33 @@ Onde mais se ganha em custo e em qualidade não é no texto do harness: é em co
 
 ## 3. Skills: criar, usar e manter
 
-Uma **Skill** é um procedimento reutilizável — revisar uma mudança, corrigir um defeito, analisar memória, preparar uma liberação. O formato e a mecânica de carregamento estão em [templates/skill.md](../templates/skill.md).
+Uma **Skill** no padrão aberto Agent Skills é um pacote de capacidade carregado sob demanda: `SKILL.md` traz metadados e instruções; `references/`, `assets/` e `scripts/` podem fornecer conhecimento de domínio, modelos e código auxiliar. Neste conjunto, Skills organizam principalmente workflows e contexto especializado. O padrão e o template estão em [templates/skill.md](../templates/skill.md).
 
-1. **Crie a Skill quando o procedimento for recorrente, específico do projeto, difícil de acertar sem instruções e já executado com sucesso ao menos uma vez** — não a partir de um procedimento ideal imaginado. Registre o que precisou ser explicado ou corrigido. Procedimento genérico de linguagem, de Git ou de ferramenta comum não vira Skill: o agente já o executa, e a `description` custa contexto sem contrapartida.
-2. **Aponte para as regras, não as repita.** O procedimento manda aplicar os checklists dos domínios; não copia seu conteúdo.
+1. **Crie uma Skill quando houver uma necessidade recorrente e específica que se beneficie de instruções ou materiais próprios.** Para workflows, baseie-a em um procedimento observado e registre o que precisou ser explicado ou corrigido. Para conhecimento de domínio, use fontes verificáveis, indique escopo e vigência e mantenha referências atualizadas. Não crie pacote genérico para linguagem, Git ou ferramenta comum quando o agente já executa bem a tarefa; cada `description` tem custo na descoberta.
+2. **Aponte para as regras, não as repita.** No projeto, o workflow manda aplicar os checklists dos domínios; não copia seu conteúdo. Ao distribuir a Skill para outro host, não suponha que ele carregue as instruções do projeto: inclua ou indique explicitamente o contexto necessário. Materiais extensos ou usados por várias Skills podem continuar em uma fonte própria e ser consultados sob demanda.
 3. **Torne determinístico o que puder ser script**, em vez de deixar o agente reinterpretar cada passo.
-4. **Teste o acionamento** numa sessão nova com um pedido que deve ativar a Skill e outro parecido que não deve.
+4. **Teste o acionamento em cada host suportado** com um pedido que deve ativar a Skill e outro parecido que não deve. Use uma sessão limpa quando o host mantiver contexto ou cache entre pedidos.
 5. **Use a Skill quando o pedido corresponder a ela**; não improvise outro procedimento nem repita seu corpo no prompt.
-6. **Mantenha-a junto com o procedimento.** Mudança de comando, caminho, ferramenta ou ordem exige atualizar a Skill; desvio recorrente é defeito a corrigir.
-7. **Remova Skills sem uso** ou cujo procedimento o agente execute bem sem instrução; cada `description` custa contexto na descoberta.
+6. **Mantenha a Skill junto com seu workflow e referências.** Mudança de comando, caminho, ferramenta, ordem, escopo ou validade das fontes exige atualizar o pacote.
+7. **Remova Skills sem uso** ou materiais que o agente execute bem sem instrução; cada `description` custa contexto na descoberta.
 8. **Rode `python docs/guide/tools/verificar.py`** depois de criar, renomear ou alterar uma Skill ou adaptador.
 
 ## 4. Adaptadores de ferramenta
 
-O repositório tem uma fonte de instruções (`AGENTS.md`) e um lugar canônico para Skills (`.agents/skills/`). Ferramenta que não consome esses formatos recebe um adaptador somente se estiver em uso; regra do projeto nunca fica apenas no adaptador.
+O repositório tem uma fonte de instruções (`AGENTS.md`) e adota `.agents/skills/` como local canônico de autoria dos pacotes Agent Skills. Esse caminho é uma convenção deste conjunto, não uma exigência do padrão nem uma garantia de descoberta por toda ferramenta. Cada host pode ter seu próprio caminho e suporte; use um adaptador somente para ferramentas em uso. Uma Skill influencia o agente que a carrega, mas não cria isolamento nem concede permissões: o host deve aplicar limites de ferramentas e dados fora das instruções em texto.
 
-1. Prefira, nesta ordem: configuração apontando para a fonte canônica; arquivo da ferramenta que inclui a fonte; link simbólico quando sobreviver ao clone; stub textual como último recurso.
-2. Stub de Skill repete somente `name` e `description` da Skill canônica e aponta o corpo para `.agents/skills/<nome>/SKILL.md`. O verificador confere a igualdade.
+1. Prefira, nesta ordem: configuração do host apontando para o pacote canônico; link simbólico do diretório completo da Skill quando sobreviver ao clone; adaptador gerado para o formato ou caminho exigido pelo host. Não mantenha cópias manuais do pacote.
+2. Quando o host aceitar um stub, ele repete somente `name` e `description` canônicos e aponta para o corpo e os recursos em `.agents/skills/<nome>/`. O verificador confere a igualdade dos metadados; confirme também que o host consegue carregar as referências necessárias.
 3. **Subagente é adaptador quando o isolamento importar** — revisão sem permissão de escrita, ou investigação ampla que consumiria o contexto principal — e segue a Skill correspondente.
 4. Regra por caminho é ponteiro para o domínio aplicável, nunca cópia dele.
-5. **Configuração que muda o que o agente pode executar é versionada e revisada como código**: comandos permitidos e negados, integrações e diretórios. É aqui que as proibições de [git.md](git.md), Seção *O que exige pedido explícito*, deixam de ser texto e passam a valer. Segredos nessa configuração seguem [engenharia.md](engenharia.md), Seção *Segredos e dados sensíveis*: documenta-se o nome da variável, nunca o valor.
+5. **Configuração que muda o que o agente pode executar é versionada e revisada como código**: comandos permitidos e negados, integrações e diretórios. `allowed-tools` no frontmatter é experimental no padrão e não substitui enforcement do host. É aqui que as proibições de [git.md](git.md), Seção *O que exige pedido explícito*, deixam de ser texto e passam a valer. Segredos nessa configuração seguem [engenharia.md](engenharia.md), Seção *Segredos e dados sensíveis*: documenta-se o nome da variável, nunca o valor.
 
 ## Checklist deste guia
 
 - [ ] O que é carregado em toda sessão passou pelo teste "uma tarefa típica sairia errada sem isto?".
-- [ ] A Skill nasceu de procedimento observado, tem acionamento testado e descreve um critério de conclusão.
-- [ ] O corpo da Skill aponta para regras canônicas sem copiá-las.
+- [ ] A Skill atende a uma necessidade recorrente, usa o formato aberto e testa acionamento positivo e negativo.
+- [ ] Referências de domínio indicam fonte, escopo e validade; permissões são aplicadas pelo host, não pelo texto da Skill.
+- [ ] A Skill referencia regras do projeto sem copiá-las e declara dependências de contexto ao ser distribuída para outro host.
 - [ ] O adaptador só existe para ferramenta em uso e referencia a fonte correta.
 - [ ] Configuração de permissão está versionada, sem segredo, e nega o que o guia proíbe.
 - [ ] `python docs/guide/tools/verificar.py` passou.

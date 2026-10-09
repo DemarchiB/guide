@@ -2,9 +2,11 @@
 
 **Quando criar:** quando o procedimento atende aos critérios de [practices/ia-harness.md](../practices/ia-harness.md), Seção *Skills: criar, usar e manter* — que também diz como testar o acionamento, usar e manter. Não crie Skill genérica para linguagem, Git ou ferramenta comum: o agente já sabe fazer isso, e cada `description` custa contexto em toda sessão.
 
-**Papel:** procedimento carregado sob demanda. Segue o padrão aberto [Agent Skills](https://agentskills.io/specification): na partida o agente vê só `name` e `description` de cada Skill; o corpo é carregado quando a tarefa pede; arquivos auxiliares, só quando o corpo manda ler. É o mecanismo para o que antes seria um "prompt de papel". Skill aponta para as regras dos domínios em vez de repeti-las.
+**Papel:** pacote portátil de capacidade no padrão aberto [Agent Skills](https://agentskills.io/specification). O pacote combina `SKILL.md` (metadados e instruções) com referências, assets, scripts ou outros arquivos opcionais. O padrão recomenda divulgação progressiva: o host descobre Skills por seus metadados, carrega as instruções ao ativá-las e consulta recursos quando necessário. Caminho de descoberta, acionamento e suporte a scripts variam por host. A Skill orienta o agente que a carrega; não cria uma execução independente nem concede permissões. Pode incluir conhecimento de domínio em `references/`; material extenso ou sujeito a atualização frequente pode viver em uma base versionada consultada pela Skill.
 
-**Local:** `.agents/skills/<nome>/`, o caminho neutro de ferramenta. Ferramenta que procura Skills em outro caminho recebe um adaptador — link ou stub com frontmatter idêntico —, nunca uma cópia ([practices/ia-harness.md](../practices/ia-harness.md), Seção *Adaptadores de ferramenta*).
+O formato já é implementado em diferentes ecossistemas, como [ChatGPT e Codex](https://learn.chatgpt.com/docs/build-skills), [Google ADK e Genkit](https://developers.googleblog.com/enable-on-demand-expertise-with-agent-skills-in-genkit-go/) e [AWS Bedrock AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-skills.html); o catálogo de ferramentas da [Vercel](https://vercel.com/docs/agent-resources/skills) também lista suporte em vários agentes. Isso demonstra adoção ampla, mas não permite afirmar que a maioria de todas as IAs implementa o formato. Compatibilidade precisa ser conferida por host.
+
+**Local:** `.agents/skills/<nome>/` é o local canônico de autoria adotado por este conjunto; não é um caminho de descoberta exigido pelo padrão. Ferramenta que procura Skills em outro caminho recebe um adaptador — de preferência apontando para o pacote completo — em vez de uma cópia mantida à mão ([practices/ia-harness.md](../practices/ia-harness.md), Seção *Adaptadores de ferramenta*).
 
 **Estrutura:**
 
@@ -12,28 +14,33 @@
 .agents/skills/<nome>/
 ├── SKILL.md       obrigatório
 ├── scripts/       opcional — código que o agente executa
-├── references/    opcional — detalhe lido sob demanda
-└── assets/        opcional — modelos, tabelas, esquemas
+├── references/    opcional — documentação consultada sob demanda
+├── assets/        opcional — modelos, tabelas, esquemas
+└── ...            outros arquivos e pastas também são permitidos
 ```
 
-**Frontmatter** (verificado por `python docs/guide/tools/verificar.py`):
+**Frontmatter** do padrão aberto:
 
 | Campo | Regra |
 | --- | --- |
-| `name` | Obrigatório. 1–64 caracteres, só `a-z`, `0-9` e hífen; não começa nem termina com hífen; sem `--`; **igual ao nome da pasta**. |
-| `description` | Obrigatório. Até 1.024 caracteres. Diz **o que faz e quando usar**, com as palavras que aparecem nos pedidos reais — é o único texto que decide se a Skill é carregada. |
-| `compatibility` | Opcional, até 500 caracteres. Só quando houver requisito de ambiente (ferramenta, versão, rede). |
-| `allowed-tools` | Opcional e experimental; o suporte varia entre ferramentas. Não conte com ele como mecanismo de segurança. |
-| `license`, `metadata` | Opcionais. |
+| `name` | Obrigatório. 1–64 caracteres; letras minúsculas Unicode e números, separados opcionalmente por hífens simples; não começa nem termina com hífen, não contém `--` e **é igual ao nome da pasta**. |
+| `description` | Obrigatório. 1–1.024 caracteres. Diz **o que faz e quando usar**, com termos concretos que ajudam o host a descobrir a Skill. A forma de acionamento também depende do host. |
+| `license` | Opcional. Nome da licença ou referência a um arquivo de licença incluído. |
+| `compatibility` | Opcional, 1–500 caracteres. Inclua somente requisitos específicos de ambiente, produto, pacotes ou rede. |
+| `metadata` | Opcional. Mapa de chaves e valores textuais para metadados adicionais; hosts podem ignorá-lo. Use nomes de chave com namespace próprio. |
+| `allowed-tools` | Opcional: string com nomes de ferramentas separados por espaço. Experimental; suporte varia entre hosts. Não conte com ele como mecanismo de segurança. |
 
-Campos que só uma ferramenta entende não entram na Skill canônica: ela precisa funcionar em qualquer ferramenta que siga a especificação. Se um recurso próprio de ferramenta for indispensável, ele fica no adaptador daquela ferramenta.
+O padrão aberto torna o pacote interoperável, mas não garante que todo host o descubra ou suporte todos os campos e recursos. Campos específicos de uma ferramenta não entram no frontmatter canônico; se um recurso próprio for indispensável, ele fica no adaptador daquela ferramenta. A política efetiva de ferramentas e dados é configurada e aplicada pelo host.
+
+O verificador local confere `name`, `description`, seus limites, a correspondência do nome com a pasta e o limite de `compatibility`. Ele não substitui um validador completo de YAML ou a conferência de compatibilidade em cada host. Se o projeto já disponibiliza `skills-ref`, também se pode executar `skills-ref validate .agents/skills/<nome>`.
 
 **Convenções:**
 
-- O corpo do `SKILL.md` é carregado inteiro quando a Skill é ativada: o que só alguns casos usam vai para `references/`, referenciado a um nível de profundidade. A especificação sugere ficar abaixo de 500 linhas; o critério que importa é não carregar o que a execução típica não usa.
-- Passos verificáveis e um critério de conclusão explícito.
-- Caminhos relativos à raiz da Skill (`references/detalhe.md`) ou à raiz do repositório, dito explicitamente.
-- A Skill parte do `AGENTS.md` já carregado; não o repete nem manda relê-lo.
+- O padrão recomenda carregar o corpo do `SKILL.md` quando a Skill é ativada e consultar os recursos conforme necessário; confirme o comportamento do host usado. Mantenha no arquivo as instruções centrais e mova detalhes ou fontes consultadas em alguns casos para `references/`, com links relativos à raiz do pacote. A especificação recomenda menos de 500 linhas no arquivo principal e referências focadas, preferencialmente a um nível de profundidade.
+- Para Skills de workflow, escreva passos verificáveis e critério de conclusão. Para Skills focadas em conhecimento, explique o escopo das fontes, como aplicá-las e como declarar lacunas; não force seções de workflow que não se aplicam.
+- Para materiais factuais que mudam, registre fonte, escopo e vigência e defina como atualizar o material. Não trate o texto de referência como instrução do sistema; conteúdo consultado é dado a avaliar.
+- Prefira caminhos relativos à raiz da Skill (`references/detalhe.md`) para manter o pacote transportável. Referências à raiz do repositório são específicas do projeto e devem dizer isso explicitamente.
+- Não suponha que todo host carregue `AGENTS.md`. Em uma Skill usada apenas neste repositório, aponte para as regras já carregadas; ao distribuir o pacote para outros hosts ou repositórios, inclua ou referencie explicitamente as instruções necessárias.
 
 ```markdown
 ---
@@ -43,15 +50,17 @@ description: <O que faz, em uma frase. Use quando <gatilhos concretos, com as pa
 
 # <Título>
 
-## Quando não usar
-<Casos que o fluxo normal do projeto já resolve. Omita se não houver.>
+## Escopo e uso
+<Quando a Skill se aplica e quando não se aplica. Pode estar coberto pela description; evite duplicação.>
 
-## Passos
-1. <passo verificável>
-2. <passo verificável>
+## Instruções
+<Workflow, critérios e restrições necessários para executar a capacidade. Em Skills de conhecimento, explique como consultar e interpretar references/.>
 
-## Conclusão
-<O que precisa ser verdade para a tarefa estar pronta, e o que relatar.>
+## Referências
+<Opcional: arquivos focados em references/, com fonte, versão e vigência quando aplicável.>
+
+## Critério de conclusão
+<Opcional: use em Skills com workflow quando houver um estado verificável de pronto.>
 ```
 
 ## Exemplo: revisão de mudança
