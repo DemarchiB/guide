@@ -89,4 +89,5 @@ Commits são atômicos por assunto, como em qualquer projeto: mudança de sentid
 - [ ] Nenhum fato específico de um projeto entrou.
 - [ ] Arquivo novo, renomeado ou removido está refletido no `PROJECT_GUIDE.md`, em `estrutura.md` e no `README.md`.
 - [ ] Cada arquivo alterado continua atendendo a um gatilho de leitura só.
+- [ ] Mudou regra inviolável, regra de *Em toda tarefa*, o formato do resumo ou uma regra citada como dona em `templates/instrucoes-chat.md`? O texto do template foi revisado.
 - [ ] O commit tem um trailer `Impacto-adocao` para cada ação exigida de quem já adotou, quando aplicável.

@@ -45,6 +45,7 @@ A definição completa do papel de cada documento — o que ele é, o que não �
 | `docs/design-docs/fsm-<nome>.md` | Máquina de estado. | `templates/fsm.md` |
 | `.agents/skills/<nome>/SKILL.md` | Pacote Agent Skills: instruções e recursos opcionais, carregados conforme a necessidade e o suporte do host. | `templates/skill.md` |
 | `<modulo>.h` + `<modulo>.c` | Módulo C com estado. | `templates/modulo-c.md` |
+| fora do repositório | Instruções de um chat ou projeto de IA: as práticas centrais, para colar. | `templates/instrucoes-chat.md` |
 
 ## 3. Onde registrar uma informação
 

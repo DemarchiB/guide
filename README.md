@@ -11,6 +11,7 @@ Conjunto de convenções que os projetos adotam em `docs/guide/`, para que uma p
 | adotar o conjunto num projeto | [`adocao.md`](adocao.md) |
 | trabalhar num projeto que já adotou | [`PROJECT_GUIDE.md`](PROJECT_GUIDE.md) — curto; diz o que mais ler |
 | trabalhar com um agente de IA no dia a dia (condução, revisão, pedidos prontos) | [`uso-com-ia.md`](uso-com-ia.md) |
+| usar as práticas num chat de IA, fora de um repositório | [`templates/instrucoes-chat.md`](templates/instrucoes-chat.md) |
 | alterar **este** conjunto | [`manutencao-do-conjunto.md`](manutencao-do-conjunto.md) e [`AGENTS.md`](AGENTS.md) |
 
 Adoção em uma linha (detalhes e consequências em `adocao.md`):

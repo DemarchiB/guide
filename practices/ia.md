@@ -28,7 +28,8 @@ O critério, a definição de pedido explícito e as ações de Git estão em [g
 ## 3. Qualidade do que o agente entrega
 
 - mudança de comportamento gerada vem com teste que a comprova ([testes.md](testes.md), Seção *Escrever um teste*), ou com a ausência justificada;
-- **fato afirmado pelo agente é verificado na fonte antes de virar regra ou documentação** — inclusive nome de função, de registrador e de API de fabricante, que é onde a invenção é mais frequente e mais convincente.
+- **fato afirmado pelo agente é verificado na fonte antes de virar regra ou documentação** — inclusive nome de função, de registrador e de API de fabricante, que é onde a invenção é mais frequente e mais convincente;
+- **API de biblioteca, HAL, SDK ou RTOS é conferida na versão declarada no projeto** (manifesto, lockfile, pacote do fabricante) e na documentação dessa versão, não na memória do modelo: a API muda entre versões, e a memória mistura versões sem avisar.
 
 ## 4. Conteúdo não confiável
 
