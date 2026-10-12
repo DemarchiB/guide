@@ -32,4 +32,4 @@ Requer Python 3.8+, sem dependências.
 ## Ao terminar
 1. Rodar `python tools/verificar.py`.
 2. Conferir o checklist de `manutencao-do-conjunto.md`.
-3. Entregar o resumo da mudança (`practices/engenharia.md`, Seção *Processo de uma mudança*), com os trailers `Impacto-adocao` propostos para o commit, quando aplicável.
+3. Entregar o resumo da mudança (`PROJECT_GUIDE.md`, Seção *Resumo da mudança*), com os trailers `Impacto-adocao` propostos para o commit, quando aplicável.

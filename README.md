@@ -21,7 +21,7 @@ git submodule add https://github.com/DemarchiB/guide.git docs/guide
 ## Estrutura
 
 ```text
-PROJECT_GUIDE.md            ponto de entrada: precedência, regras invioláveis, o que ler em cada tarefa
+PROJECT_GUIDE.md            ponto de entrada: precedência, regras invioláveis, regras de toda tarefa, resumo da mudança, o que ler em cada tarefa
 adocao.md                   montar o conjunto, documentos do dia zero, atualizar o conjunto num projeto
 estrutura.md                onde cada informação mora no projeto
 manutencao.md               como a documentação do projeto se mantém verdadeira

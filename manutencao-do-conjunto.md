@@ -8,7 +8,7 @@ Cobre o que só quem **edita este conjunto** precisa saber: que tipo de conteúd
 
 | Tipo | Onde | Carregado |
 | --- | --- | --- |
-| Ponto de entrada: precedência, regras invioláveis, roteamento | `PROJECT_GUIDE.md` | em toda tarefa |
+| Ponto de entrada: precedência, regras invioláveis, regras de toda tarefa, formato do resumo da mudança, roteamento | `PROJECT_GUIDE.md` | em toda tarefa |
 | Procedimento que atravessa projetos (adotar, estruturar, manter) | arquivo na raiz (`adocao.md`, `estrutura.md`, `manutencao.md`) | sob demanda |
 | Prática de um assunto técnico | um arquivo em `practices/`, por gatilho de leitura | quando o projeto declara o domínio e a tarefa o toca |
 | Formato de um documento ou arquivo de código recorrente | um arquivo por documento em `templates/` | ao criar aquele documento |

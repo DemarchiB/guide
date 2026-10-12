@@ -53,7 +53,7 @@ toda tarefa, leia `docs/guide/PROJECT_GUIDE.md` — ele diz o que mais ler.
 1. Rodar os comandos de build, testes e análise que se aplicam à mudança.
 2. Atualizar a documentação afetada, uma vez, com o comportamento já verificado.
 3. Entregar o resumo da mudança no formato de
-   `docs/guide/practices/engenharia.md`, Seção *Processo de uma mudança*.
+   `docs/guide/PROJECT_GUIDE.md`, Seção *Resumo da mudança*.
 ```
 
 ## Exemplo preenchido (ilustrativo)
@@ -104,5 +104,5 @@ Segue `docs/guide/` (submódulo). No início de toda tarefa, leia
 1. Rodar build, testes em host e análise estática.
 2. Atualizar a documentação afetada, uma vez, com o comportamento já verificado.
 3. Entregar o resumo da mudança no formato de
-   `docs/guide/practices/engenharia.md`, Seção *Processo de uma mudança*.
+   `docs/guide/PROJECT_GUIDE.md`, Seção *Resumo da mudança*.
 ```
