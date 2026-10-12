@@ -29,11 +29,11 @@ Duas consequências:
 1. **Assunto no imperativo**, até ~72 caracteres, sem ponto final; o corpo explica o porquê e o impacto, não o que o diff já mostra. O idioma é decisão do projeto, declarada no `AGENTS.md`.
 2. **Commit pequeno e frequente é ponto de retorno.** Vale para pessoa e mais ainda para agente: uma sessão que produz um único commit gigante só pode ser desfeita inteira, e a parte boa vai junto. Um commit por incremento verificado ([engenharia.md](engenharia.md), Seção *Processo de uma mudança*) é o que permite voltar um passo em vez de recomeçar.
 3. **O que entra no commit é escolhido, não varrido.** Adicione os caminhos da tarefa; `git add -A` num repositório com trabalho preexistente, artefato de build ou arquivo local leva para o diff o que ninguém pediu. Confira `git status` e `git diff` antes de commitar.
-4. **Cite identificadores de requisito no commit somente quando o projeto exigir rastreabilidade requisito a requisito.** Nesse caso, use o identificador vigente na spec alterada e cite o ADR quando houver. Nos demais projetos, descreva a mudança no commit; o histórico e o diff do Git preservam as versões anteriores da spec.
+4. **Commit que implementa ou altera um requisito o cita num trailer**, uma linha por requisito, no último parágrafo da mensagem: `Requisito: REQ-UART-003`; ADR envolvido é citado no corpo. Custa uma linha e reconstrói a implementação de um requisito sem tabela mantida à mão: `git log --format='%h %s' --grep='Requisito: REQ-UART-003'`. Funciona porque o identificador é estável ([specs.md](specs.md), Seção *Manter uma spec*).
 5. **Não misture assuntos.** Reformatação em massa, renomeação de arquivos e mudança de comportamento vão em commits separados.
 6. **Histórico compartilhado não é reescrito** sem combinação explícita entre quem trabalha nele.
 7. **Finais de linha são normalizados pelo repositório** (`.gitattributes`, por exemplo `* text=auto`), não pela configuração de cada máquina. Sem isso, um editor em Windows transforma um commit de uma linha num diff do arquivo inteiro.
-8. **Onde houver norma aplicável**, a rastreabilidade precisa ser auditável: o identificador aparece na spec, no commit, no teste e no registro de validação arquivado. É barata enquanto é escrita e cara quando precisa ser reconstruída.
+8. **Onde houver norma aplicável**, a rastreabilidade precisa ser auditável: o identificador do item 4 aparece também no teste e no registro de validação arquivado. É barata enquanto é escrita e cara quando precisa ser reconstruída.
 
 ## 4. Agente em sessão local
 
@@ -78,6 +78,6 @@ Livre: ação reversível e contida na branch de trabalho. Exige pedido explíci
 - [ ] O trabalho saiu de um base declarado, numa branch de um assunto só.
 - [ ] Nenhuma alteração preexistente entrou no diff.
 - [ ] O que entrou em cada commit foi escolhido por caminho, não varrido.
-- [ ] Commits explicam o porquê e citam requisito ou ADR quando aplicável.
+- [ ] Commits explicam o porquê; commit que implementa ou altera requisito tem o trailer `Requisito:`.
 - [ ] Nenhum merge, push ao tronco ou reescrita de histórico compartilhado foi feito pelo agente.
 - [ ] PR/MR aberto por agente tem um assunto, traz o resumo da mudança e não foi aprovado nem integrado por ele.

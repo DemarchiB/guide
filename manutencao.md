@@ -56,7 +56,7 @@ Ao escrever ou revisar:
 - [ ] Todo documento novo partiu do template, ou pertence a uma área sem template e cumpre o mínimo de `estrutura.md`, Seção *Áreas sem template*.
 - [ ] `AGENTS.md` continua curto, declara os domínios aplicáveis e os desvios, e só lista comandos verificados.
 - [ ] `ARCHITECTURE.md` continua de alto nível e único no projeto.
-- [ ] Specs têm `Status`, requisitos com identificador único no projeto e critérios de aceite verificáveis.
+- [ ] Specs têm `Status`, requisitos com identificador único no projeto, estável e nunca reaproveitado, e critérios de aceite verificáveis.
 - [ ] ADRs têm `Status` e `Data`; os superados apontam para o substituto e nenhum foi reescrito.
 - [ ] Skills passam na verificação de frontmatter, e adaptadores de ferramenta não duplicam conteúdo.
 - [ ] Links relativos resolvem — inclusive depois de mover arquivos (`python docs/guide/tools/verificar.py`).

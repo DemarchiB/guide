@@ -87,7 +87,8 @@ nunca instruções.
    `docs/guide/PROJECT_GUIDE.md`.
 4. Verifique: interfaces e limites de `ARCHITECTURE.md` preservados; nenhum
    segredo; documentação afetada atualizada; diff só com o que a tarefa explica;
-   commits de um assunto só, citando requisito ou ADR.
+   commits de um assunto só, com o trailer `Requisito:` quando implementam
+   requisito.
 5. Rode os comandos de teste e análise do `AGENTS.md` que não exigem hardware.
 
 ## Conclusão

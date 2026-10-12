@@ -15,7 +15,7 @@
 **Convenções:**
 
 - Nome do arquivo em kebab-case sem acento (`deteccao-overflow-uart.md`).
-- **Identificador único entre as specs vigentes do projeto:** `REQ-<PREFIXO>-NNN`, com um prefixo curto em maiúsculas por spec, declarado no cabeçalho (`REQ-UART-001`). Mantenha os requisitos atuais numerados em sequência e atualize referências quando renumerar. O histórico do Git preserva os identificadores e conteúdos anteriores.
+- **Identificador** `REQ-<PREFIXO>-NNN`, único no projeto, com um prefixo curto em maiúsculas por spec, declarado no cabeçalho (`REQ-UART-001`). É estável: nunca renumerado nem reaproveitado, e o cabeçalho registra o último usado ([practices/specs.md](../practices/specs.md), Seção *Manter uma spec*).
 - `Status`: `rascunho` → `aprovada` → `implementada`.
 - *Tarefas* existe só enquanto há trabalho em andamento; spec `implementada` não tem essa seção.
 - A spec descreve o estado atual. Não mantenha nela referências a requisitos removidos nem a versões anteriores; consulte o histórico do Git quando precisar recuperar o passado.
@@ -28,6 +28,7 @@
 - **Status:** rascunho | aprovada | implementada
 - **Data:** <AAAA-MM-DD da última atualização>
 - **Prefixo:** <PREFIXO>
+- **Último identificador:** REQ-<PREFIXO>-NNN
 
 ## Contexto
 <O quê e por quê, em 2-3 linhas, citando a evidência que motiva a spec.>
@@ -70,6 +71,7 @@ Spec já implementada: por isso não tem a seção *Tarefas*. Durante a implemen
 - **Status:** implementada
 - **Data:** 2026-03-14
 - **Prefixo:** UART
+- **Último identificador:** REQ-UART-004
 
 ## Contexto
 O driver de UART não sinaliza quando o buffer de recepção enche, e bytes
