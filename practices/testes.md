@@ -14,7 +14,7 @@ Em ordem crescente de custo:
 1. **Build** do módulo afetado.
 2. **Teste direcionado** à mudança, ampliando para a suíte conforme o risco.
 3. **Lint / análise estática** na configuração do próprio projeto.
-4. **Documentação** — `python docs/guide/tools/verificar.py`: links, includes, seções citadas, Skills e trechos repetidos entre arquivos.
+4. **Documentação** — `python docs/guide/tools/verificar.py`: links, seções citadas, Skills e trechos repetidos entre arquivos.
 5. **Varredura de segredos** antes do commit.
 
 Regras de uso:

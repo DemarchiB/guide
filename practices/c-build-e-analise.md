@@ -20,7 +20,7 @@ Flags e comandos aparecem na notação de GCC e CMake, como ilustração. O conj
 
 ## 2. Sensores da linguagem
 
-Ao conjunto mínimo de [engenharia.md](engenharia.md), este domínio acrescenta:
+Ao conjunto mínimo de [testes.md](testes.md), Seção *Conjunto mínimo de sensores*, este domínio acrescenta:
 
 1. **Compilador em modo estrito** — o analisador estático mais barato que existe, e o primeiro a adotar.
 2. **Analisador estático dedicado** num alvo do próprio build (alvo do CMake, `make analyze`), não como passo manual.

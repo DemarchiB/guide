@@ -14,7 +14,8 @@ Este repositório segue a si mesmo ([PROJECT_GUIDE.md](PROJECT_GUIDE.md)), com o
 ## Comandos
 | Ação | Comando | Diretório |
 | --- | --- | --- |
-| Verificação (links, includes, seções citadas, Skills, duplicação; gitlinks excluídos) | `python tools/verificar.py` | raiz |
+| Verificação (links, seções citadas, Skills, duplicação; gitlinks excluídos) | `python tools/verificar.py` | raiz |
+| Lembrete do trailer `Impacto-adocao` (uma vez por clone) | `git config core.hooksPath tools/hooks` | raiz |
 
 Requer Python 3.8+, sem dependências.
 

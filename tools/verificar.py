@@ -8,13 +8,13 @@ Uso (da raiz do repositório):
 Verifica:
   links     links relativos em Markdown apontam para arquivos existentes
             (blocos de código e código inline são ignorados);
-  includes  diretivas #[[file:...]] apontam para arquivos existentes;
   skills    frontmatter de .agents/skills/*/SKILL.md segue a especificação
             Agent Skills; adaptadores em diretórios de ferramenta
             (.<ferramenta>/skills/<nome>/SKILL.md) têm name e description
             idênticos aos da Skill canônica, que precisa existir;
   secoes    (só no conjunto) toda citação "Seção *Título*" corresponde a um
-            título existente;
+            título do arquivo citado na mesma linha, antes da citação; sem
+            arquivo citado, a um título do próprio arquivo;
   duplicacao  trechos longos repetidos entre arquivos, fora de blocos de
             código — candidatos a regra com dois donos. Informativo: não
             reprova, porque repetição legítima existe (texto que um template
@@ -37,9 +37,9 @@ from pathlib import Path
 IGNORAR_DIRS = {".git", "node_modules", "build", "out", "dist", ".venv", "venv", "__pycache__"}
 
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(\s*<?([^\)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)")
-INCLUDE_RE = re.compile(r"#\[\[file:([^\]\r\n]+)\]\]")
 INLINE_CODE_RE = re.compile(r"(`+)(.+?)\1")
 SECAO_RE = re.compile(r"Seç(?:ão|ões)\s+\*([^*]+)\*")
+ARQUIVO_MD_RE = re.compile(r"[\w./-]*[\w-]+\.md\b")
 TITULO_RE = re.compile(r"^#{1,6}\s+(.*?)\s*#*\s*$")
 PALAVRAS_TRECHO = 8  # tamanho mínimo, em palavras, de um trecho repetido relatado
 # Repetição esperada: ponteiro para outro arquivo, cabeçalho padrão de domínio,
@@ -120,42 +120,59 @@ def verificar_links(raiz, ignorar):
     return problemas
 
 
-def verificar_includes(raiz, ignorar):
-    problemas = []
-    for arq in arquivos_md(raiz, ignorar):
-        for n, linha in enumerate(ler(arq).split("\n"), 1):
-            for alvo in INCLUDE_RE.findall(linha):
-                alvo = alvo.strip()
-                destino = (arq.parent / alvo).resolve()
-                if not destino.is_file():
-                    problemas.append(
-                        f"{arq.relative_to(raiz).as_posix()}:{n}: arquivo incluído não existe -> {alvo}"
-                    )
-    return problemas
-
 
 def normalizar_titulo(t):
     t = re.sub(r"^\d+(\.\d+)*\.?\s+", "", t.strip())
     return t.replace("`", "").replace("*", "").strip().lower()
 
 
+def arquivo_citado(caminho, arq, raiz):
+    """Resolve um caminho .md citado num arquivo do conjunto; None se não for do conjunto."""
+    if caminho.startswith("docs/guide/"):
+        caminho = caminho[len("docs/guide/"):]
+    for base in (arq.parent, raiz):
+        destino = (base / caminho).resolve()
+        if destino.is_file() and raiz in destino.parents:
+            return destino
+    return None
+
+
 def verificar_secoes(raiz, ignorar):
-    titulos = set()
+    """Cada "Seção *Título*" existe no arquivo citado antes dela na mesma linha.
+
+    Sem arquivo citado antes na linha, o título é do próprio arquivo. Arquivo
+    citado que não pertence ao conjunto (documento do projeto) só exige que o
+    título exista em algum arquivo do conjunto.
+    """
     arquivos = list(arquivos_md(raiz, ignorar))
+    titulos_por_arquivo = {}
     for arq in arquivos:
+        titulos = set()
         for _, linha in linhas_fora_de_codigo(ler(arq)):
             m = TITULO_RE.match(linha)
             if m:
                 titulos.add(normalizar_titulo(m.group(1)))
+        titulos_por_arquivo[arq.resolve()] = titulos
+    todos = set().union(*titulos_por_arquivo.values()) if titulos_por_arquivo else set()
     problemas = []
     for arq in arquivos:
+        rel = arq.relative_to(raiz).as_posix()
         # inclui blocos de código: citação dentro de template também precisa existir
         for n, linha in enumerate(ler(arq).split("\n"), 1):
-            for citado in SECAO_RE.findall(linha):
-                if normalizar_titulo(citado) not in titulos:
-                    problemas.append(
-                        f"{arq.relative_to(raiz).as_posix()}:{n}: seção citada não existe -> *{citado}*"
-                    )
+            for m in SECAO_RE.finditer(linha):
+                citado = normalizar_titulo(m.group(1))
+                anteriores = ARQUIVO_MD_RE.findall(linha[:m.start()])
+                if anteriores:
+                    destino = arquivo_citado(anteriores[-1], arq, raiz)
+                    if destino is None:
+                        if citado not in todos:
+                            problemas.append(f"{rel}:{n}: seção citada não existe -> *{m.group(1)}*")
+                        continue
+                else:
+                    destino = arq.resolve()
+                if citado not in titulos_por_arquivo.get(destino, set()):
+                    alvo = destino.relative_to(raiz).as_posix()
+                    problemas.append(f"{rel}:{n}: seção *{m.group(1)}* não existe em {alvo}")
     return problemas
 
 
@@ -343,7 +360,6 @@ def main():
 
     etapas = [
         ("links", verificar_links(raiz, ignorar)),
-        ("includes", verificar_includes(raiz, ignorar)),
         ("skills", verificar_skills(raiz, ignorar)),
     ]
     if e_conjunto:

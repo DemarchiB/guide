@@ -77,7 +77,7 @@ Impacto-adocao: trocar referências a practices/x.md, Seção "Y", por practices
 Impacto-adocao: remover docs/index.md do projeto, se não tiver conteúdo próprio
 ```
 
-Alteração que não obriga ninguém a nada não leva trailer. O nome sem acento é deliberado: trailers são filtráveis por ferramentas de linha de comando (`git log --format='%(trailers:key=Impacto-adocao)'`), e acento no nome da chave é fonte de erro de digitação e de codificação.
+Alteração que não obriga ninguém a nada não leva trailer. Para que o trailer não dependa de alguém lembrar, `tools/hooks/commit-msg` avisa quando um commit altera regras ou templates sem ele (ativação no `AGENTS.md` do conjunto); o aviso não bloqueia, porque a decisão de haver impacto é de quem commita. O nome sem acento é deliberado: trailers são filtráveis por ferramentas de linha de comando (`git log --format='%(trailers:key=Impacto-adocao)'`), e acento no nome da chave é fonte de erro de digitação e de codificação.
 
 Commits são atômicos por assunto, como em qualquer projeto: mudança de sentido de regra não vai junto com reformatação.
 

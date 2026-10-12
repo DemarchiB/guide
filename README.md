@@ -28,7 +28,8 @@ manutencao.md               como a documentação do projeto se mantém verdadei
 manutencao-do-conjunto.md   como este conjunto evolui
 practices/                  domínios e guias de apoio carregados sob demanda
 templates/                  um arquivo por documento que o projeto cria
-tools/verificar.py          verificador: links, includes, seções citadas, Skills e trechos duplicados
+tools/verificar.py          verificador: links, seções citadas, Skills e trechos duplicados
+tools/hooks/commit-msg      lembrete do trailer Impacto-adocao ao alterar regras ou templates
 ```
 
 Os arquivos de `practices/` são divididos pelo **gatilho de leitura**: cada tarefa carrega um arquivo pequeno, não um domínio inteiro. Só o `PROJECT_GUIDE.md` é lido em toda tarefa.

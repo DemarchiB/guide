@@ -1,0 +1,15 @@
+#!/bin/sh
+# Lembrete do trailer Impacto-adocao (manutencao-do-conjunto.md, Seção
+# "Identificação e propagação"). Avisa, sem bloquear: commit que não exige
+# ação de quem já adotou o conjunto é legítimo e não leva trailer.
+# Ativação, uma vez por clone: git config core.hooksPath tools/hooks
+
+if git diff --cached --name-only |
+    grep -qE '^(PROJECT_GUIDE\.md|adocao\.md|estrutura\.md|manutencao\.md|practices/|templates/)'; then
+    if ! grep -q '^Impacto-adocao:' "$1"; then
+        echo "aviso: este commit altera regras ou templates do conjunto e não tem trailer Impacto-adocao." >&2
+        echo "       Ele exige alguma ação de quem já adotou? Se sim, acrescente uma linha por ação:" >&2
+        echo "       Impacto-adocao: <o que o projeto precisa fazer>" >&2
+    fi
+fi
+exit 0
