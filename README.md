@@ -1,6 +1,6 @@
 # Convenções de projeto
 
-Conjunto de convenções que os projetos adotam em `docs/guide/`, para que uma pessoa ou um agente de IA entre em qualquer um deles e saiba onde procurar, onde escrever e como trabalhar. Este repositório não é um projeto: é o que os projetos seguem.
+Conjunto de convenções que os projetos adotam em `docs/guide/`, para que uma pessoa ou um agente de IA entre em qualquer um deles e saiba onde procurar, onde escrever e como trabalhar. Este repositório não é um projeto: é o que os projetos seguem. Traz também o método e os templates para criar agentes de IA pessoais, portáveis entre ferramentas, usados por repositórios de agentes que adotam o conjunto do mesmo jeito.
 
 > Chegou aqui por `docs/guide/README.md` dentro de um projeto? Este é o README do conjunto de convenções; o do projeto está na raiz dele.
 
@@ -12,6 +12,7 @@ Conjunto de convenções que os projetos adotam em `docs/guide/`, para que uma p
 | trabalhar num projeto que já adotou | [`PROJECT_GUIDE.md`](PROJECT_GUIDE.md) — curto; diz o que mais ler |
 | trabalhar com um agente de IA no dia a dia (condução, revisão, pedidos prontos) | [`uso-com-ia.md`](uso-com-ia.md) |
 | usar as práticas num chat de IA, fora de um repositório | [`templates/instrucoes-chat.md`](templates/instrucoes-chat.md) |
+| criar agentes de IA pessoais, portáveis entre ferramentas | [`agentes-pessoais.md`](agentes-pessoais.md); ferramentas, automação e migração em [`agentes-ferramentas.md`](agentes-ferramentas.md) |
 | alterar **este** conjunto | [`manutencao-do-conjunto.md`](manutencao-do-conjunto.md) e [`AGENTS.md`](AGENTS.md) |
 
 Adoção em uma linha (detalhes e consequências em `adocao.md`):
@@ -29,6 +30,8 @@ estrutura.md                onde cada informação mora no projeto
 manutencao.md               como a documentação do projeto se mantém verdadeira
 manutencao-do-conjunto.md   como este conjunto evolui
 uso-com-ia.md               para a pessoa: conduzir a sessão, revisar a entrega, pedidos prontos
+agentes-pessoais.md         para a pessoa: criar e testar agentes de IA pessoais e portáveis (níveis 1 e 2)
+agentes-ferramentas.md      para a pessoa: ligar ferramentas, automatizar e migrar agentes (níveis 3 e 4)
 practices/                  domínios e guias de apoio carregados sob demanda
 templates/                  um arquivo por documento que o projeto cria
 tools/verificar.py          verificador: links, seções citadas, Skills e trechos duplicados

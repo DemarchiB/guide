@@ -46,6 +46,10 @@ A definição completa do papel de cada documento — o que ele é, o que não �
 | `.agents/skills/<nome>/SKILL.md` | Pacote Agent Skills: instruções e recursos opcionais, carregados conforme a necessidade e o suporte do host. | `templates/skill.md` |
 | `<modulo>.h` + `<modulo>.c` | Módulo C com estado. | `templates/modulo-c.md` |
 | fora do repositório | Instruções de um chat ou projeto de IA: as práticas centrais, para colar. | `templates/instrucoes-chat.md` |
+| repositório de agentes | Agentes pessoais de um contexto de uso: estrutura, `README.md`, `AGENTS.md` e `ferramentas.md` (método em `agentes-pessoais.md`). | `templates/repositorio-agentes.md` |
+| `contexto/sobre-mim.md` | Contexto pessoal colado com os agentes nas instruções persistentes. | `templates/contexto-pessoal.md` |
+| `.agents/skills/<agente>/evals/casos.md` | Casos de teste de um agente: entradas, critérios e execuções. | `templates/casos-de-teste.md` |
+| `automacoes/<nome>.md` | Ficha de uma automação: gatilho, permissões, saída, como desligar. | `templates/automacao.md` |
 
 ## 3. Onde registrar uma informação
 

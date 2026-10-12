@@ -1,6 +1,6 @@
 # Uso com IA — para quem conduz o trabalho
 
-Este arquivo é para a pessoa que trabalha com um agente de IA, não para o agente: não está na tabela de roteamento do `PROJECT_GUIDE.md` e não é lido numa tarefa. As regras que o agente segue estão no `PROJECT_GUIDE.md` e em `practices/`; aqui ficam como conduzir a sessão, como revisar o que ele entrega e pedidos prontos.
+Este arquivo é para a pessoa que trabalha com um agente de IA, não para o agente: não está na tabela de roteamento do `PROJECT_GUIDE.md` e não é lido numa tarefa. As regras que o agente segue estão no `PROJECT_GUIDE.md` e em `practices/`; aqui ficam como conduzir a sessão, como revisar o que ele entrega e pedidos prontos. Para criar os seus próprios agentes, portáveis entre ferramentas, veja [agentes-pessoais.md](agentes-pessoais.md).
 
 ## 1. Condução da sessão
 

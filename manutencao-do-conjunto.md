@@ -13,6 +13,7 @@ Cobre o que só quem edita este conjunto precisa saber: que tipo de conteúdo ca
 | Prática de um assunto técnico | um arquivo em `practices/`, por gatilho de leitura | quando o projeto declara o domínio e a tarefa o toca |
 | Formato de um documento ou arquivo de código recorrente | um arquivo por documento em `templates/` | ao criar aquele documento |
 | Orientação para a pessoa que conduz o trabalho com IA | `uso-com-ia.md` | pela pessoa; nunca roteado ao agente |
+| Método para criar agentes pessoais, fora de um projeto | `agentes-pessoais.md` e `agentes-ferramentas.md` | pela pessoa, ou pela IA que ela chama para criar um agente; nunca roteado |
 | Sensor reutilizável | `tools/`, só biblioteca padrão da linguagem, sem instalação | executado, não lido |
 | Mapa arquitetural e limites de um projeto | `ARCHITECTURE.md` do projeto | quando a tarefa cruza componentes, interfaces, variantes ou dependências |
 
