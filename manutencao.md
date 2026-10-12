@@ -65,13 +65,7 @@ Ao escrever ou revisar:
 
 ## 6. Antipadrões
 
-- Árvore preenchida: pasta, documento ou Skill criado para completar a estrutura.
-- `AGENTS.md` longo, com visão geral do repositório, instrução genérica ou cópia de outros documentos.
-- Arquivo de instrução de uma ferramenta específica com cópia do `AGENTS.md`, ou criado para ferramenta que ninguém usa no projeto.
-- Comando hipotético apresentado como oficial; arquitetura baseada em suposição não marcada.
-- Spec sem critério de aceite verificável; ADR para decisão trivial ou reversível; ADR reescrito em vez de substituído.
-- A mesma regra escrita em dois lugares com redações diferentes.
-- Fato específico de um projeto incorporado a um arquivo do conjunto.
+Os mais comuns, cada um contrariando uma regra acima: árvore preenchida (pasta, documento ou Skill criado para completar a estrutura); `AGENTS.md` longo, com visão geral do repositório ou cópia de outros documentos; adaptador de ferramenta com cópia do `AGENTS.md`, ou para ferramenta sem uso; comando hipotético ou arquitetura suposta sem marcação; ADR reescrito em vez de substituído; a mesma regra em dois lugares; fato de um projeto dentro do conjunto.
 
 ## 7. Critério de sucesso
 

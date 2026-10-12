@@ -1,6 +1,6 @@
 # Domínio: executar uma tarefa como agente
 
-Cobre o detalhe do que um agente observa ao executar uma tarefa: o plano, os limites de execução, a qualidade do que entrega e o tratamento do que lê. As regras de toda tarefa estão em [../PROJECT_GUIDE.md](../PROJECT_GUIDE.md), Seção *Em toda tarefa*; como se monta o harness e se conduz uma sessão, em [ia-harness.md](ia-harness.md); o Git, em [git.md](git.md).
+Cobre o detalhe do que um agente observa ao executar uma tarefa: o plano, os limites de execução, a qualidade do que entrega e o tratamento do que lê. As regras de toda tarefa estão em [../PROJECT_GUIDE.md](../PROJECT_GUIDE.md), Seção *Em toda tarefa*; como se monta o harness, em [ia-harness.md](ia-harness.md); como a pessoa conduz a sessão e revisa a entrega, em [../uso-com-ia.md](../uso-com-ia.md); o Git, em [git.md](git.md).
 
 **Aplica-se a:** todo projeto em que um agente de IA lê ou altera o repositório.
 **Leia quando:** for preparar um plano, tratar um limite de execução, avaliar a qualidade de uma entrega ou revisar código gerado por IA.
@@ -28,9 +28,7 @@ O critério, a definição de pedido explícito e as ações de Git estão em [g
 ## 3. Qualidade do que o agente entrega
 
 - mudança de comportamento gerada vem com teste que a comprova ([testes.md](testes.md), Seção *Escrever um teste*), ou com a ausência justificada;
-- quem revisa responde pelo diff inteiro; o fato de ter sido gerado por IA não reduz a responsabilidade;
-- **fato afirmado pelo agente é verificado na fonte antes de virar regra ou documentação** — inclusive nome de função, de registrador e de API de fabricante, que é onde a invenção é mais frequente e mais convincente;
-- delegação só vale quando o resultado é verificável por sensor ou revisão barata; sem critério de pronto, ou quando o erro não aparece na revisão, escreva a spec ou mantenha a decisão com uma pessoa.
+- **fato afirmado pelo agente é verificado na fonte antes de virar regra ou documentação** — inclusive nome de função, de registrador e de API de fabricante, que é onde a invenção é mais frequente e mais convincente.
 
 ## 4. Conteúdo não confiável
 

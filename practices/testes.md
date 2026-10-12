@@ -51,23 +51,16 @@ Em firmware, a ordem de retorno concreta e a costura com o hardware estão em [t
 
 Escrever testes é dos melhores usos de um agente: é trabalho volumoso, repetitivo e verificável. O que exige disciplina é a revisão, porque um teste ruim é pior que nenhum — ele dá confiança falsa e ninguém olha de novo.
 
-Pedido pronto (ajuste o que está entre `<>`):
+**Ao escrever testes a pedido**, o agente segue este protocolo:
 
-```text
-Escreva testes em host para <módulo>, seguindo docs/guide/practices/testes.md.
-- Antes de escrever, liste o que o módulo faz, quais entradas são inválidas ou
-  de limite, e onde está a fronteira com o hardware. Espere minha confirmação.
-- Um comportamento por teste; casos de erro e de limite antes do caminho feliz.
-- Não altere o código de produção nesta tarefa. Se um comportamento parecer
-  errado, relate — não "conserte".
-- Depois de escrever, prove que cada teste detecta defeito: quebre a função sob
-  teste de propósito, mostre o teste falhando, desfaça e mostre passando.
-- No resumo, aponte todo teste que continuou passando com a função quebrada.
-```
+1. Antes de escrever, lista o que o módulo faz, quais entradas são inválidas ou de limite e onde está a fronteira com o que é externo (hardware, serviço, arquivo), e espera confirmação.
+2. Não altera o código de produção na mesma tarefa: comportamento que parecer errado é relatado, não "consertado".
+3. Prova que cada teste detecta defeito: quebra de propósito a função sob teste (inverte uma comparação, devolve constante, comenta uma linha), mostra o teste falhando, desfaz e mostra passando.
+4. No resumo, aponta todo teste que continuou passando com a função quebrada.
 
 **O que procurar ao revisar teste gerado por agente** — os modos de falha são específicos e se repetem:
 
-- **Teste tautológico**: afirma o que o código faz hoje, inclusive o defeito. O antídoto é o teste de mutação manual do pedido acima — quebre a função de propósito (inverta uma comparação, devolva constante, comente uma linha) e rode. Teste que continua verde vai fora, não é corrigido.
+- **Teste tautológico**: afirma o que o código faz hoje, inclusive o defeito. O antídoto é o teste de mutação manual do item 3 do protocolo acima. Teste que continua verde vai fora, não é corrigido.
 - **Só caminho feliz**, com os casos de erro ausentes ou marcados como "não aplicável".
 - **Dublê em tudo**: a suíte prova que as funções foram chamadas, não que o comportamento está certo.
 - **Asserção frouxa** — "não é nulo", "não travou", "retornou algo".

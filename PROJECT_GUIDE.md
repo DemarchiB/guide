@@ -92,4 +92,4 @@ Os arquivos de `practices/` são domínios; o `AGENTS.md` do projeto declara qua
 - **Todo projeto:** `engenharia`, `git`, `ia`, `testes`, `specs`.
 - **Código C para microcontrolador:** `c-embarcado`, `c-build-e-analise`.
 - **Firmware embarcado:** `firmware`, `firmware-concorrencia`, `firmware-robustez`, `testes-firmware`.
-- **Guia de apoio** (não declarado, lido pelo workflow): `ia-harness`, para montar ou ajustar o harness — `AGENTS.md`, Skills, subagentes, adaptadores, permissões e custo de sessão.
+- **Guia de apoio** (não declarado, lido pelo workflow): `ia-harness`, para montar ou ajustar o harness — `AGENTS.md`, Skills, subagentes, adaptadores e permissões. Como a pessoa conduz a sessão está em `uso-com-ia.md`, fora do roteamento.

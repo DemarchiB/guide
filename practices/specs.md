@@ -12,7 +12,7 @@ Spec custa uma conversa e um documento antes do código. Ela se paga quando pelo
 - **o comportamento precisa ser acordado antes** — há mais de uma interpretação razoável do pedido;
 - **o trabalho atravessa vários módulos ou várias sessões**, e alguém (ou um agente) vai precisar retomá-lo sem a conversa original;
 - **há casos de erro, limite ou tempo** que precisam ser pensados, não descobertos em campo;
-- **a implementação vai ser delegada a um agente** e não cabe numa sessão: a spec é o critério de pronto que torna o resultado verificável, e é o que permite retomar o trabalho numa sessão nova sem recarregar a conversa inteira ([ia.md](ia.md), Seção *Qualidade do que o agente entrega*);
+- **a implementação vai ser delegada a um agente** e não cabe numa sessão: a spec é o critério de pronto que torna o resultado verificável, e é o que permite retomar o trabalho numa sessão nova sem recarregar a conversa inteira ([../uso-com-ia.md](../uso-com-ia.md), Seção *Revisar o que o agente entrega*);
 - **o requisito vem de cliente, norma ou outro sistema**, e precisa ser rastreável.
 
 Não vale o custo para correção pontual, refatoração sem mudança de comportamento ou ajuste óbvio: ali o commit bem escrito é o registro.
@@ -60,31 +60,6 @@ Na maioria dos casos, a spec com sua lista de tarefas é tudo de que se precisa.
 5. **Reprojeto da funcionalidade atualiza a spec vigente.** Crie uma spec separada quando surgir uma funcionalidade independente; remova a spec antiga da documentação ativa se ela deixar de descrever comportamento vigente. O histórico do Git preserva as versões anteriores.
 6. **Funcionalidade removida leva a spec junto**, na mesma mudança. Se houver exigência formal de retenção auditável, preserve os registros conforme a política documental específica do projeto, fora das specs vigentes.
 7. **Divergência encontrada entre spec e código é defeito**, de um ou de outro: relate ou corrija, nunca ignore. Quem toca uma área com spec confere se ela ainda descreve o que o código faz.
-
-## 5. Pedidos prontos para um agente
-
-Para rascunhar uma spec:
-
-```text
-Quero uma spec para: <descrição do que precisa ser feito e por quê>.
-Siga docs/guide/practices/specs.md (Seção "Criar uma spec") e o formato de
-docs/guide/templates/spec.md. Antes de escrever os requisitos, liste as
-ambiguidades e perguntas que você tem e espere minhas respostas. Não
-implemente nada; a spec fica com Status: rascunho.
-```
-
-Para implementar uma spec aprovada:
-
-```text
-Implemente a tarefa <n> de docs/specs/<nome>.md, que está aprovada, seguindo
-docs/guide/practices/specs.md (Seção "Seguir uma spec"). Antes de editar,
-me mostre o plano: arquivos que vai tocar, passos e como verifica cada um.
-Marque a tarefa só depois de verificada, com o sensor rodado. Se algum
-requisito se mostrar errado ou inviável, pare e me diga antes de continuar.
-Ao terminar, entregue o resumo da mudança.
-```
-
-Uma tarefa da spec por sessão, e não a spec inteira de uma vez: é o recorte que mantém o contexto pequeno, o diff revisável e o erro barato de desfazer ([ia-harness.md](ia-harness.md), Seção *Condução da sessão*).
 
 ## Checklist deste domínio
 

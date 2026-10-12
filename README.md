@@ -10,6 +10,7 @@ Conjunto de convenções que os projetos adotam em `docs/guide/`, para que uma p
 | --- | --- |
 | adotar o conjunto num projeto | [`adocao.md`](adocao.md) |
 | trabalhar num projeto que já adotou | [`PROJECT_GUIDE.md`](PROJECT_GUIDE.md) — curto; diz o que mais ler |
+| trabalhar com um agente de IA no dia a dia (condução, revisão, pedidos prontos) | [`uso-com-ia.md`](uso-com-ia.md) |
 | alterar **este** conjunto | [`manutencao-do-conjunto.md`](manutencao-do-conjunto.md) e [`AGENTS.md`](AGENTS.md) |
 
 Adoção em uma linha (detalhes e consequências em `adocao.md`):
@@ -26,6 +27,7 @@ adocao.md                   montar o conjunto, documentos do dia zero, atualizar
 estrutura.md                onde cada informação mora no projeto
 manutencao.md               como a documentação do projeto se mantém verdadeira
 manutencao-do-conjunto.md   como este conjunto evolui
+uso-com-ia.md               para a pessoa: conduzir a sessão, revisar a entrega, pedidos prontos
 practices/                  domínios e guias de apoio carregados sob demanda
 templates/                  um arquivo por documento que o projeto cria
 tools/verificar.py          verificador: links, seções citadas, Skills e trechos duplicados

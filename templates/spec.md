@@ -17,8 +17,7 @@
 - Nome do arquivo em kebab-case sem acento (`deteccao-overflow-uart.md`).
 - **Identificador** `REQ-<PREFIXO>-NNN`, único no projeto, com um prefixo curto em maiúsculas por spec, declarado no cabeçalho (`REQ-UART-001`). É estável: nunca renumerado nem reaproveitado, e o cabeçalho registra o último usado ([practices/specs.md](../practices/specs.md), Seção *Manter uma spec*).
 - `Status`: `rascunho` → `aprovada` → `implementada`.
-- *Tarefas* existe só enquanto há trabalho em andamento; spec `implementada` não tem essa seção.
-- A spec descreve o estado atual. Não mantenha nela referências a requisitos removidos nem a versões anteriores; consulte o histórico do Git quando precisar recuperar o passado.
+- A spec descreve só o comportamento vigente, e *Tarefas* existe só enquanto há trabalho em andamento ([practices/specs.md](../practices/specs.md), Seção *Manter uma spec*).
 - Ferramenta com modo de planejamento próprio escreve o resultado neste formato e neste local, não em pasta proprietária.
 - Seção sem conteúdo é omitida — "Design", por exemplo, só existe quando houver decisão de arquitetura envolvida.
 
