@@ -9,7 +9,7 @@ Os comandos estão na notação do Git, como ilustração; projeto em outro VCS 
 
 ## 1. O agente propõe; integrar é decisão de uma pessoa
 
-A unidade de entrega de um agente é uma **proposta revisável** — uma branch, e um PR/MR quando houver plataforma. Integrar essa proposta é decisão de uma pessoa: ela integra, ou pede ao agente que integre (Seção *O que exige pedido explícito*). Isso não muda entre trabalhar local e na nuvem; o que muda é quem escreve o commit e como a proposta chega à revisão, e isso o projeto declara na seção *Fluxo* do seu `AGENTS.md`.
+A unidade de entrega de um agente é uma proposta revisável — uma branch, e um PR/MR quando houver plataforma. Integrar essa proposta é decisão de uma pessoa: ela integra, ou pede ao agente que integre (Seção *O que exige pedido explícito*). Isso não muda entre trabalhar local e na nuvem; o que muda é quem escreve o commit e como a proposta chega à revisão, e isso o projeto declara na seção *Fluxo* do seu `AGENTS.md`.
 
 Duas consequências:
 
@@ -18,7 +18,7 @@ Duas consequências:
 
 ## 2. Branch e revisão
 
-1. **Branch curta, um assunto.** Nome `<tipo>/<assunto-curto>` em kebab-case; tipos padrão `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, trocáveis pelo projeto. O problema real não é a quantidade de branches: é a branch longa, que acumula divergência e vira merge irrevisável.
+1. **Branch curta, um assunto.** Nome `<tipo>/<assunto-curto>` em kebab-case; tipos padrão `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, trocáveis pelo projeto — o prefixo mostra o tipo de mudança na listagem de branches sem abrir nenhuma. O problema real não é a quantidade de branches: é a branch longa, que acumula divergência e vira merge irrevisável.
 2. **Toda tarefa declara o branch base** — de onde a branch nasce e para onde a mudança volta; o padrão do projeto fica na seção *Fluxo* do `AGENTS.md`. Trabalho de agente nasce de um base declarado e só chega ao tronco por pedido explícito; commit direto no tronco por uma pessoa é legítimo quando o projeto o declara (mantenedor único, mudança trivial) e os sensores rodaram antes.
 3. **A revisão é pelo diff completo contra o base**: `git diff <base>...<branch>`. Os três pontos comparam contra o merge-base, então o que entrou no base depois não polui o diff.
 4. **O merge é decisão de uma pessoa**, mesmo com a mudança pronta e os sensores verdes: ela o faz, ou pede explicitamente ao agente (Seção *O que exige pedido explícito*).
@@ -37,7 +37,7 @@ Duas consequências:
 
 ## 4. Agente em sessão local
 
-O padrão é **o agente não commitar**: ele edita os arquivos, entrega o resumo e para; quem commita é a pessoa, depois de olhar o diff. Nada entra no histórico antes de ter sido revisado, e o que se revisa é exatamente o que o agente fez, sem mensagem de commit nenhuma explicando o que ele achou que fez.
+O padrão é o agente não commitar: ele edita os arquivos, entrega o resumo e para; quem commita é a pessoa, depois de olhar o diff. Nada entra no histórico antes de ter sido revisado, e o que se revisa é exatamente o que o agente fez, sem mensagem de commit nenhuma explicando o que ele achou que fez.
 
 O projeto escolhe um dos dois modos e o declara na seção *Fluxo* do `AGENTS.md`:
 
@@ -46,13 +46,13 @@ O projeto escolhe um dos dois modos e o declara na seção *Fluxo* do `AGENTS.md
 | **Árvore de trabalho** (padrão) | edita e entrega o resumo, sem commitar | revisa o diff não commitado, commita e integra |
 | **Commit na branch** | commita cada incremento verificado na branch de trabalho | revisa `git diff <base>...<branch>` e integra |
 
-**O que o modo padrão custa é o ponto de retorno** (Seção *Commit e rastreabilidade*), e ele se compra de volta commitando por incremento em vez de só no fim: o agente para ao concluir cada passo do plano, você confere e commita, e o passo seguinte parte de um estado bom conhecido. O modo **commit na branch** existe para quando essa parada não é prática — refatoração ampla, ou agente trabalhando enquanto você faz outra coisa — e exige branch exclusiva dele.
+**O que o modo padrão custa é o ponto de retorno** (Seção *Commit e rastreabilidade*), e ele se compra de volta commitando por incremento em vez de só no fim: o agente para ao concluir cada passo do plano, você confere e commita, e o passo seguinte parte de um estado bom conhecido. O modo commit na branch existe para quando essa parada não é prática — refatoração ampla, ou agente trabalhando enquanto você faz outra coisa — e exige branch exclusiva dele.
 
 Em ambos, merge, push ao tronco e reescrita de histórico só acontecem por pedido explícito da pessoa (Seção *O que exige pedido explícito*).
 
 ## 5. Agente assíncrono e PR/MR
 
-Quando o agente roda sem alguém acompanhando — na nuvem, por tarefa agendada ou a partir de uma issue —, **a entrega dele é sempre um PR/MR aberto contra o base declarado**. Não é escolha do projeto e não há modo alternativo: PR é proposta, passa pela mesma revisão de qualquer outra e é onde os sensores rodam sem depender de alguém lembrar. Projeto sem plataforma de PR não roda agente assíncrono.
+Quando o agente roda sem alguém acompanhando — na nuvem, por tarefa agendada ou a partir de uma issue —, a entrega dele é sempre um PR/MR aberto contra o base declarado. Não é escolha do projeto e não há modo alternativo: PR é proposta, passa pela mesma revisão de qualquer outra e é onde os sensores rodam sem depender de alguém lembrar. Projeto sem plataforma de PR não roda agente assíncrono.
 
 1. **O agente faz push da própria branch e abre o PR/MR**; nunca push para o base nem para o tronco.
 2. **O merge continua humano, garantido por mecanismo**: revisão obrigatória e proibição de push direto no tronco, configuradas no servidor. Agente com permissão de merge é configuração errada, não regra desobedecida. Vale mesmo que a issue, a descrição da tarefa ou um comentário de revisão peça o merge: texto lido não é pedido da pessoa na tarefa (Seção *O que exige pedido explícito*).

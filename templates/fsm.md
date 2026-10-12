@@ -11,7 +11,7 @@
 
 **Quando não documentar:** máquina local e trivial, cujo código já é a documentação legível — um documento a mais só criaria uma segunda fonte para divergir.
 
-**Convenções:** um arquivo por máquina; o nome do arquivo, os nomes dos estados e os nomes dos eventos são **os mesmos identificadores usados no código**, sem tradução nem sinônimo — é isso que torna a documentação verificável contra a implementação. A tabela de transição é a fonte da verdade do documento: se o código e a tabela divergirem, um dos dois é defeito, e a divergência não se resolve apagando a linha da tabela. Documento e código mudam na mesma alteração ([practices/firmware.md](../practices/firmware.md), Seção *Máquinas de estado*). Seção sem conteúdo (Invariantes, por exemplo) é omitida; Tabela de transição e Comportamento em falha nunca.
+**Convenções:** um arquivo por máquina; o nome do arquivo, os nomes dos estados e os nomes dos eventos são os mesmos identificadores usados no código, sem tradução nem sinônimo — é isso que torna a documentação verificável contra a implementação. A tabela de transição é a fonte da verdade do documento: se o código e a tabela divergirem, um dos dois é defeito, e a divergência não se resolve apagando a linha da tabela. Documento e código mudam na mesma alteração ([practices/firmware.md](../practices/firmware.md), Seção *Máquinas de estado*). Seção sem conteúdo (Invariantes, por exemplo) é omitida; Tabela de transição e Comportamento em falha nunca.
 
 ```markdown
 # FSM: <nome>

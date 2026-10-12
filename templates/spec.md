@@ -2,7 +2,7 @@
 
 **Quando usar:** antes de implementar uma funcionalidade que atenda aos critérios de [practices/specs.md](../practices/specs.md), Seção *Quando escrever uma spec*. Como criar, seguir e manter a spec também está lá; este arquivo é o formato.
 
-**Papel:** descrever o comportamento verificável de **uma funcionalidade**, enquanto ela existir. Não descreve como implementar (design-doc) nem por que uma decisão foi tomada (ADR).
+**Papel:** descrever o comportamento verificável de uma funcionalidade, enquanto ela existir. Não descreve como implementar (design-doc) nem por que uma decisão foi tomada (ADR).
 
 **Padrões EARS** — todo requisito usa um dos cinco:
 
@@ -83,7 +83,7 @@ se perdem em silêncio em rajadas de dados (ver `src/drivers/uart.c`).
 - REQ-UART-004 (Evento): Quando `uart_limpar_overflow` for chamada, o driver deve limpar a sinalização de overflow.
 
 ## Critérios de aceite
-- [x] Cada requisito tem teste em host com mock de UART, sem hardware.
+- [x] Cada requisito tem teste em host com dublê de UART, sem hardware.
 - [x] Nenhuma alocação dinâmica introduzida.
 
 ## Verificação

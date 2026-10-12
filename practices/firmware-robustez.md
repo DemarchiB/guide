@@ -22,7 +22,7 @@ Cobre o que o produto faz quando algo dá errado e o que ele aceita de fora: est
 3. **Área persistida tem versão de layout e verificação de integridade.** Firmware novo lendo layout antigo é o caminho normal de atualização, não uma exceção.
 4. **Persistência corrompida ou ausente cai em padrão seguro conhecido**, e o evento é registrado.
 5. **Parâmetro de configuração tem faixa declarada e é validado na leitura**, não só na escrita.
-6. **Imagem de atualização é o dado externo mais perigoso que o produto aceita.** Ela é verificada integralmente **antes** de se tornar ativa, a troca é atômica — interrupção de energia no meio da atualização deixa o produto com uma imagem válida, nunca com nenhuma —, o retorno à versão anterior é previsto, e a atualização só ocorre em estado em que a saída pode ser desligada com segurança. Onde não houver atualização em campo, isso é decisão registrada, não omissão.
+6. **Imagem de atualização é o dado externo mais perigoso que o produto aceita.** Ela é verificada integralmente antes de se tornar ativa, a troca é atômica — interrupção de energia no meio da atualização deixa o produto com uma imagem válida, nunca com nenhuma —, o retorno à versão anterior é previsto, e a atualização só ocorre em estado em que a saída pode ser desligada com segurança. Onde não houver atualização em campo, isso é decisão registrada, não omissão.
 
 ## 3. Preparação para safety
 

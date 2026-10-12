@@ -1,8 +1,8 @@
 # Template: `docs/workflow.md`
 
-**Quando usar:** quando o fluxo deixar de caber na seção *Fluxo* do `AGENTS.md` — plataforma de PR/MR em uso, CI, processo de liberação, mais de uma pessoa, exceções a registrar. **Não** nasce no dia zero: num projeto solo sem remoto, o `AGENTS.md` é o fluxo inteiro, e um arquivo próprio só acrescenta um lugar a manter.
+**Quando usar:** quando o fluxo deixar de caber na seção *Fluxo* do `AGENTS.md` — plataforma de PR/MR em uso, CI, processo de liberação, mais de uma pessoa, exceções a registrar. Não nasce no dia zero: num projeto solo sem remoto, o `AGENTS.md` é o fluxo inteiro, e um arquivo próprio só acrescenta um lugar a manter.
 
-**Papel:** dizer como as regras de [practices/git.md](../practices/git.md), Seção *Branch e revisão*, se realizam **neste** projeto — VCS, remoto, nomes reais das branches, forma de entrega, CI e exceções. As regras em si não são repetidas aqui: o domínio é o dono delas, e uma cópia em cada projeto divergiria na primeira alteração.
+**Papel:** dizer como as regras de [practices/git.md](../practices/git.md), Seção *Branch e revisão*, se realizam neste projeto — VCS, remoto, nomes reais das branches, forma de entrega, CI e exceções. As regras em si não são repetidas aqui: o domínio é o dono delas, e uma cópia em cada projeto divergiria na primeira alteração.
 
 **Convenções:** o que já está na seção *Fluxo* do `AGENTS.md` não é repetido aqui — branch base e modo de trabalho do agente moram lá. VCS ou remoto ainda não escolhidos entram como `<a definir>`. Projeto em outro VCS registra aqui os comandos equivalentes aos do domínio. Seção sem conteúdo é omitida.
 

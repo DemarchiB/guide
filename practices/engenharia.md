@@ -20,8 +20,8 @@ Vale para pessoa e agente.
 
 1. Credencial, chave, token, certificado privado ou dado pessoal nunca vão para o repositório — nem em código, configuração, spec, ADR, exemplo ou log colado num documento.
 2. O `.gitignore` faz parte do harness: cobre no mínimo artefatos de build, dependências instaladas, configuração local de máquina ou IDE, arquivos de ambiente (`.env` e equivalentes) e saídas de ferramenta. Mantê-lo correto é parte da tarefa que introduz o arquivo local — e ele nunca justifica guardar um segredo real dentro da pasta do projeto.
-3. Documentação cita o **nome** da variável ou parâmetro, nunca o valor.
-4. Segredo que chegou ao histórico é **rotacionado**. Apagar num commit seguinte não desfaz a exposição: o valor continua no histórico e em todo clone.
+3. Documentação cita o nome da variável ou parâmetro, nunca o valor.
+4. Segredo que chegou ao histórico é rotacionado. Apagar num commit seguinte não desfaz a exposição: o valor continua no histórico e em todo clone.
 5. Dado de produção (log real, dump, base de clientes) não entra no repositório; use dado sintético.
 
 ## 3. Dependências
@@ -32,7 +32,7 @@ Vale para pessoa e agente.
 
 Antes de mover ou dividir componentes: identifique a responsabilidade de cada área, mapeie dependências de entrada e saída, localize imports, scripts, configurações, pipelines e documentação afetados, verifique caminhos codificados, preserve compatibilidade ou declare a migração, e atualize o `ARCHITECTURE.md` se limites mudarem.
 
-Evite: mover arquivos sem atualizar consumidores; criar camada sem responsabilidade própria; duplicar utilitários; reorganizar código apenas para acomodar uma IA ou uma IDE.
+Evite, porque cada um deixa o sistema pior do que antes da mudança: mover arquivos sem atualizar consumidores (quebra quem dependia do caminho); criar camada sem responsabilidade própria (indireção sem ganho); duplicar utilitários (cada defeito passa a ter duas correções); reorganizar código apenas para acomodar uma IA ou uma IDE (a documentação reflete o projeto, não o contrário — [../manutencao.md](../manutencao.md), Seção *Princípios*).
 
 ## 5. Submódulos e arquivos gerados
 

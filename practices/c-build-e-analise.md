@@ -13,7 +13,7 @@ Flags e comandos aparecem na notação de GCC e CMake, como ilustração. O conj
 2. **Aviso é tratado como erro no build de desenvolvimento e no de integração.** Base mínima `-Wall -Wextra`; para C embarcado valem também `-Wconversion`, `-Wshadow`, `-Wundef` e `-Wswitch-enum`, promovidos conforme a Seção *Adoção incremental*. Com a toolchain fixada (regra seguinte), `-Werror` não quebra por atualização surpresa do compilador. Aviso não se desliga para passar: corrige-se, ou suprime-se no local com o motivo.
 3. **A toolchain é fixada e reproduzível.** O projeto declara a versão exata do compilador e guarda o meio de reproduzi-la (instalador arquivado, contêiner, preset). Produto de automação vive muitos anos: recompilar com outra versão produz binário diferente do validado.
 4. **O build roda por linha de comando**, independente de IDE (por exemplo, `cmake --preset <alvo>` e `cmake --build --preset <alvo>`). Build que só existe dentro de uma IDE não é verificável por sensor nem por agente.
-5. **O firmware carrega sua identificação** — versão, commit e marca de "árvore suja" — **gerada pelo build** e legível em execução, nunca digitada numa constante. O binário liberado é arquivado junto com a tag correspondente.
+5. **O firmware carrega sua identificação** — versão, commit e marca de "árvore suja" — gerada pelo build e legível em execução, nunca digitada numa constante. O binário liberado é arquivado junto com a tag correspondente.
 6. **Flash e RAM são orçados**: o consumo é extraído do mapa de memória a cada build e comparado com um limite declarado. Descobrir que a flash acabou na última funcionalidade é o defeito clássico de firmware, e ele só aparece cedo se for medido desde cedo.
 7. **Extensão de compilador é decisão consciente** — em ADR quando afeta portabilidade — e o código que depende dela fica isolado na camada de hardware.
 8. **O nível de otimização faz parte da configuração declarada.** Código que só funciona em um nível tem defeito — tipicamente `volatile` ausente ou comportamento indefinido —, e o defeito se corrige, não se contorna baixando a otimização.
@@ -44,7 +44,7 @@ Ao conjunto mínimo de [testes.md](testes.md), Seção *Conjunto mínimo de sens
 
 ## 4. Adoção do MISRA
 
-MISRA C é um subconjunto da linguagem publicado como documento normativo. O texto das regras **não é reproduzido aqui** — é protegido por direito autoral. Este domínio define o processo de adoção.
+MISRA C é um subconjunto da linguagem publicado como documento normativo. O texto das regras não é reproduzido aqui — é protegido por direito autoral. Este domínio define o processo de adoção.
 
 1. **Adoção declarada, não presumida.** O projeto registra em ADR a edição, o conjunto de regras adotado e a ferramenta que verifica. Projeto que "segue MISRA" sem esses três fatos não segue.
 2. **Adesão parcial é legítima quando é explícita.** O padrão deste conjunto é o subconjunto pragmático: regras *Mandatory* na íntegra, *Required* de maior retorno, *Advisory* como recomendação. O que ficou de fora é listado, com o motivo.

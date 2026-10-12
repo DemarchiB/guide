@@ -36,7 +36,7 @@ Na maioria dos casos, a spec com sua lista de tarefas é tudo de que se precisa.
 2. **Levante as dúvidas antes de escrever requisitos.** Ao usar um agente para rascunhar, peça primeiro a lista de ambiguidades e perguntas; os requisitos vêm depois das respostas. Spec escrita sobre suposição transfere a suposição para o código.
 3. **Um comportamento por requisito, em EARS, verificável.** "Rápido", "adequado" e "robusto" não são verificáveis; "em até 50 ms" é.
 4. **Escreva o comportamento indesejado.** Erro, limite, tempo esgotado, dado inválido, reset no meio da operação — é onde uma spec rasa falha, e o padrão EARS "Se…, então…" existe para isso.
-5. **Critério de aceite diz como cada requisito é comprovado**: teste em host, ensaio em bancada, inspeção. Requisito sem forma de comprovação volta para a etapa 3. Onde o requisito puder ser verificado em host, o critério de aceite **é** o teste, e ele nasce na mesma tarefa que implementa o requisito ([testes.md](testes.md), Seção *O que testar*) — é o que transforma a spec em sensor em vez de promessa.
+5. **Critério de aceite diz como cada requisito é comprovado**: teste em host, ensaio em bancada, inspeção. Requisito sem forma de comprovação volta para a etapa 3. Onde o requisito puder ser verificado em host, o critério de aceite é o teste, e ele nasce na mesma tarefa que implementa o requisito ([testes.md](testes.md), Seção *O que testar*) — é o que transforma a spec em sensor em vez de promessa.
 6. **Fora de escopo é explícito.** O que não está escrito ali será assumido por alguém.
 7. **Tarefas são incrementos entregáveis**, em ordem, cada um verificável sozinho e citando os requisitos que atende. O teste de um requisito entra na mesma tarefa que o implementa, não numa tarefa "escrever testes" no fim.
 8. **Decisão de arquitetura que a spec exige vira ADR**, e a spec aponta para ele em vez de repetir o raciocínio.
@@ -45,7 +45,7 @@ Na maioria dos casos, a spec com sua lista de tarefas é tudo de que se precisa.
 ## 3. Seguir uma spec
 
 1. **Só se implementa spec `aprovada`.** Implementar rascunho é decidir o comportamento no código, sem acordo.
-2. **Uma tarefa por vez, na ordem.** A tarefa é marcada `[x]` quando está implementada **e** verificada — não quando o código foi escrito.
+2. **Uma tarefa por vez, na ordem.** A tarefa é marcada `[x]` quando está implementada e verificada — não quando o código foi escrito.
 3. Commit que implementa um requisito o cita no trailer `Requisito:` ([git.md](git.md), Seção *Commit e rastreabilidade*).
 4. **Divergência para o trabalho.** Quando a implementação revela requisito errado, incompleto ou inviável, pare: corrija a spec, obtenha a aprovação da mudança e só então continue. Implementar diferente e ajustar a spec depois para combinar apaga justamente a informação que a spec existia para guardar.
 5. **Suposição necessária para seguir não entra no código em silêncio**: vira pergunta ou nota na spec.

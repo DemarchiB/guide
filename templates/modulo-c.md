@@ -1,6 +1,6 @@
 # Template: módulo em C (`<modulo>.h` + `<modulo>.c`)
 
-**Quando usar** — o módulo tem **estado** e pode existir em mais de uma instância, ou pode vir a existir: um canal de comunicação, um eixo, um sensor, um temporizador de software, uma máquina de estado. O par de arquivos abaixo dá a esse módulo a forma de classe: atributos numa estrutura, operações com prefixo do módulo, e um ponteiro `me` para a instância como primeiro parâmetro.
+**Quando usar** — o módulo tem estado e pode existir em mais de uma instância, ou pode vir a existir: um canal de comunicação, um eixo, um sensor, um temporizador de software, uma máquina de estado. O par de arquivos abaixo dá a esse módulo a forma de classe: atributos numa estrutura, operações com prefixo do módulo, e um ponteiro `me` para a instância como primeiro parâmetro.
 
 **Quando não usar:**
 
@@ -21,7 +21,7 @@
 
 ## Esqueleto
 
-Os comentários de seção organizam a leitura de arquivos longos; em módulo pequeno, **remova as seções que ficarem vazias** — banner sem conteúdo é ruído que se repete em todo arquivo.
+Os comentários de seção organizam a leitura de arquivos longos; em módulo pequeno, remova as seções que ficarem vazias — banner sem conteúdo é ruído que se repete em todo arquivo.
 
 ```c
 /* ------------------------------- <modulo>.h ------------------------------- */
@@ -134,7 +134,7 @@ void <Modulo>_deinit(<Modulo> *const me)
 
 ## Polimorfismo, quando ele se justifica
 
-Operação virtual em C é uma tabela de ponteiros para função — `const`, portanto em flash — apontada pelo primeiro campo da estrutura base. A derivada declara a base como **primeiro membro**, o que torna o ponteiro para a derivada convertível para a base:
+Operação virtual em C é uma tabela de ponteiros para função — `const`, portanto em flash — apontada pelo primeiro campo da estrutura base. A derivada declara a base como primeiro membro, o que torna o ponteiro para a derivada convertível para a base:
 
 ```c
 typedef struct Sensor Sensor;

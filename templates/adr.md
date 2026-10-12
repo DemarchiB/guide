@@ -9,7 +9,7 @@
 
 **Quando não registrar:** escolhas locais, reversíveis ou já cobertas pelas convenções. Desvio de uma regra deste conjunto que atenda a algum critério acima também é ADR (`PROJECT_GUIDE.md`, Seção *Precedência*).
 
-**Convenções:** um arquivo por decisão, numeração sequencial de quatro dígitos nunca reaproveitada, `Status` e `Data` obrigatórios. Proposta recusada que atenda aos critérios também fica registrada, com `Status: rejeitado` — é ela que responde "por que não fizemos X" da próxima vez que alguém propuser X. **Um ADR nunca é apagado nem reescrito quando a decisão muda**: o antigo passa a `substituído por ADR-NNNN` e o novo registra `substitui ADR-NNNN`. É esse par de campos que distingue decisão vigente de decisão histórica — sem ele, a pasta vira arquivo morto em que decisões velhas e válidas têm a mesma aparência.
+**Convenções:** um arquivo por decisão, numeração sequencial de quatro dígitos nunca reaproveitada, `Status` e `Data` obrigatórios. Proposta recusada que atenda aos critérios também fica registrada, com `Status: rejeitado` — é ela que responde "por que não fizemos X" da próxima vez que alguém propuser X. Um ADR nunca é apagado nem reescrito quando a decisão muda: o antigo passa a `substituído por ADR-NNNN` e o novo registra `substitui ADR-NNNN`. É esse par de campos que distingue decisão vigente de decisão histórica — sem ele, a pasta vira arquivo morto em que decisões velhas e válidas têm a mesma aparência.
 
 ```markdown
 # ADR-NNNN: <título curto>

@@ -1,8 +1,8 @@
 # Guia de projeto — ponto de entrada
 
-Este arquivo é lido no início de toda tarefa. Ele é curto de propósito: diz o que vale sempre — inclusive como conduzir e encerrar a tarefa — e roteia para o resto, que é lido **só quando a tarefa pedir**. Ler o conjunto inteiro nunca é necessário, e contexto carregado à toa piora a resposta além de custar.
+Este arquivo é lido no início de toda tarefa. Ele é curto de propósito: diz o que vale sempre — inclusive como conduzir e encerrar a tarefa — e roteia para o resto, que é lido só quando a tarefa pedir. Ler o conjunto inteiro nunca é necessário, e contexto carregado à toa piora a resposta além de custar.
 
-O conjunto é igual em todos os projetos e **nunca é editado dentro de um projeto**. O que é específico do projeto mora nos documentos dele: `AGENTS.md`, `ARCHITECTURE.md`, `docs/workflow.md`, ADRs.
+O conjunto é igual em todos os projetos e nunca é editado dentro de um projeto. O que é específico do projeto mora nos documentos dele: `AGENTS.md`, `ARCHITECTURE.md`, `docs/workflow.md`, ADRs.
 
 ## Precedência
 
@@ -87,7 +87,7 @@ Leia as linhas que correspondem à sua tarefa, e só elas. A tabela leva ao deta
 
 ## Domínios de prática
 
-Os arquivos de `practices/` são domínios; o `AGENTS.md` do projeto declara quais se aplicam a ele. Essa declaração é o catálogo do que existe — **não** uma ordem de carregar todos. Cada um é lido só quando a linha da tabela acima ocorrer.
+Os arquivos de `practices/` são domínios; o `AGENTS.md` do projeto declara quais se aplicam a ele. Essa declaração é o catálogo do que existe — não uma ordem de carregar todos. Cada um é lido só quando a linha da tabela acima ocorrer.
 
 - **Todo projeto:** `engenharia`, `git`, `ia`, `testes`, `specs`.
 - **Código C para microcontrolador:** `c-embarcado`, `c-build-e-analise`.

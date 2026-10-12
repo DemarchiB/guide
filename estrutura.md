@@ -84,7 +84,7 @@ Specs, ADRs, design-docs e planos começam com `Status` e `Data` da última atua
 
 ## 5. Nomes
 
-- Arquivos de documentação em kebab-case, sem acento nem espaço: `deteccao-overflow-uart.md`.
-- Maiúsculas só nos arquivos de entrada procurados por nome: `README.md`, `AGENTS.md`, `ARCHITECTURE.md`, `SKILL.md`.
-- Nome de Skill segue a especificação (`templates/skill.md`): minúsculas, números e hífens.
-- Identificadores citados na documentação (estados, eventos, funções) são escritos exatamente como no código.
+- Arquivos de documentação em kebab-case, sem acento nem espaço: `deteccao-overflow-uart.md`. Acento e espaço quebram link, linha de comando e codificação entre sistemas.
+- Maiúsculas só nos arquivos de entrada procurados por nome: `README.md`, `AGENTS.md`, `ARCHITECTURE.md`, `SKILL.md`. São os nomes que pessoas e ferramentas procuram, e se destacam na listagem.
+- Nome de Skill segue a especificação (`templates/skill.md`): minúsculas, números e hífens. Nome fora dela pode fazer o host ignorar a Skill.
+- Identificadores citados na documentação (estados, eventos, funções) são escritos exatamente como no código, para que a documentação possa ser conferida contra o código por busca textual.

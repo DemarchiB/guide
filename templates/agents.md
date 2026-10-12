@@ -2,7 +2,7 @@
 
 **Quando usar:** no dia zero, depois de `ARCHITECTURE.md` (`adocao.md`). Aninhado, quando uma pasta tiver convenção própria.
 
-**Papel:** índice operacional carregado em **toda** sessão de agente; o que entra nele é decidido por [practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*. Na prática, o que mais aparece aqui indevidamente: visão geral do repositório (o agente lê a árvore), cópia de `ARCHITECTURE.md` e instrução genérica ("escreva código limpo").
+**Papel:** índice operacional carregado em toda sessão de agente; o que entra nele é decidido por [practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*. Na prática, o que mais aparece aqui indevidamente: visão geral do repositório (o agente lê a árvore), cópia de `ARCHITECTURE.md` e instrução genérica ("escreva código limpo").
 
 **Convenções:**
 
@@ -23,7 +23,7 @@
 Segue `docs/guide/` (<submódulo | cópia do commit `<hash>`>). No início de
 toda tarefa, leia `docs/guide/PROJECT_GUIDE.md` — ele diz o que mais ler.
 
-- Domínios aplicáveis: <engenharia, ia, ...>
+- Domínios aplicáveis: <engenharia, git, ia, testes, specs, ...>
 - Desvios do guia: <regra — motivo — ADR, ou omita a linha>
 - Idioma: documentação em <pt-BR>; identificadores e comentários em <...>; commits em <...>.
 - <Convenção deste projeto que foge do padrão da linguagem ou ferramenta.>
@@ -71,7 +71,9 @@ os testes em host passam e o orçamento de RAM não piora.
 Segue `docs/guide/` (submódulo). No início de toda tarefa, leia
 `docs/guide/PROJECT_GUIDE.md` — ele diz o que mais ler.
 
-- Domínios aplicáveis: engenharia, ia, c-embarcado, c-build-e-analise, firmware.
+- Domínios aplicáveis: engenharia, git, ia, testes, specs, c-embarcado,
+  c-build-e-analise, firmware, firmware-concorrencia, firmware-robustez,
+  testes-firmware.
 - Desvios do guia: alocação única do pool da pilha TCP/IP na inicialização — ADR-0002.
 - Idioma: documentação, identificadores e commits em pt-BR.
 - Funções públicas no formato `Modulo_acao` (`Uart_enviar`); tipos em PascalCase.

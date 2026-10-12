@@ -1,6 +1,6 @@
 # Convenções de projeto
 
-Conjunto de convenções que os projetos adotam em `docs/guide/`, para que uma pessoa ou um agente de IA entre em qualquer um deles e saiba onde procurar, onde escrever e como trabalhar. Este repositório **não é um projeto**: é o que os projetos seguem.
+Conjunto de convenções que os projetos adotam em `docs/guide/`, para que uma pessoa ou um agente de IA entre em qualquer um deles e saiba onde procurar, onde escrever e como trabalhar. Este repositório não é um projeto: é o que os projetos seguem.
 
 > Chegou aqui por `docs/guide/README.md` dentro de um projeto? Este é o README do conjunto de convenções; o do projeto está na raiz dele.
 
@@ -35,7 +35,7 @@ tools/verificar.py          verificador: links, seções citadas, Skills e trech
 tools/hooks/commit-msg      lembrete do trailer Impacto-adocao ao alterar regras ou templates
 ```
 
-Os arquivos de `practices/` são divididos pelo **gatilho de leitura**: cada tarefa carrega um arquivo pequeno, não um domínio inteiro. Só o `PROJECT_GUIDE.md` é lido em toda tarefa.
+Os arquivos de `practices/` são divididos pelo gatilho de leitura: cada tarefa carrega um arquivo pequeno, não um domínio inteiro. Só o `PROJECT_GUIDE.md` é lido em toda tarefa.
 
 ## Como evolui
 

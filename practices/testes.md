@@ -19,7 +19,7 @@ Em ordem crescente de custo:
 
 Regras de uso:
 
-- os sensores existentes rodam **antes** de declarar a tarefa concluída, e quem executou informa quais rodou;
+- os sensores existentes rodam antes de declarar a tarefa concluída, e quem executou informa quais rodou;
 - sensor que não existe é registrado como verificação pendente, com o motivo — nunca simulado nem presumido aprovado;
 - sensor que falha bloqueia a conclusão: corrigir ou relatar, não seguir adiante;
 - **sensor que fecha o laço é o que o agente roda sozinho**: um comando, sem IDE, sem hardware, resposta em segundos. Validação que exige bancada, hardware ou o ambiente final é validação de pessoa — legítima, declarada no resumo, mas não substitui o sensor;

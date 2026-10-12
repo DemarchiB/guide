@@ -33,15 +33,15 @@ Nenhum documento fica bloqueado por falta de fato confirmado, e nenhum buraco é
 
 Comando que ninguém rodou entra como `<a verificar>`, nunca como oficial; comando que foi executado é documentado com diretório, pré-requisitos e efeitos colaterais quando relevantes, e nunca com credencial. A marcação sai na mesma mudança que confirma o fato.
 
-**Seção sem conteúdo.** Seção prevista no template cujo conteúdo ainda não existe é **omitida** — o template continua dizendo onde ela entra quando o conteúdo surgir, e uma linha "nenhum até o momento" repetida em toda sessão de agente é custo sem informação. A exceção são campos que o template declara obrigatórios: esses ficam, com a marcação acima.
+**Seção sem conteúdo.** Seção prevista no template cujo conteúdo ainda não existe é omitida — o template continua dizendo onde ela entra quando o conteúdo surgir, e uma linha "nenhum até o momento" repetida em toda sessão de agente é custo sem informação. A exceção são campos que o template declara obrigatórios: esses ficam, com a marcação acima.
 
 ## 4. Quando e como atualizar
 
-Atualize a documentação **na mesma mudança** que alterar: propósito ou escopo, comandos e pré-requisitos, arquitetura, limites ou dependências, comportamento especificado, workflows de Skills, formatos gerados, riscos e restrições.
+Atualize a documentação na mesma mudança que alterar: propósito ou escopo, comandos e pré-requisitos, arquitetura, limites ou dependências, comportamento especificado, workflows de Skills, formatos gerados, riscos e restrições.
 
-**"Na mesma mudança" quer dizer no mesmo commit ou PR, não a cada edição.** Enquanto a implementação está em andamento o comportamento ainda muda: documentar a cada passo reescreve o mesmo texto várias vezes, gasta contexto e deixa um diff que não estabiliza. A documentação afetada é atualizada **uma vez, depois que o comportamento está implementado e verificado**, antes de encerrar. Durante o trabalho, o progresso vai para onde ele pertence — as tarefas da spec ou o plano, marcadas em marcos.
+**"Na mesma mudança" quer dizer no mesmo commit ou PR, não a cada edição.** Enquanto a implementação está em andamento o comportamento ainda muda: documentar a cada passo reescreve o mesmo texto várias vezes, gasta contexto e deixa um diff que não estabiliza. A documentação afetada é atualizada uma vez, depois que o comportamento está implementado e verificado, antes de encerrar. Durante o trabalho, o progresso vai para onde ele pertence — as tarefas da spec ou o plano, marcadas em marcos.
 
-Duas exceções, ambas porque o documento é **entrada** do trabalho, não registro dele: a spec é escrita e aprovada antes de implementar; e, se a implementação mostrar que a spec está errada, o trabalho para e a spec é corrigida primeiro ([practices/specs.md](practices/specs.md), Seção *Seguir uma spec*).
+Duas exceções, ambas porque o documento é entrada do trabalho, não registro dele: a spec é escrita e aprovada antes de implementar; e, se a implementação mostrar que a spec está errada, o trabalho para e a spec é corrigida primeiro ([practices/specs.md](practices/specs.md), Seção *Seguir uma spec*).
 
 Ao escrever ou revisar:
 
