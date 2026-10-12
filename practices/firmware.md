@@ -8,7 +8,7 @@ Cobre as decisões estruturais de um firmware: separação de camadas, escolha e
 ## 1. Camadas e portabilidade
 
 1. **Camadas com dependência em um sentido só, e no mínimo uma fronteira: hardware ↔ aplicação.** A aplicação (regras do produto) nunca acessa registrador nem HAL do fabricante diretamente. Uma camada intermediária de serviços (drivers do produto, comunicação, persistência) aparece quando há o que colocar nela — criá-la vazia é camada sem responsabilidade.
-2. **A camada de aplicação compila no PC.** Esse é o critério prático da separação: se a lógica do produto não compila sem a toolchain do alvo, as camadas estão misturadas. É também o que habilita teste em host, o sensor de maior retorno do projeto ([testes.md](testes.md), Seção *A costura*).
+2. **A camada de aplicação compila no PC.** Esse é o critério prático da separação: se a lógica do produto não compila sem a toolchain do alvo, as camadas estão misturadas. É também o que habilita teste em host, o sensor de maior retorno do projeto ([testes-firmware.md](testes-firmware.md), Seção *A costura*).
 3. **O acesso a hardware é concentrado por periférico**, atrás de uma interface pequena e declarada. Trocar de microcontrolador deve afetar a camada de hardware, não a aplicação.
 4. **Código gerado por ferramenta de fabricante fica isolado** e não é editado à mão; a customização vive nos pontos de extensão previstos ou numa camada acima. Regeneração que apaga edição manual é defeito de estrutura, não acidente.
 5. **O mapa das camadas e dos módulos mora no `ARCHITECTURE.md`** do projeto, não neste guia.
@@ -35,7 +35,7 @@ O que acontece entre tarefas em execução — filas, exclusão, esperas com tem
 8. **Ação de entrada e de saída são explícitas** quando existirem, e a máquina não bloqueia: espera é um estado com temporizador, nunca um laço de espera dentro da transição.
 9. **Toda máquina de estado não trivial é documentada** a partir de `../templates/fsm.md`, em `docs/design-docs/` (os critérios de "não trivial" estão no template). A documentação e o código mudam na mesma alteração.
 
-Máquina de estado é o que melhor se paga em teste de host: a tabela de transição é lógica pura, e o par estado × evento esquecido aparece no teste antes de aparecer em campo ([testes.md](testes.md), Seção *O que testar primeiro*).
+Máquina de estado é o que melhor se paga em teste de host: a tabela de transição é lógica pura, e o par estado × evento esquecido aparece no teste antes de aparecer em campo ([testes-firmware.md](testes-firmware.md), Seção *O que testar primeiro*).
 
 ## Checklist deste domínio
 

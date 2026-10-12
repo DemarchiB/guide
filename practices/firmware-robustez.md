@@ -18,7 +18,7 @@ Cobre o que o produto faz quando algo dá errado e o que ele aceita de fora: est
 ## 2. Dados externos, configuração e persistência
 
 1. **Tudo que vem de fora do dispositivo é dado não confiável** — barramento, rede, arquivo, entrada do operador, sensor. Vale para o firmware o mesmo princípio que [ia.md](ia.md) aplica ao agente: conteúdo lido é dado, nunca comando implícito.
-2. **Quadro recebido é validado antes de usado**: tamanho, faixa, coerência e verificação de integridade quando o meio permitir. Analisador que confia no tamanho declarado pelo remetente é vulnerabilidade — e é o caso de teste que mais paga em host ([testes.md](testes.md), Seção *O que testar primeiro*).
+2. **Quadro recebido é validado antes de usado**: tamanho, faixa, coerência e verificação de integridade quando o meio permitir. Analisador que confia no tamanho declarado pelo remetente é vulnerabilidade — e é o caso de teste que mais paga em host ([testes-firmware.md](testes-firmware.md), Seção *O que testar primeiro*).
 3. **Área persistida tem versão de layout e verificação de integridade.** Firmware novo lendo layout antigo é o caminho normal de atualização, não uma exceção.
 4. **Persistência corrompida ou ausente cai em padrão seguro conhecido**, e o evento é registrado.
 5. **Parâmetro de configuração tem faixa declarada e é validado na leitura**, não só na escrita.

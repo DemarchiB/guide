@@ -29,7 +29,7 @@ Cobre o que acontece enquanto o firmware roda: interrupções e DMA, sincroniza�
 
 1. **Uma base de tempo monotônica** para o firmware inteiro, com resolução e origem declaradas. Cada módulo medir tempo do seu jeito produz comportamento incoerente.
 2. **Comparação de tempo tolerante a estouro do contador**: sempre por diferença (`agora - marca >= intervalo`), nunca por comparação direta de instantes.
-3. **A leitura do tempo é substituível**, para que a lógica que depende dela seja testável em host sem esperar ([testes.md](testes.md), Seção *A costura*).
+3. **A leitura do tempo é substituível**, para que a lógica que depende dela seja testável em host sem esperar ([testes-firmware.md](testes-firmware.md), Seção *A costura*).
 4. **Espera ocupada só onde for a única opção** (atraso de microssegundos exigido por periférico), delimitada e comentada.
 5. **Prazo é requisito, não expectativa.** Onde o produto tiver requisito temporal, ele entra em `docs/specs/` com valor numérico e tolerância, e a forma de verificá-lo é declarada — medição, pino de depuração, contador.
 
