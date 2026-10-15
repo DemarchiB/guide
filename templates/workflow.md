@@ -18,7 +18,13 @@ Este arquivo registra só o que é específico deste projeto.
 - Branch principal: `<main>`
 - Branches de integração: <`develop`, `release/*`, ou "nenhuma">
 - Entrega: <local, revisão pelo diff da branch | PR/MR em <plataforma>>
-- CI: <o que roda e quando, ou "nenhum">
+- CI: <"nenhum", ou os itens abaixo; regras em `docs/guide/practices/ci.md`>
+  - Plataforma e arquivo: <GitLab, `.gitlab-ci.yml`>
+  - Jobs e quando rodam: <build-alvo, teste-host, analise, docs em todo push e MR; liberacao em tag>
+  - Fora de todo push: <o que roda agendado ou só antes do merge, ou "nada">
+  - Verde obrigatório para integrar em: <`main`, `develop`>
+  - Imagem: <registro/imagem:versão>
+  - Não coberto pelo CI: <gravação, ensaio em bancada>
 
 ## Base de cada tipo de tarefa
 | Tarefa | Branch base | Destino |

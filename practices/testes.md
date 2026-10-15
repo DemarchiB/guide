@@ -1,6 +1,6 @@
 # Domínio: sensores e testes
 
-Cobre o que verifica uma mudança automaticamente: o conjunto mínimo de sensores, o que testar, como se escreve um teste que detecta defeito, e como pedir e revisar teste escrito por um agente. O que testar num firmware e a costura com o hardware estão em [testes-firmware.md](testes-firmware.md); a configuração da toolchain e do analisador, em [c-build-e-analise.md](c-build-e-analise.md).
+Cobre o que verifica uma mudança automaticamente: o conjunto mínimo de sensores, o que testar, como se escreve um teste que detecta defeito, e como pedir e revisar teste escrito por um agente. O que testar num firmware e a costura com o hardware estão em [testes-firmware.md](testes-firmware.md); a configuração da toolchain e do analisador, em [c-build-e-analise.md](c-build-e-analise.md); scripts, pipeline de CI e ambiente em que os sensores rodam sozinhos, em [ci.md](ci.md).
 
 **Aplica-se a:** todo projeto.
 **Leia quando:** for criar ou alterar teste ou sensor, decidir o que rodar antes de concluir uma mudança, ou pedir testes a um agente.
@@ -23,11 +23,13 @@ Regras de uso:
 - sensor que não existe é registrado como verificação pendente, com o motivo — nunca simulado nem presumido aprovado;
 - sensor que falha bloqueia a conclusão: corrigir ou relatar, não seguir adiante;
 - **sensor que fecha o laço é o que o agente roda sozinho**: um comando, sem IDE, sem hardware, resposta em segundos. Validação que exige bancada, hardware ou o ambiente final é validação de pessoa — legítima, declarada no resumo, mas não substitui o sensor;
-- onde o ambiente permitir, sensores rodam sozinhos (hook de pré-commit, CI). Sensor que depende de alguém lembrar é regra.
+- onde o ambiente permitir, sensores rodam sozinhos (hook de pré-commit, CI — [ci.md](ci.md)). Sensor que depende de alguém lembrar é regra.
 
 **Por que este é o item de maior retorno ao trabalhar com IA.** Sem sensor, o agente precisa acertar de primeira, e acertar de primeira é o que se compra com modelo caro e revisão longa. Com sensor, ele erra, vê o vermelho e corrige sozinho — e o modelo barato passa a bastar para a maior parte do trabalho. Não é preciso ter suíte completa para mudar de regime: um punhado de testes que rodam em segundos sobre a lógica que mais quebra já muda.
 
 ## 2. O que testar
+
+**Comportamento novo ou alterado chega com teste na mesma mudança.** Toda mudança que cria ou altera comportamento testável — regra de negócio, cálculo, conversão, validação, análise de mensagem, máquina de estado — traz o teste junto, visto falhando antes de passar (Seção *Escrever um teste*). O que ficar sem teste é declarado no resumo da mudança, com o motivo. Teste deixado para depois raramente é escrito: a mudança seguinte já parte de código sem verificação, e quem revisa não tem como saber o que o código deveria fazer. Função sem comportamento próprio — repasse, acesso trivial — não pede teste; a regra é sobre comportamento, não sobre contagem de funções.
 
 1. **Primeiro a lógica que mais quebra e é barata de testar**: regras de negócio, cálculo e conversão, validação de entrada, análise de mensagens, máquina de estado. É onde o teste pega o defeito que a validação manual deixa passar.
 2. **O que depende do ambiente final** — hardware, tempo real, serviço externo — é validação manual, declarada como tal, nunca escondida atrás de "testado".
@@ -73,6 +75,7 @@ Escrever testes é dos melhores usos de um agente: é trabalho volumoso, repetit
 
 ## Checklist deste domínio
 
+- [ ] Comportamento novo ou alterado tem teste na mesma mudança, ou a ausência está declarada no resumo com o motivo.
 - [ ] Todo teste novo foi visto falhando antes de passar.
 - [ ] Há teste para caso de erro e de limite, não só para o caminho nominal.
 - [ ] Nenhum teste verifica estado interno, depende de ordem, de relógio real ou de espera.

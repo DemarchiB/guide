@@ -50,6 +50,7 @@ A definição completa do papel de cada documento — o que ele é, o que não �
 | `contexto/sobre-mim.md` | Contexto pessoal colado com os agentes nas instruções persistentes. | `templates/contexto-pessoal.md` |
 | `.agents/skills/<agente>/evals/casos.md` | Casos de teste de um agente: entradas, critérios e execuções. | `templates/casos-de-teste.md` |
 | `automacoes/<nome>.md` | Ficha de uma automação: gatilho, permissões, saída, como desligar. | `templates/automacao.md` |
+| `scripts/`, `.gitlab-ci.yml`, `.github/workflows/` | Um script por etapa de verificação e o pipeline de CI que os chama. | `templates/ci.md` |
 
 ## 3. Onde registrar uma informação
 

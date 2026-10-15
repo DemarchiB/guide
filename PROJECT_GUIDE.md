@@ -71,6 +71,7 @@ Leia as linhas que correspondem à sua tarefa, e só elas. A tabela leva ao deta
 | conduzir uma mudança passo a passo; segredo, dependência nova, mudança estrutural, submódulo ou arquivo gerado | `practices/engenharia.md` |
 | criar branch, commitar, revisar ou integrar; abrir PR/MR | `practices/git.md` |
 | criar ou alterar teste ou sensor; decidir o que testar | `practices/testes.md` |
+| criar ou alterar script de build ou automação, pipeline de CI, hook ou imagem de build; investigar CI lento ou vermelho | `practices/ci.md` e `templates/ci.md` |
 | decidir o que testar num firmware; abrir a costura para teste em host; testar código que depende de tempo | `practices/testes-firmware.md` |
 | planejar funcionalidade maior; criar, seguir ou manter uma spec | `practices/specs.md` e `templates/spec.md` |
 | escrever ou revisar código C de microcontrolador | `practices/c-embarcado.md` |
@@ -89,7 +90,7 @@ Leia as linhas que correspondem à sua tarefa, e só elas. A tabela leva ao deta
 
 Os arquivos de `practices/` são domínios; o `AGENTS.md` do projeto declara quais se aplicam a ele. Essa declaração é o catálogo do que existe — não uma ordem de carregar todos. Cada um é lido só quando a linha da tabela acima ocorrer.
 
-- **Todo projeto:** `engenharia`, `git`, `ia`, `testes`, `specs`.
+- **Todo projeto:** `engenharia`, `git`, `ia`, `testes`, `ci`, `specs`.
 - **Código C para microcontrolador:** `c-embarcado`, `c-build-e-analise`.
 - **Firmware embarcado:** `firmware`, `firmware-concorrencia`, `firmware-robustez`, `testes-firmware`.
 - **Guia de apoio** (não declarado, lido pelo workflow): `ia-harness`, para montar ou ajustar o harness — `AGENTS.md`, Skills, subagentes, adaptadores e permissões. Como a pessoa conduz a sessão está em `uso-com-ia.md`, fora do roteamento.
