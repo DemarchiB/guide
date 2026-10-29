@@ -1,6 +1,6 @@
 # Domínio: C em alvo embarcado
 
-Cobre como se escreve código C para microcontrolador: tipos e conversões, uso de memória, estrutura dos arquivos, nomes e contratos, defensividade e compilação condicional. Não cobre toolchain, build, análise estática nem MISRA — estão em [c-build-e-analise.md](c-build-e-analise.md) —, nem a arquitetura do firmware (camadas, interrupções, RTOS, tempo), que está em [firmware.md](firmware.md).
+Cobre como se escreve código C para microcontrolador: tipos e conversões, uso de memória, estrutura dos arquivos, nomes e contratos, comentários, defensividade e compilação condicional. Não cobre toolchain, build, análise estática nem MISRA — estão em [c-build-e-analise.md](c-build-e-analise.md) —, nem a arquitetura do firmware (camadas, interrupções, RTOS, tempo), que está em [firmware.md](firmware.md).
 
 **Aplica-se a:** projetos com código C para microcontrolador.
 **Leia quando:** for escrever ou revisar código C.
@@ -41,10 +41,22 @@ Cobre como se escreve código C para microcontrolador: tipos e conversões, uso 
 11. **Sem `goto`**, exceto o salto para um bloco único de limpeza no fim da própria função.
 12. **Código morto não fica no repositório** — nem comentado, nem sob `#if 0`. O histórico do VCS guarda a alternativa antiga.
 13. **O `.c` inclui o próprio header primeiro**: é o que prova que o header é autossuficiente. A ordem dos demais é estilo do projeto. Um header inclui diretamente tudo de que depende, e caminho de include parte das raízes declaradas no build, sem `../`.
-14. **Decisão de hardware, contorno ou risco fica comentado no local**, com o motivo — não a implementação, que o código já mostra. Comentário que descreve decisão superada sai na mesma mudança que a supera.
-15. **Header incluível por C++** (teste em host costuma ser C++): `extern "C"` sob `#ifdef __cplusplus` no próprio header, em vez de exigir a adaptação de quem inclui; e nenhum identificador que seja palavra reservada de C++ (`this`, `new`, `class`).
+14. **Header incluível por C++** (teste em host costuma ser C++): `extern "C"` sob `#ifdef __cplusplus` no próprio header, em vez de exigir a adaptação de quem inclui; e nenhum identificador que seja palavra reservada de C++ (`this`, `new`, `class`).
 
-## 4. Defensividade e comportamento indefinido
+## 4. Comentários
+
+Comentário é texto que nenhum sensor verifica: envelhece sem aviso e, quando fica falso, engana mais do que a ausência dele. Por isso entra só onde diz o que o código não consegue dizer.
+
+1. **Comente o porquê, nunca o quê.** Decisão não óbvia, restrição de hardware ou de norma, contorno de errata ou de defeito de fornecedor e risco aceito ficam comentados no local, com o motivo. O que o código faz, ele mesmo mostra; repetir isso em texto dobra a manutenção e diverge na primeira alteração.
+2. **Nome claro e função pequena antes de comentário.** Trecho que precisa de explicação para ser entendido pede um nome melhor ou uma função extraída com o nome do que faz (Seção *Estrutura, nomes e interface*). Comentário que compensa nome ruim é o primeiro a ficar falso.
+3. **Curto: uma linha, no máximo duas ou três.** Explicação que não cabe nisso vai para design-doc, ADR ou referência, e o comentário aponta para ela.
+4. **Comentário descreve o código, não a mudança.** "Adicionado", "corrigido", "agora faz X", "antes era Y" são histórico e moram na mensagem de commit e no resumo da mudança. Código desativado não fica comentado (Seção *Estrutura, nomes e interface*, regra do código morto).
+5. **Comentário de documentação (Doxygen) só em interface pública, e resumido**: o contrato da Seção *Estrutura, nomes e interface*, limitado ao que a assinatura não diz — sem repetir nome, tipos ou parâmetros que se explicam sozinhos. Função `static` não leva bloco de documentação; se precisar de algo, é a linha do porquê.
+6. **Comentário fora do escopo da tarefa não se altera**: nem remoção, nem reescrita, nem reformatação. A exceção é o comentário que a própria mudança tornou falso, corrigido ou removido na mesma alteração.
+7. **`TODO` só com motivo concreto, em uma linha**: o que falta e o que impede de fazer agora, ou a referência da pendência (issue, spec). `TODO` genérico ("melhorar", "revisar") não entra.
+8. **Idioma e forma seguem o projeto**: o idioma declarado no `AGENTS.md` e, na falta dele, o que o arquivo já usa; o mesmo vale para o estilo (`//` ou `/* */`, marcadores Doxygen).
+
+## 5. Defensividade e comportamento indefinido
 
 1. **Função pública valida o que vem de fora do módulo**: ponteiro nulo, índice fora de faixa, enum inválido, tamanho incoerente.
 2. **Retorno de erro é verificado, ou descartado explicitamente** com `(void)` e o motivo. Função que pode falhar retorna estado de erro; não sinaliza falha por valor mágico dentro da faixa útil nem mistura status, quantidade e código de erro no mesmo retorno. A causa da falha é propagada ou convertida explicitamente para quem chama, nunca perdida.
@@ -54,7 +66,7 @@ Cobre como se escreve código C para microcontrolador: tipos e conversões, uso 
 6. **Comportamento indefinido nunca é recurso**: deslocamento maior ou igual à largura do tipo, estouro de sinalizado, variável não inicializada, ponteiro para objeto fora de escopo, violação de aliasing. O compilador otimiza em cima disso, e o sintoma aparece longe da causa.
 7. **`volatile` marca o que muda fora do fluxo do programa** — registrador, variável escrita por interrupção. `volatile` não sincroniza: acesso compartilhado precisa de seção crítica ou primitiva do RTOS ([firmware-concorrencia.md](firmware-concorrencia.md), Seção *Interrupções*).
 
-## 5. Compilação condicional
+## 6. Compilação condicional
 
 1. **Opção de compilação vale `0` ou `1`** e é testada com `#if (OPCAO == 1)` — `#ifdef` não distingue "desligada" de "esquecida". Com `-Wundef` o compilador acusa a opção não definida.
 2. **Macros de seleção de variante ou produto são mutuamente exclusivas**; combinação inválida é rejeitada por asserção estática ou pelo script de build.
@@ -68,5 +80,6 @@ Cobre como se escreve código C para microcontrolador: tipos e conversões, uso 
 - [ ] Símbolos públicos com prefixo do módulo, grandezas com unidade no nome, nenhum número mágico.
 - [ ] Função pública nova ou alterada tem contrato no header, valida entrada externa e tem retorno de erro verificado.
 - [ ] Nenhum identificador reservado, código morto ou `#if 0` entrou no diff.
+- [ ] Comentário novo explica um porquê em até três linhas, não narra a mudança, e nenhum comentário fora do escopo foi alterado.
 - [ ] Suposição sobre o alvo foi afirmada por asserção estática.
 - [ ] Toda condicional de compilação alterada teve os dois ramos revisados.

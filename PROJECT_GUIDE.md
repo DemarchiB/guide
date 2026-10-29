@@ -63,7 +63,7 @@ O resumo diz a verdade sobre o estado: o que não foi verificado aparece como n�
 
 ## O que ler para cada tarefa
 
-Leia as linhas que correspondem à sua tarefa, e só elas. A tabela leva ao detalhe de cada assunto; o fluxo comum de uma tarefa já está acima.
+Leia as linhas que correspondem à sua tarefa, e só elas. A tabela leva ao detalhe de cada assunto; o fluxo comum de uma tarefa já está acima. Mudança trivial (critério em *Em toda tarefa*, item 1) dispensa o arquivo de prática: o sensor e a revisão de relance a cobrem. Na dúvida, ela não é trivial.
 
 | Vou... | Leia |
 | --- | --- |
