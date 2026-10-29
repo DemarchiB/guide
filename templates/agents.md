@@ -2,7 +2,7 @@
 
 **Quando usar:** no dia zero, depois de `ARCHITECTURE.md` (`adocao.md`). Aninhado, quando uma pasta tiver convenção própria.
 
-**Papel:** índice operacional carregado em toda sessão de agente; o que entra nele é decidido por [practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*. Na prática, o que mais aparece aqui indevidamente: visão geral do repositório (o agente lê a árvore), cópia de `ARCHITECTURE.md` e instrução genérica ("escreva código limpo").
+**Papel:** índice operacional carregado em toda sessão de agente; o que entra nele é decidido por [practices/ia-harness.md](../practices/ia-harness.md), Seção *Harness e economia de contexto*. Na prática, o que mais aparece aqui indevidamente: visão geral do repositório (o agente lê a árvore), cópia de `ARCHITECTURE.md`, cópia da tabela *O que ler para cada tarefa* do `PROJECT_GUIDE.md` e instrução genérica ("escreva código limpo"). Roteamento aqui só leva a arquivo do projeto — Skill, `AGENTS.md` aninhado, documento em `docs/`.
 
 **Convenções:**
 
