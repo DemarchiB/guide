@@ -1,6 +1,6 @@
 # Domínio: sensores e testes
 
-Cobre o que verifica uma mudança automaticamente: o conjunto mínimo de sensores, o que testar, como se escreve um teste que detecta defeito, e como pedir e revisar teste escrito por um agente. O que testar num firmware e a costura com o hardware estão em [testes-firmware.md](testes-firmware.md); a configuração da toolchain e do analisador, em [c-build-e-analise.md](c-build-e-analise.md); scripts, pipeline de CI e ambiente em que os sensores rodam sozinhos, em [ci.md](ci.md).
+Cobre o que verifica uma mudança automaticamente: o conjunto mínimo de sensores, o que testar, como se escreve um teste que detecta defeito, como se organiza a suíte unitária e o que se exige dela no CI, e como pedir e revisar teste escrito por um agente. O que testar num firmware e a costura com o hardware estão em [testes-firmware.md](testes-firmware.md); a configuração da toolchain e do analisador, em [c-build-e-analise.md](c-build-e-analise.md); scripts, pipeline de CI e ambiente em que os sensores rodam sozinhos, em [ci.md](ci.md).
 
 **Aplica-se a:** todo projeto.
 **Leia quando:** for criar ou alterar teste ou sensor, decidir o que rodar antes de concluir uma mudança, ou pedir testes a um agente.
@@ -34,7 +34,8 @@ Regras de uso:
 1. **Primeiro a lógica que mais quebra e é barata de testar**: regras de negócio, cálculo e conversão, validação de entrada, análise de mensagens, máquina de estado. É onde o teste pega o defeito que a validação manual deixa passar.
 2. **O que depende do ambiente final** — hardware, tempo real, serviço externo — é validação manual, declarada como tal, nunca escondida atrás de "testado".
 3. **Cobertura não é meta**: perseguir percentual produz teste que existe para contar. A meta é caso de erro e caso de limite cobertos onde uma falha custa caro.
-4. **Num projeto sem nenhum teste**, o caminho é: um comando que compile e rode a suíte; um módulo de lógica pura coberto de ponta a ponta; e daí em diante cada tarefa cobre a área que toca. Mutirão de testes produz suíte que ninguém entende. A escolha do arcabouço de teste é decisão do projeto, declarada no `AGENTS.md` e — por ser dependência nova — registrada conforme [engenharia.md](engenharia.md), Seção *Dependências*.
+4. **Todo defeito corrigido ganha um teste de regressão** que o reproduz, visto falhando antes da correção e passando depois. Defeito que escapou uma vez mostrou um caminho que a suíte não cobria; sem o teste, ele volta na próxima refatoração.
+5. **Num projeto sem nenhum teste**, o caminho é: um comando que compile e rode a suíte; um módulo de lógica pura coberto de ponta a ponta; e daí em diante cada tarefa cobre a área que toca. Mutirão de testes produz suíte que ninguém entende. A escolha do arcabouço de teste é decisão do projeto, declarada no `AGENTS.md` e — por ser dependência nova — registrada conforme [engenharia.md](engenharia.md), Seção *Dependências*.
 
 Em firmware, a ordem de retorno concreta e a costura com o hardware estão em [testes-firmware.md](testes-firmware.md).
 
@@ -49,7 +50,26 @@ Em firmware, a ordem de retorno concreta e a costura com o hardware estão em [t
 7. **Entrada realista, inclusive a inválida**: quadro cortado no meio, comprimento declarado maior que o recebido, valor fora da faixa, contador exatamente no ponto de estouro, buffer cheio. Onde o espaço de entrada for pequeno (um byte de comando, por exemplo), varra todos os valores em vez de escolher três.
 8. **A falha diz o que houve** — esperado e obtido no texto da asserção. Falha que só diz "asserção falhou na linha 74" custa uma sessão de depuração por vez que aparece.
 
-## 4. Pedir testes a um agente
+## 4. Testes unitários
+
+1. **Teste unitário roda em milissegundos, sem disco, rede, hardware, relógio real nem outro processo.** O que toca nisso é teste de integração e fica em suíte separada (alvo ou rótulo próprio), para que a unitária continue rodando a cada mudança. Referência: a suíte unitária inteira responde em segundos; um teste que passa de ~100 ms está fazendo mais do que unidade.
+2. **Estrutura preparar–agir–verificar, visível.** Três blocos separados, uma ação sob teste. Teste com várias ações e asserções intercaladas testa um roteiro: quando falha, não diz qual passo quebrou.
+3. **Sem lógica no teste** — laço, condição, cálculo do valor esperado. Lógica no teste pode ter defeito próprio, e ninguém testa o teste. A exceção é a tabela de casos: a mesma regra com várias entradas vira uma tabela de entrada, esperado e nome do caso, percorrida por um laço sem condição; a falha mostra o nome da linha.
+4. **Legibilidade antes de reaproveitamento.** Cada teste se lê sozinho, de cima a baixo, com os valores que importam à vista. Função auxiliar que monta entrada válida é bem-vinda — o teste altera só o campo que interessa —, mas preparação escondida em fixture compartilhada obriga a abrir três arquivos para entender uma falha.
+5. **O arquivo de teste espelha o módulo**: `src/protocolo/quadro.c` → `tests/protocolo/test_quadro.c`. Quem altera o módulo acha o teste sem procurar, e módulo sem arquivo correspondente salta aos olhos na revisão.
+6. **Teste novo é descoberto sozinho pelo build**, sem lista mantida à mão. Teste que depende de alguém registrá-lo numa lista é esquecido, compila, nunca roda e ninguém percebe.
+7. **Código de teste é código de produção do sensor**: compila com os mesmos avisos tratados como erro, passa pela revisão e não fica comentado. Teste desativado segue [ci.md](ci.md), Seção *Quando fica vermelho*.
+
+## 5. A suíte no CI
+
+1. **Toda suíte automatizada roda no CI em todo push, inteira.** O teste direcionado basta para fechar o laço durante a tarefa; o CI roda tudo, porque é ele quem pega o efeito que a mudança teve longe de onde foi feita. Teste que só roda no PC de quem o escreveu não protege a mudança seguinte. Suíte longa demais para todo push segue [ci.md](ci.md), Seção *O pipeline*, item 4 — a unitária nunca está nesse caso.
+2. **O comando do CI é o mesmo do PC** ([ci.md](ci.md), Seção *Scripts: uma etapa, um comando*). Suíte que só se roda pela IDE não entra no CI e não é sensor de agente.
+3. **Zero testes executados é falha.** Filtro errado, diretório renomeado ou descoberta quebrada fazem o executor rodar nada e sair com sucesso — o falso verde mais silencioso que existe.
+4. **No CI a suíte roda em ordem embaralhada ou em paralelo.** É o sensor da dependência de ordem entre testes, que de outro modo só aparece quando alguém acrescenta um teste no lugar errado.
+5. **O resultado é publicado por teste** — relatório no formato que a plataforma mostra no PR/MR, mesmo quando falha —, para que o revisor veja qual comportamento quebrou sem abrir o log.
+6. **Cobertura, quando medida, é informação para quem revisa, não porteiro.** Mostrar no PR/MR as linhas novas sem teste ajuda a revisão; exigir percentual produz o teste que existe para contar (Seção *O que testar*).
+
+## 6. Pedir testes a um agente
 
 Escrever testes é dos melhores usos de um agente: é trabalho volumoso, repetitivo e verificável. O que exige disciplina é a revisão, porque um teste ruim é pior que nenhum — ele dá confiança falsa e ninguém olha de novo.
 
@@ -76,7 +96,9 @@ Escrever testes é dos melhores usos de um agente: é trabalho volumoso, repetit
 ## Checklist deste domínio
 
 - [ ] Comportamento novo ou alterado tem teste na mesma mudança, ou a ausência está declarada no resumo com o motivo.
-- [ ] Todo teste novo foi visto falhando antes de passar.
+- [ ] Todo teste novo foi visto falhando antes de passar; defeito corrigido tem teste de regressão.
+- [ ] Teste unitário não toca disco, rede, hardware nem relógio real, e não tem lógica além da tabela de casos.
+- [ ] Teste novo é descoberto pelo build e roda no CI em todo push; a suíte vazia reprova.
 - [ ] Há teste para caso de erro e de limite, não só para o caminho nominal.
 - [ ] Nenhum teste verifica estado interno, depende de ordem, de relógio real ou de espera.
 - [ ] Nenhuma asserção foi ajustada para acomodar o comportamento atual do código.

@@ -3,7 +3,7 @@
 Cobre a automação dos sensores: os scripts que executam cada etapa, o paralelismo entre elas, o ambiente em que rodam, o pipeline de CI que as chama e o que fazer quando ele fica vermelho. Quais sensores existem e como se escreve um teste estão em [testes.md](testes.md); toolchain e presets de C, em [c-build-e-analise.md](c-build-e-analise.md); o papel do CI na revisão de PR/MR, em [git.md](git.md), Seção *Agente assíncrono e PR/MR*. Exemplos de scripts, pipeline para GitLab e GitHub e imagem estão em [templates/ci.md](../templates/ci.md).
 
 **Aplica-se a:** todo projeto; o pipeline, a projeto com remoto que ofereça CI.
-**Leia quando:** for criar ou alterar script de build, teste ou automação; configurar pipeline de CI, hook ou a imagem em que o build roda; investigar CI lento ou vermelho.
+**Leia quando:** for criar ou alterar script de build, teste ou automação; introduzir CI num repositório que não tem; configurar pipeline de CI, hook ou a imagem em que o build roda; investigar CI lento ou vermelho.
 
 ## 1. Scripts: uma etapa, um comando
 
@@ -40,13 +40,26 @@ Cobre a automação dos sensores: os scripts que executam cada etapa, o paraleli
 7. **O que o CI não cobre é declarado** no `docs/workflow.md` — gravação, bancada, ensaio com hardware —, para que verde não seja lido como "validado".
 8. **Permissão mínima**: segredo só no job que precisa, como variável protegida da plataforma, nunca no arquivo de CI ([engenharia.md](engenharia.md), Seção *Segredos e dados sensíveis*); o token do job só com as permissões que ele usa.
 
-## 5. Quando fica vermelho
+## 5. Repositório sem CI
+
+Introduzir CI é uma sequência de mudanças pequenas, cada uma verde e útil sozinha; não um projeto que só entrega no fim. Os nomes e a forma vêm de [templates/ci.md](../templates/ci.md), para que quem passa de um repositório a outro reconheça os scripts e os jobs.
+
+1. **Primeiro os scripts, depois o pipeline.** Cada sensor que já existe vira um script em `scripts/` que roda no PC (Seção *Scripts: uma etapa, um comando*) — o primeiro costuma ser o da adoção ([adocao.md](../adocao.md)). Pipeline escrito antes dos scripts nasce com a lógica dentro do arquivo de CI e não se reproduz localmente.
+2. **O primeiro pipeline roda só o que já passa** — tipicamente build e verificação da documentação — e entra já verde. Pipeline que nasce vermelho ensina a ignorar o vermelho desde o primeiro dia; sensor que ainda reprova o código existente espera, ou entra com catraca (item 5).
+3. **Logo depois, o verde passa a ser exigido pela plataforma** (Seção *O pipeline*, item 2). Pipeline que não bloqueia nada é relatório que ninguém abre.
+4. **Cada sensor novo entra no pipeline na mesma mudança que o cria.** A suíte de teste, o analisador, a varredura de segredos: o script e o job chegam juntos. Sensor que fica "para ligar no CI depois" só roda quando alguém lembra.
+5. **Sensor com dívida entra com catraca, não desligado**: falha só no achado novo, e a dívida existente fica registrada e encolhe — mecanismo em [c-build-e-analise.md](c-build-e-analise.md), Seção *Adoção incremental*, válido para qualquer analisador. Esperar o código ficar limpo para ligar o sensor é esperar para sempre.
+6. **Imagem própria só quando instalar no job passar a custar** (Seção *Ambiente: imagem com as ferramentas*). No começo, uma imagem pronta da ferramenta basta.
+7. **Sem plataforma de CI, o script que roda todas as etapas é o pipeline** (`scripts/verificar.ps1` do template): roda antes de integrar, e o `docs/workflow.md` registra "CI: nenhum" e esse comando. Quando a plataforma chegar, cada etapa do script vira um job sem reescrever nada.
+8. **O estado fica declarado**: a linha de CI da tabela de comandos do `AGENTS.md` e o `docs/workflow.md` dizem o que roda, onde e o que ainda falta, marcado como pendente — nunca omitido.
+
+## 6. Quando fica vermelho
 
 1. **Vermelho no tronco tem prioridade sobre trabalho novo**: tudo o que nasce dele herda a falha, e enquanto ele estiver vermelho nenhuma outra mudança pode provar que está certa.
 2. **Rodar de novo até passar não é correção.** Falha intermitente é defeito — do teste, do script ou do código — e se investiga. Se não puder ser corrigida de imediato, o teste é isolado com o motivo registrado e uma pendência aberta, nunca apagado nem silenciado: teste intermitente ensina todos a ignorar o vermelho.
 3. **Mudança no pipeline, num hook ou na imagem é mudança como outra qualquer**: vai numa branch, passa pelo próprio CI e pela revisão. Feita por agente, exige pedido explícito ([git.md](git.md), Seção *O que exige pedido explícito*).
 
-## 6. Hook local
+## 7. Hook local
 
 1. **Hook de pré-commit roda só o que leva segundos** — varredura de segredos, verificação da documentação, formatação; o CI roda tudo. Hook lento é contornado com `--no-verify` e deixa de existir na prática.
 2. **O hook é versionado no repositório** e ativado por `core.hooksPath`, com o comando de ativação no `AGENTS.md`. Hook que cada pessoa copia à mão diverge entre máquinas.
@@ -57,5 +70,6 @@ Cobre a automação dos sensores: os scripts que executam cada etapa, o paraleli
 - [ ] Etapas que rodam em paralelo não compartilham diretório, arquivo temporário nem porta; dependências entre jobs estão declaradas.
 - [ ] O job não baixa nem instala ferramenta estável; a imagem está fixada por versão ou digest.
 - [ ] O pipeline roda em todo push e PR/MR, e o verde é exigido pela plataforma para integrar.
+- [ ] Sensor novo entrou no pipeline na mesma mudança; sensor com dívida entrou com catraca, não desligado.
 - [ ] Nenhum teste foi reexecutado até passar, apagado ou silenciado para deixar o pipeline verde.
 - [ ] O que o CI não cobre está declarado no `docs/workflow.md`.

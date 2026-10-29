@@ -71,7 +71,7 @@ Leia as linhas que correspondem à sua tarefa, e só elas. A tabela leva ao deta
 | conduzir uma mudança passo a passo; segredo, dependência nova, mudança estrutural, submódulo ou arquivo gerado | `practices/engenharia.md` |
 | criar branch, commitar, revisar ou integrar; abrir PR/MR | `practices/git.md` |
 | criar ou alterar teste ou sensor; decidir o que testar | `practices/testes.md` |
-| criar ou alterar script de build ou automação, pipeline de CI, hook ou imagem de build; investigar CI lento ou vermelho | `practices/ci.md` e `templates/ci.md` |
+| criar ou alterar script de build ou automação, pipeline de CI, hook ou imagem de build; introduzir CI num repositório sem CI; investigar CI lento ou vermelho | `practices/ci.md` e `templates/ci.md` |
 | decidir o que testar num firmware; abrir a costura para teste em host; testar código que depende de tempo | `practices/testes-firmware.md` |
 | planejar funcionalidade maior; criar, seguir ou manter uma spec | `practices/specs.md` e `templates/spec.md` |
 | escrever ou revisar código C de microcontrolador | `practices/c-embarcado.md` |

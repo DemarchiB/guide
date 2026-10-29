@@ -6,7 +6,7 @@
 
 **Convenções:**
 
-1. **Um script por etapa em `scripts/`**, com o nome da etapa. O mesmo nome é o nome do job no pipeline — quem lê a falha no CI sabe qual comando rodar no PC.
+1. **Um script por etapa em `scripts/`**, com o nome da etapa. O mesmo nome é o nome do job no pipeline — quem lê a falha no CI sabe qual comando rodar no PC. Nomes padronizados entre projetos: `build` (job `build-<alvo>`), `teste-host`, `analise`, `docs`, `segredos`, `liberar` (job `liberacao`) e `verificar`, que roda as etapas independentes juntas; estágios `verificar` e `liberar`. Etapa que não existir no projeto fica fora, não com outro nome.
 2. **Todo script começa igual**: versão mínima declarada, parada na primeira falha, inclusive de comando externo. Sem isso, um `cmake` que falha no meio é seguido pelo próximo comando, e o script termina com sucesso.
 3. **Cada etapa escreve em `build/<preset>`**, e o que ela entrega para outra etapa ou para quem diagnostica fica ali.
 4. **A imagem é fixada por versão** em todos os jobs, e a mesma referência aparece no comando de reproduzir no PC.
@@ -44,7 +44,9 @@ $PSNativeCommandUseErrorActionPreference = $true
 cmake --preset host-teste
 cmake --build --preset host-teste --parallel
 # O relatório JUnit é gravado no diretório de build do preset (build/host-teste).
-ctest --preset host-teste --parallel --output-on-failure --output-junit relatorio-teste.xml
+# --no-tests=error: suíte vazia reprova; --schedule-random: expõe dependência de ordem.
+ctest --preset host-teste --parallel --schedule-random --no-tests=error `
+      --output-on-failure --output-junit relatorio-teste.xml
 ```
 
 `scripts/verificar.ps1` — o equivalente local do pipeline:
